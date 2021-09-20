@@ -51,6 +51,8 @@
 #'   personsCFGFile    = personsCFGFile,
 #'   antennasCFGFile   = antennasCFGFile,
 #'   outputFolder      = outputFolder)
+#'   
+#'   
 #' @export
 runExeFile <- function(
   configParamList,
