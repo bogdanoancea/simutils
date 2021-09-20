@@ -4,7 +4,7 @@
 \alias{xmlValidate}
 \title{Validate an xml file using an xsd schema file.}
 \usage{
-xmlValidate(xsdName, xmlObject, config_file_name = "config.ini")
+xmlValidate(xsdName, xmlObject, configParamList)
 }
 \arguments{
 \item{xsdName}{Path of the xsd file containing the schema.}
@@ -13,8 +13,9 @@ xmlValidate(xsdName, xmlObject, config_file_name = "config.ini")
 \code{xml2} or of class \code{character} specifying the path of the xml file
 to validate.}
 
-\item{config_file_name}{Filename of the configuration file of the simulation.
-Default value is \code{'config.ini'}.}
+\item{configParamList}{\code{list} which must have a component named
+\code{Path}, which, in turn, must contain a list with a component named
+\code{XML_VALIDATOR} (see example below).}
 
 \item{jarName}{Filename of jar file.}
 }
@@ -35,13 +36,11 @@ placed in the folder structure of the simulation.
 Return TRUE if xml file is validated; otherwise, FALSE.
 }
 \examples{
-rootPath <- 'F:/simulation1'
-xsdName  <- file.path(rootPath, 'metadata/1.networkEvents', 'networkEvents_dict.xsd')
-xmlObject  <- file.path(rootPath, 'metadata/1.networkEvents', 'networkEvents_dict.xml')
-xmlValidate(xsdName, xmlObject)
+rootPath <- system.file(package = "simutils")  
+config   <- list(Path = list(XML_VALIDATOR = file.path(rootPath, "bin")))
+xsdName  <- file.path(rootPath, 
+    "extdata/metadata/input_files/schema_definition", "antennas_dict.xsd")
+input_folder <- file.path(rootPath, "extdata/input_files", "antennas.xml")
+xmlValidate(xsdName, xmlObject, config)
 
-rootPath <- 'F:/simulation1'
-xsdName  <- file.path(rootPath, 'metadata/0.simulation', 'simulation_dict.xsd')
-xmlObject  <- xml2::read_xml(file.path(rootPath, '0.simulation/input/scenario1', 'simulation.xml'))
-xmlValidate(xsdName, xmlObject)
 }

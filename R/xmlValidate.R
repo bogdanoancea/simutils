@@ -20,39 +20,38 @@
 #' 
 #' @param jarName Filename of jar file.
 #' 
-#' @param config_file_name Filename of the configuration file of the simulation.
-#' Default value is \code{'config.ini'}.
+#' @param configParamList \code{list} which must have a component named 
+#' \code{Path}, which, in turn, must contain a list with a component named
+#' \code{XML_VALIDATOR} (see example below).
 #' 
 #' @details Return TRUE if xml file is validated; otherwise, FALSE.
 #' 
-#' @include getRootPath.R
+#' @examples
+#' rootPath <- system.file(package = "simutils")  
+#' config   <- list(Path = list(XML_VALIDATOR = file.path(rootPath, "bin")))
 #' 
-#' @examples 
-#' rootPath <- 'F:/simulation1'
-#' xsdName  <- file.path(rootPath, 'metadata/1.networkEvents', 'networkEvents_dict.xsd')
-#' xmlObject  <- file.path(rootPath, 'metadata/1.networkEvents', 'networkEvents_dict.xml')
-#' xmlValidate(xsdName, xmlObject)
+#' # xml file 1
+#' xsdName  <- file.path(rootPath, 
+#'     "extdata/metadata/input_files/schema_definition", "antennas_dict.xsd")
+#' xmlFile  <- file.path(rootPath, "extdata/input_files", "antennas.xml")
+#' xmlValidate(xsdName, xmlFile, config)
 #' 
-#' rootPath <- 'F:/simulation1'
-#' xsdName  <- file.path(rootPath, 'metadata/0.simulation', 'simulation_dict.xsd')
-#' xmlObject  <- xml2::read_xml(file.path(rootPath, '0.simulation/input/scenario1', 'simulation.xml'))
-#' xmlValidate(xsdName, xmlObject)
+#' # xml file 2
+#' xsdName  <- file.path(rootPath, 
+#'     "extdata/metadata/input_files/schema_definition", "simulation_dict.xsd")
+#' xmlFile  <- file.path(rootPath, "extdata/input_files", "simulation.xml")
+#' xmlValidate(xsdName, xmlFile, config)
+#' 
+#' 
 #' @export
-xmlValidate <- function(xsdName, xmlObject, config_file_name = 'config.ini'){
+xmlValidate <- function(xsdName, xmlObject, configParamList){
   
-  ROOT_PATH     <- getRootPath()
-  if (!file.exists(file.path(ROOT_PATH, config_file_name))){
-    
-    stop(paste0('[xmlvalidate]', config_file_name, 'does not exist.\n'))
-    
-  }
-  config  <- configr::read.config(file.path(ROOT_PATH, config_file_name))
-  jarName <- file.path(ROOT_PATH, config$Path$XML_VALIDATOR)
+  jarName <- file.path(configParamList$Path$XML_VALIDATOR, 'schema-check.jar')
   if (!file.exists(jarName)) {
     
     stop(paste0('[xmlvalidate]', jarName, 
-                'does not exist. Please check XML_VALIDATOR path in ', 
-                config_file_name,
+                'does not exist. Please check XML_VALIDATOR component in list ', 
+                configParamList,
                 ' and/or jarName argument.\n'))
     
   }

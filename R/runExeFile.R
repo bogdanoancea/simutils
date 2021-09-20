@@ -28,11 +28,11 @@
 #' 
 #' @param outputFolder Full path where the output files are going to be saved.
 #' 
-#' @details Return invisible NULL after placing output files of the simulation 
-#' in the output folder.
+#' @details Return invisible \code{NULL} after placing output files of the 
+#' simulation in the output folder.
 #' 
 #' @examples
-#' config        <- list(
+#' config <- list(
 #'   Path = list(
 #'     SIMULATOR_PATH_TO_EXE = file.path(system.file(package = "simutils"), "bin")))
 #' sysinfo           <- Sys.info()

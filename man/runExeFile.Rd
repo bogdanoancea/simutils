@@ -2,7 +2,7 @@
 % Please edit documentation in R/runExeFile.R
 \name{runExeFile}
 \alias{runExeFile}
-\title{Run an MNO simulation using the simulator.exe file.}
+\title{Run an MND simulation using the simulator.exe file.}
 \usage{
 runExeFile(
   configParamList,
@@ -16,13 +16,14 @@ runExeFile(
 )
 }
 \arguments{
-\item{configParamList}{\code{list} which contains the different paths needed
-during the simulation. It must be read from the config.ini file.}
+\item{configParamList}{\code{list} which must have a component named
+\code{Path}, which, in turn, must contain a list with a component named
+\code{SIMULATOR_PATH_TO_EXE} (see example below).}
 
-\item{sysinfo}{\code{character} with the info about the system where
-the simulation is going to be executed such as the OS, the username...}
+\item{sysinfo}{\code{character} with the info about the system (basically the
+output from \code{Sys.info()}).}
 
-\item{input_folder}{Absolute path where the input files are.}
+\item{input_folder}{Absolute path where the simulation input files are.}
 
 \item{simulationCFGFile}{Name of the configuration simulation file
 (input file).}
@@ -37,19 +38,23 @@ the simulation is going to be executed such as the OS, the username...}
 }
 \description{
 \code{runExeFile} reads the simulator path to exe from the
-config.ini file and execute the simulator.exe from this path.
+\code{configParamList} input parameter and execute the simulator.exe from
+this path. This input parameter must have a component named \code{Path},
+which, in turn, must contain a list with a component named
+\code{SIMULATOR_PATH_TO_EXE} (see example below).
+
 If the file doesn't exist, it returns an error.
 }
 \details{
-Return invisible NULL after placing output files of the simulation
-in the output folder.
+Return invisible \code{NULL} after placing output files of the
+simulation in the output folder.
 }
 \examples{
-config        <- list(
+config <- list(
   Path = list(
-    SIMULATOR_PATH_TO_EXE = file.path(system.file(package = "simutils"), "inst/bin")))
+    SIMULATOR_PATH_TO_EXE = file.path(system.file(package = "simutils"), "bin")))
 sysinfo           <- Sys.info()
-input_folder      <- file.path(system.file(package = "simutils", "inst/extdata/input_files"))
+input_folder      <- file.path(system.file(package = "simutils", "extdata/input_files"))
 simulationCFGFile <- "simulation.xml"
 mapFile           <- "map.wkt"
 personsCFGFile    <- "persons.xml"
@@ -63,5 +68,7 @@ runExeFile(
   mapFile           = mapFile,
   personsCFGFile    = personsCFGFile,
   antennasCFGFile   = antennasCFGFile,
-  outputFolder      = antennasCFGFile)
+  outputFolder      = outputFolder)
+  
+  
 }
