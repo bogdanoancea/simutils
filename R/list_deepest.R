@@ -7,13 +7,16 @@
 #' 
 #' @param object A \code{list} or another object with an attributes' structure.
 #' 
-#' @details Return a list of lists using the attributes' structure from the
-#' original object. 
+#' @details Return a \code{list} of \code{list}s using the attributes' structure
+#'  from the original object. 
 #' 
 #' @examples 
+#' rootPath  <- system.file(package = "simutils")  
+#' xmlFile   <- file.path(rootPath, "extdata/input_files", "simulation.xml")
+#' xmlObject <- as_list(xml2::read_xml(xmlFile))
+#' list_deepest(xmlObject)
 #' 
 #' @export
-
 list_deepest <- function(object){
   
   if (!is.list(object)) return(list(object))

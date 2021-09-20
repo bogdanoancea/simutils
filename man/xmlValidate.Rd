@@ -38,9 +38,18 @@ Return TRUE if xml file is validated; otherwise, FALSE.
 \examples{
 rootPath <- system.file(package = "simutils")  
 config   <- list(Path = list(XML_VALIDATOR = file.path(rootPath, "bin")))
+
+# xml file 1
 xsdName  <- file.path(rootPath, 
     "extdata/metadata/input_files/schema_definition", "antennas_dict.xsd")
-input_folder <- file.path(rootPath, "extdata/input_files", "antennas.xml")
-xmlValidate(xsdName, xmlObject, config)
+xmlFile  <- file.path(rootPath, "extdata/input_files", "antennas.xml")
+xmlValidate(xsdName, xmlFile, config)
+
+# xml file 2
+xsdName  <- file.path(rootPath, 
+    "extdata/metadata/input_files/schema_definition", "simulation_dict.xsd")
+xmlFile  <- file.path(rootPath, "extdata/input_files", "simulation.xml")
+xmlValidate(xsdName, xmlFile, config)
+
 
 }

@@ -8,9 +8,9 @@
 #' 
 #' @param xsdName
 #' 
-#' @param newFile
-#' 
 #' @param configParamList
+#' 
+#' @param newFile
 #' 
 #' @details 
 #' 
@@ -59,7 +59,7 @@
 #' newFile = newSimInputFile)
 #' @export
 
-updateSimInput <- function(xmlSimInput, newParam, xsdName, newFile = NULL, config_file_name = 'config.ini'){
+updateSimInput <- function(xmlSimInput, newParam, xsdName, configParamList, newFile = NULL){
   
   xmlSimInputName <- deparse(substitute(xmlSimInput))
   cat(paste0('[simutils::updateSimInput] Validating ', xmlSimInputName , '...   '))

@@ -4,13 +4,7 @@
 \alias{updateSimInput}
 \title{Update simulation xml input files.}
 \usage{
-updateSimInput(
-  xmlSimInput,
-  newParam,
-  xsdName,
-  newFile = NULL,
-  config_file_name = "config.ini"
-)
+updateSimInput(xmlSimInput, newParam, xsdName, configParamList, newFile = NULL)
 }
 \arguments{
 \item{xmlSimInput}{}
@@ -19,9 +13,9 @@ updateSimInput(
 
 \item{xsdName}{}
 
-\item{newFile}{}
-
 \item{configParamList}{}
+
+\item{newFile}{}
 }
 \description{
 

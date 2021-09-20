@@ -20,5 +20,9 @@ Return a list of lists with final nodes as different classes
 (\code{character}, \code{integer}, ...) keeping the original names' structure.
 }
 \examples{
-
+rootPath  <- system.file(package = "simutils")  
+xmlFile   <- file.path(rootPath, "extdata/input_files", "simulation.xml")
+xmlObject <- as_list(xml2::read_xml(xmlFile))
+flatten_deepest(xmlObject)
+ 
 }

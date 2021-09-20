@@ -16,9 +16,13 @@ and all its elements in a list of lists keeping the original attributes'
 structure.
 }
 \details{
-Return a list of lists using the attributes' structure from the
-original object.
+Return a \code{list} of \code{list}s using the attributes' structure
+from the original object.
 }
 \examples{
+rootPath  <- system.file(package = "simutils")  
+xmlFile   <- file.path(rootPath, "extdata/input_files", "simulation.xml")
+xmlObject <- as_list(xml2::read_xml(xmlFile))
+list_deepest(xmlObject)
 
 }
