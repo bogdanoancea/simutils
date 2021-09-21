@@ -49,7 +49,7 @@ xmlValidate <- function(xsdName, xmlObject, configParamList){
   jarName <- file.path(configParamList$Path$XML_VALIDATOR, 'schema-check.jar')
   if (!file.exists(jarName)) {
     
-    stop(paste0('[xmlvalidate]', jarName, 
+    stop(paste0('[simutils::xmlvalidate]', jarName, 
                 'does not exist. Please check XML_VALIDATOR component in list ', 
                 configParamList,
                 ' and/or jarName argument.\n'))
@@ -60,8 +60,8 @@ xmlValidate <- function(xsdName, xmlObject, configParamList){
   if (inherits(xmlObject, 'xml_document')) {
     
     xmlName <- deparse(substitute(xmlObject))
-    tempFileName <- tempfile(, fileext = '.xml')
-    cat(paste0('[xmlValidate] ', xmlName, ' temporarily written in ', tempFileName, '.\n\n'))
+    tempFileName <- tempfile(fileext = '.xml')
+    cat(paste0('[simutils::xmlValidate] ', xmlName, ' temporarily written in ', tempFileName, '.\n\n'))
     xmlFile <- write_xml(xmlObject, tempFileName)
     
   } 

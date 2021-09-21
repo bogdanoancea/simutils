@@ -4,7 +4,7 @@
 #' 
 #' It searches, successively upon failure, the path in the environment variable 
 #' of the system called "MNO_SIMULATION_PATH" and in the mno_simulation.ini file
-#'  stored in the userprofile direcotry. 
+#'  stored in the userprofile directory. 
 #'  
 #' If it doesn't find the path, it stops the execution and returns an error.
 #' 

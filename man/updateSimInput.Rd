@@ -24,29 +24,10 @@ updateSimInput(xmlSimInput, newParam, xsdName, configParamList, newFile = NULL)
 
 }
 \examples{
-config        <- list(
-  Path = list(
-    SIMULATOR_PATH_TO_EXE = file.path(system.file(package = "simutils"), "bin")))
-sysinfo           <- Sys.info()
-input_folder      <- file.path(system.file(package = "simutils", "extdata/input_files"))
-simulationCFGFile <- "simulation.xml"
-mapFile           <- "map.wkt"
-personsCFGFile    <- "persons.xml"
-antennasCFGFile   <- "antennas.xml"
-outputFolder      <- Sys.getenv('R_USER')
-runExeFile(
-  configParamList   = config,
-  sysinfo           = sysinfo,
-  input_folder      = input_folder,
-  simulationCFGFile = simulationCFGFile,
-  mapFile           = mapFile,
-  personsCFGFile    = personsCFGFile,
-  antennasCFGFile   = antennasCFGFile,
-  outputFolder      = outputFolder)
  
-
-
 rootPath <- system.file(package = 'simutils')
+config   <- list(Path = list(XML_VALIDATOR = file.path(rootPath, "bin")))
+
 xmlSimInput  <- file.path(rootPath, 'extdata/input_files', 'simulation.xml')
 newParam.lst <- list(
  end_time = 11,
@@ -61,5 +42,7 @@ updateSimInput(
 xmlSimInput = xmlSimInput, 
 newParam = newParam.lst, 
 xsdName  = xsdName,
-newFile = newSimInputFile)
+configParamList = config,
+newFile = newSimInputFile)->x
+
 }

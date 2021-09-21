@@ -3,7 +3,8 @@
 \name{flatten_deepest}
 \alias{flatten_deepest}
 \title{Transform a list of lists whose final nodes are \code{list} into
-a list of lists with this final nodes as different elements (e.g: \code{character}).}
+a list of lists with this final nodes as different elements (e.g:
+\code{character}).}
 \usage{
 flatten_deepest(list)
 }
@@ -11,13 +12,15 @@ flatten_deepest(list)
 \item{list}{A \code{list} of lists which must be named.}
 }
 \description{
-\code{flatten_deepest} receives a list of lists with final nodes as \code{list}
-and transforms it into a list of lists with final nodes as different elements,
-for example, as \code{character} class; keeping the names and attributes' structure.
+\code{flatten_deepest} receives a list of lists with final nodes
+as \code{list} and transforms it into a list of lists with final nodes as
+different elements, for example, as \code{character} class; keeping the
+names and attributes' structure.
 }
 \details{
-Return a list of lists with final nodes as different classes
-(\code{character}, \code{integer}, ...) keeping the original names' structure.
+Return a \code{list} of \code{list}s with final nodes as different
+classes (\code{character}, \code{integer}, ...) keeping the original names'
+structure.
 }
 \examples{
 rootPath  <- system.file(package = "simutils")  
