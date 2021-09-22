@@ -1,16 +1,22 @@
 #' @title Update simulation xml input files.
 #' 
-#' @description 
+#' @description This function takes an xml input file for the simulator and 
+#' updates it according to the set of new parameters specified in the input 
+#' parameter list \code{newParam}. The schema definition of the xml file is also
+#' required as an input parameter to validate the structure of the output file.
 #' 
-#' @param xmlSimInput
+#' @param xmlSimInput Object of class \code{xml_document} from package 
+#' \code{xml2} or of class \code{character} specifying the path of the 
+#' simulation input xml file to update.
 #' 
-#' @param newParam
+#' @param newParam \code{list} with the new values of the parameters to be 
+#' updated
 #' 
 #' @param xsdName
 #' 
 #' @param configParamList
 #' 
-#' @param newFile
+#' @param newFileName
 #' 
 #' @details 
 #' 
@@ -37,11 +43,11 @@
 #' newParam = newParam.lst, 
 #' xsdName  = xsdName,
 #' configParamList = config,
-#' newFile = newSimInputFile)->x
+#' newFileName = newSimInputFile)->x
 #' 
 #' @export
 
-updateSimInput <- function(xmlSimInput, newParam, xsdName, configParamList, newFile = NULL){
+updateSimInput <- function(xmlSimInput, newParam, xsdName, configParamList, newFileName = NULL){
   
   xmlSimInputName <- deparse(substitute(xmlSimInput))
   cat(paste0('[simutils::updateSimInput] Validating ', xmlSimInputName , '...   '))
@@ -74,10 +80,10 @@ updateSimInput <- function(xmlSimInput, newParam, xsdName, configParamList, newF
     stop(paste0('[simutils::updateSimInput] The new xml object ', xmlSimInputName, ' is not valid.\n'))
     
   }
-  if (!is.null(newFile)) {
+  if (!is.null(newFileName)) {
     
-    write_xml(newxmlInput.xml, newFile, encoding = 'UTF-8')
-    cat(paste0('[simutils::updateSimInput] New xml file written in ', newFile, '.\n'))
+    write_xml(newxmlInput.xml, newFileName, encoding = 'UTF-8')
+    cat(paste0('[simutils::updateSimInput] New xml file written in ', newFileName, '.\n'))
 
   }
   
