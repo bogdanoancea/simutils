@@ -4,24 +4,42 @@
 \alias{updateSimInput}
 \title{Update simulation xml input files.}
 \usage{
-updateSimInput(xmlSimInput, newParam, xsdName, configParamList, newFile = NULL)
+updateSimInput(
+  xmlSimInput,
+  newParam,
+  xsdName,
+  configParamList,
+  newFileName = NULL
+)
 }
 \arguments{
-\item{xmlSimInput}{}
+\item{xmlSimInput}{Object of class \code{xml_document} from package
+\code{xml2} or of class \code{character} specifying the path of the
+simulation input xml file to update.}
 
-\item{newParam}{}
+\item{newParam}{\code{list} with the new values of the parameters to be
+updated}
 
-\item{xsdName}{}
+\item{xsdName}{\code{character} of length 1 with the name of xsd file
+containing the schema definition of the xml input file.}
 
-\item{configParamList}{}
+\item{configParamList}{\code{list} with the parameters to update. It should
+have the same nested structure as the xml input file.}
 
-\item{newFile}{}
+\item{newFileName}{\code{character} of length 1 with the name of the updated
+xml input file.}
 }
 \description{
-
+This function takes an xml input file for the simulator and
+updates it according to the set of new parameters specified in the input
+parameter list \code{newParam}. The schema definition of the xml file is also
+required as an input parameter to validate the structure of the output file.
 }
 \details{
-
+Return an \code{xml-document} object of package \link{xml2} with
+the parameters updated according to the specified input parameters. If
+\code{newFileName} is specified, this object is written in the corresponding
+xml file.
 }
 \examples{
  
@@ -43,6 +61,6 @@ xmlSimInput = xmlSimInput,
 newParam = newParam.lst, 
 xsdName  = xsdName,
 configParamList = config,
-newFile = newSimInputFile)->x
+newFileName = newSimInputFile)->x
 
 }

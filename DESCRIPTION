@@ -28,6 +28,7 @@ Collate:
     'flatten_deepest.R'
     'getRootPath.R'
     'list_deepest.R'
+    'runDockerImage.R'
     'runExeFile.R'
     'simutils.R'
     'xmlValidate.R'

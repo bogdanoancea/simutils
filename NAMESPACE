@@ -3,6 +3,7 @@
 export(flatten_deepest)
 export(getRootPath)
 export(list_deepest)
+export(runDockerImage)
 export(runExeFile)
 export(updateSimInput)
 export(xmlValidate)
