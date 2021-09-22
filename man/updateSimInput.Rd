@@ -4,21 +4,33 @@
 \alias{updateSimInput}
 \title{Update simulation xml input files.}
 \usage{
-updateSimInput(xmlSimInput, newParam, xsdName, configParamList, newFile = NULL)
+updateSimInput(
+  xmlSimInput,
+  newParam,
+  xsdName,
+  configParamList,
+  newFileName = NULL
+)
 }
 \arguments{
-\item{xmlSimInput}{}
+\item{xmlSimInput}{Object of class \code{xml_document} from package
+\code{xml2} or of class \code{character} specifying the path of the
+simulation input xml file to update.}
 
-\item{newParam}{}
+\item{newParam}{\code{list} with the new values of the parameters to be
+updated}
 
 \item{xsdName}{}
 
 \item{configParamList}{}
 
-\item{newFile}{}
+\item{newFileName}{}
 }
 \description{
-
+This function takes an xml input file for the simulator and
+updates it according to the set of new parameters specified in the input
+parameter list \code{newParam}. The schema definition of the xml file is also
+required as an input parameter to validate the structure of the output file.
 }
 \details{
 
@@ -43,6 +55,6 @@ xmlSimInput = xmlSimInput,
 newParam = newParam.lst, 
 xsdName  = xsdName,
 configParamList = config,
-newFile = newSimInputFile)->x
+newFileName = newSimInputFile)->x
 
 }
