@@ -12,13 +12,19 @@
 #' @param newParam \code{list} with the new values of the parameters to be 
 #' updated
 #' 
-#' @param xsdName
+#' @param xsdName \code{character} of length 1 with the name of xsd file 
+#' containing the schema definition of the xml input file.
 #' 
-#' @param configParamList
+#' @param configParamList \code{list} with the parameters to update. It should
+#' have the same nested structure as the xml input file.
 #' 
-#' @param newFileName
+#' @param newFileName \code{character} of length 1 with the name of the updated
+#' xml input file.
 #' 
-#' @details 
+#' @details Return an \code{xml-document} object of package \link{xml2} with
+#' the parameters updated according to the specified input parameters. If  
+#' \code{newFileName} is specified, this object is written in the corresponding
+#'  xml file.
 #' 
 #' @include xmlValidate.R flatten_deepest.R list_deepest.R
 #' 
