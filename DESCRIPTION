@@ -17,17 +17,21 @@ URL: https://github.com/yourgithub/simutils
 BugReports: https://github.com/yourgithub/simutils/issues
 License: MIT + file LICENSE
 Depends:
-    R (>= 3.0.0)
+    R (>= 4.0.0),
+    rJava (>= 1.0-4)
 Imports:
+SystemRequirements: Java JDK 8 or higher (for JRI/REngine JDK 8 or higher)
 Suggests:
     covr,
     testthat
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
 Collate: 
+    'checkXML.R'
     'flatten_deepest.R'
     'getRootPath.R'
     'list_deepest.R'
+    'onLoad.R'
     'runDockerImage.R'
     'runExeFile.R'
     'simutils.R'

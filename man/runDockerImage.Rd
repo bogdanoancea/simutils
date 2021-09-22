@@ -38,7 +38,22 @@ the docker image.
 Return invisible NULL after executing the docker image.
 }
 \examples{
-rootPath <- system.file(package = 'simutils')
-dockerImage <- file.path(rootPath, "docker/simulator.tar")
+rootPath          <- system.file(package = 'simutils')
+dockerImage       <- file.path(rootPath, "extdata/docker/simulator.tar")
+input_folder      <- file.path(rootPath, "extdata/input_files")
+simulationCFGFile <- 'simulation.xml'
+mapFile           <- 'map.wkt'
+personsCFGFile    <- 'persons.xml'
+antennasCFGFile   <- 'antennas.xml'
+output_folder     <- file.path(Sys.getenv('R_USER'), 'example_docker')
+runDockerImage(
+  dockerImage = dockerImage,
+  input_folder = input_folder,
+  simulationCFGFile = simulationCFGFile,
+  mapFile = mapFile,
+  personsCFGFile = personsCFGFile,
+  antennasCFGFile = antennasCFGFile,
+  output_folder = output_folder
+)
 
 }
