@@ -16,7 +16,24 @@
 #' 
 #' 
 #' @details Return 0 if xml file is validated and a non-zero value otherwise.
+#' 
 #' @import rJava
+#' 
+#' @examples 
+#' rootPath <- system.file(package = "simutils")  
+#' 
+#' # xml file 1
+#' xsdName  <- file.path(rootPath, 
+#'     "extdata/metadata/input_files/schema_definition", "antennas_dict.xsd")
+#' xmlFile  <- file.path(rootPath, "extdata/input_files", "antennas.xml")
+#' checkXML(xsdName, xmlFile)
+#' 
+#' # xml file 2
+#' xsdName  <- file.path(rootPath, 
+#'     "extdata/metadata/input_files/schema_definition", "simulation_dict.xsd")
+#' xmlFile  <- file.path(rootPath, "extdata/input_files", "simulation.xml")
+#' checkXML(xsdName, xmlFile)
+#' 
 #' @export
 checkXML <- function(xsdFileName, xmlFileName) {
   hjw <- .jnew("xsd/Parser")
