@@ -15,24 +15,20 @@
 #' @param xsdName \code{character} of length 1 with the name of xsd file 
 #' containing the schema definition of the xml input file.
 #' 
-#' @param configParamList \code{list} with the parameters to update. It should
-#' have the same nested structure as the xml input file.
-#' 
 #' @param newFileName \code{character} of length 1 with the name of the updated
 #' xml input file.
 #' 
-#' @details Return an \code{xml-document} object of package \link{xml2} with
+#' @details Return an \code{xml-document} object of package \code{xml2} with
 #' the parameters updated according to the specified input parameters. If  
 #' \code{newFileName} is specified, this object is written in the corresponding
 #'  xml file.
 #' 
-#' @include xmlValidate.R flatten_deepest.R list_deepest.R
+#' @include checkXML.R flatten_deepest.R list_deepest.R
 #' 
 #' @import xml2 
 #' 
 #' @examples  
 #' rootPath <- system.file(package = 'simutils')
-#' config   <- list(Path = list(XML_VALIDATOR = file.path(rootPath, "bin")))
 #' 
 #' xmlSimInput  <- file.path(rootPath, 'extdata/input_files', 'simulation.xml')
 #' newParam.lst <- list(
@@ -42,24 +38,25 @@
 #'         list(mean = 140, sd = 18),
 #'         type = 'Normal')),
 #'     type = 'random_walk_closed_map'))
-#' xsdName  <- file.path(rootPath, 'extdata/metadata/input_files/schema_definition', 'simulation_dict.xsd')
+#' xsdName  <- file.path(
+#'   rootPath, 
+#'   'extdata/metadata/input_files/schema_definition', 'simulation_dict.xsd')
 #' newSimInputFile <- file.path(Sys.getenv('R_USER'), 'newSimulation.xml')
 #' updateSimInput(
 #' xmlSimInput = xmlSimInput, 
 #' newParam = newParam.lst, 
 #' xsdName  = xsdName,
-#' configParamList = config,
-#' newFileName = newSimInputFile)->x
+#' newFileName = newSimInputFile)
 #' 
 #' @export
 
-updateSimInput <- function(xmlSimInput, newParam, xsdName, configParamList, newFileName = NULL){
+updateSimInput <- function(xmlSimInput, newParam, xsdName, newFileName = NULL){
   
   xmlSimInputName <- deparse(substitute(xmlSimInput))
   cat(paste0('[simutils::updateSimInput] Validating ', xmlSimInputName , '...   '))
   
-  xmlValid <- xmlValidate(xsdName, xmlSimInput, configParamList) 
-  if (!xmlValid) {
+  xmlValid <- checkXML(xsdName, xmlSimInput) 
+  if (xmlValid != 0) {
     
     stop(paste0('[simutils::updateSimInput] The xml object ', xmlSimInputName, ' is not valid.\n'))
     
@@ -80,8 +77,8 @@ updateSimInput <- function(xmlSimInput, newParam, xsdName, configParamList, newF
   newxmlInput.lst <- list_deepest(purrr::list_modify(xmlInput.lst, newParam))
   newxmlInput.xml <- as_xml_document(newxmlInput.lst)
   cat('[simutils::updateSimInput] Validating updated xml object... \n')
-  newxmlValid <- xmlValidate(xsdName, newxmlInput.xml, configParamList)
-  if (!newxmlValid) {
+  newxmlValid <- checkXML(xsdName, newxmlInput.xml)
+  if (newxmlValid != 0) {
     
     stop(paste0('[simutils::updateSimInput] The new xml object ', xmlSimInputName, ' is not valid.\n'))
     

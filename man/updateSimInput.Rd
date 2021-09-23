@@ -4,13 +4,7 @@
 \alias{updateSimInput}
 \title{Update simulation xml input files.}
 \usage{
-updateSimInput(
-  xmlSimInput,
-  newParam,
-  xsdName,
-  configParamList,
-  newFileName = NULL
-)
+updateSimInput(xmlSimInput, newParam, xsdName, newFileName = NULL)
 }
 \arguments{
 \item{xmlSimInput}{Object of class \code{xml_document} from package
@@ -23,9 +17,6 @@ updated}
 \item{xsdName}{\code{character} of length 1 with the name of xsd file
 containing the schema definition of the xml input file.}
 
-\item{configParamList}{\code{list} with the parameters to update. It should
-have the same nested structure as the xml input file.}
-
 \item{newFileName}{\code{character} of length 1 with the name of the updated
 xml input file.}
 }
@@ -36,7 +27,7 @@ parameter list \code{newParam}. The schema definition of the xml file is also
 required as an input parameter to validate the structure of the output file.
 }
 \details{
-Return an \code{xml-document} object of package \link{xml2} with
+Return an \code{xml-document} object of package \code{xml2} with
 the parameters updated according to the specified input parameters. If
 \code{newFileName} is specified, this object is written in the corresponding
 xml file.
@@ -44,7 +35,6 @@ xml file.
 \examples{
  
 rootPath <- system.file(package = 'simutils')
-config   <- list(Path = list(XML_VALIDATOR = file.path(rootPath, "bin")))
 
 xmlSimInput  <- file.path(rootPath, 'extdata/input_files', 'simulation.xml')
 newParam.lst <- list(
@@ -54,13 +44,14 @@ newParam.lst <- list(
         list(mean = 140, sd = 18),
         type = 'Normal')),
     type = 'random_walk_closed_map'))
-xsdName  <- file.path(rootPath, 'extdata/metadata/input_files/schema_definition', 'simulation_dict.xsd')
+xsdName  <- file.path(
+  rootPath, 
+  'extdata/metadata/input_files/schema_definition', 'simulation_dict.xsd')
 newSimInputFile <- file.path(Sys.getenv('R_USER'), 'newSimulation.xml')
 updateSimInput(
 xmlSimInput = xmlSimInput, 
 newParam = newParam.lst, 
 xsdName  = xsdName,
-configParamList = config,
-newFileName = newSimInputFile)->x
+newFileName = newSimInputFile)
 
 }

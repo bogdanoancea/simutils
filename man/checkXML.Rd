@@ -4,12 +4,13 @@
 \alias{checkXML}
 \title{Validate an xml file using an xsd schema file.}
 \usage{
-checkXML(xsdFileName, xmlFileName)
+checkXML(xsdFileName, xmlObject)
 }
 \arguments{
 \item{xsdFileName}{Path of the xsd file containing the schema.}
 
-\item{xmlFileName}{Path of the xml file.}
+\item{xmlObject}{Object of class \code{xml-document} from package \code{xml2}
+or \code{character} of lenght 1 with the path of the xml file.}
 }
 \description{
 \code{checkXML} validates an xml file using an xsd schema
@@ -23,4 +24,20 @@ The xsdFileName and xmlFileName arguments must be provided with absolute paths.
 }
 \details{
 Return 0 if xml file is validated and a non-zero value otherwise.
+}
+\examples{
+rootPath <- system.file(package = "simutils")  
+
+# xml file 1
+xsdName  <- file.path(rootPath, 
+    "extdata/metadata/input_files/schema_definition", "antennas_dict.xsd")
+xmlFileName  <- file.path(rootPath, "extdata/input_files", "antennas.xml")
+checkXML(xsdName, xmlFileName)
+
+# xml file 2
+xsdName  <- file.path(rootPath, 
+    "extdata/metadata/input_files/schema_definition", "simulation_dict.xsd")
+xmlObject  <- xml2::read_xml(file.path(rootPath, "extdata/input_files", "simulation.xml"))
+checkXML(xsdName, xmlObject)
+
 }

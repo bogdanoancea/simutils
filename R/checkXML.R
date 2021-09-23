@@ -12,7 +12,8 @@
 #' 
 #' @param xsdFileName Path of the xsd file containing the schema.
 #' 
-#' @param xmlFileName Path of the xml file.
+#' @param xmlObject Object of class \code{xml-document} from package \code{xml2}
+#' or \code{character} of lenght 1 with the path of the xml file.
 #' 
 #' 
 #' @details Return 0 if xml file is validated and a non-zero value otherwise.
@@ -25,18 +26,39 @@
 #' # xml file 1
 #' xsdName  <- file.path(rootPath, 
 #'     "extdata/metadata/input_files/schema_definition", "antennas_dict.xsd")
-#' xmlFile  <- file.path(rootPath, "extdata/input_files", "antennas.xml")
-#' checkXML(xsdName, xmlFile)
+#' xmlFileName  <- file.path(rootPath, "extdata/input_files", "antennas.xml")
+#' checkXML(xsdName, xmlFileName)
 #' 
 #' # xml file 2
 #' xsdName  <- file.path(rootPath, 
 #'     "extdata/metadata/input_files/schema_definition", "simulation_dict.xsd")
-#' xmlFile  <- file.path(rootPath, "extdata/input_files", "simulation.xml")
-#' checkXML(xsdName, xmlFile)
+#' xmlObject  <- xml2::read_xml(file.path(rootPath, "extdata/input_files", "simulation.xml"))
+#' checkXML(xsdName, xmlObject)
 #' 
 #' @export
-checkXML <- function(xsdFileName, xmlFileName) {
+checkXML <- function(xsdFileName, xmlObject) {
+  
+  if (inherits(xmlObject, 'xml_document')) {
+    
+    xmlFileName <- deparse(substitute(xmlObject))
+    write_xml(xmlObject, xmlFileName)
+    
+  } 
+  
+  if (inherits(xmlObject, 'character')) {
+    
+    xmlFileName <- xmlObject
+    
+  } 
+  
   hjw <- .jnew("xsd/Parser")
   out <- .jcall(hjw,"I", "testXML", xsdFileName, xmlFileName)
+  
+  if (inherits(xmlObject, 'xml_document')) {
+    
+    file.remove(xmlFileName)
+    
+  } 
+  
   return(out)
 }

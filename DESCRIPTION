@@ -1,25 +1,24 @@
 Package: simutils
 Type: Package
-Title: Informative Title for Your Package
-Description: A longer statement about what this does. It must have at least one
-    complete sentence, and it may not begin with the name of the package or
-    "This package". Any URL must be enclosed in angle brackets. Any R packages
-    or other software you reference must be in single quotes. 'R CMD check'
-    may not report on these, but see  <https://cran.r-project.org/doc/manuals/r-release/R-exts.html#The-DESCRIPTION-file>.
-    Failure to obey may result in CRAN rejecting your package submission.
+Title: Basic functionalities to deal with simulated mobile network data
+Description: This package provides a collection of functions implementing basic 
+    functionalities to deal with different aspects of simulated mobile network 
+    data
 Version: 0.1.0
 Date: 2021-09-17
 Encoding: UTF-8
-Authors@R: person("David", "Salgado", role=c("aut", "cre"), email="david.salgado.fernandez@gmail.com")
-Author: David Salgado [aut, cre]
-Maintainer: David Salgado <david.salgado.fernandez@gmail.com>
-URL: https://github.com/yourgithub/simutils
-BugReports: https://github.com/yourgithub/simutils/issues
-License: MIT + file LICENSE
+Authors@R: c(person("David", "Salgado", email = "david.Salgado.fernandez@gmail.com", role = c("aut", "cre")), person("Bogdan", "Oancea", email = "bogdan.oancea@gmail.com", role = c("aut", "ctb")))
+URL: https://github.com/bogdanoancea/simutils
+BugReports: https://github.com/bogdanoancea/simutils/issues
+License: GPL-3 and EUPL
 Depends:
-    R (>= 4.0.0),
-    rJava (>= 1.0-4)
+    R (>= 4.1.0),
+    rJava (>= 1.0-4),
+    xml2 (>= 1.3.2)
 Imports:
+    purrr (>= 0.3.4),
+    configr (>= 0.3.5),
+    fs (>= 1.5.0)
 SystemRequirements: Java JDK 8 or higher (for JRI/REngine JDK 8 or higher)
 Suggests:
     covr,
@@ -35,5 +34,4 @@ Collate:
     'runDockerImage.R'
     'runExeFile.R'
     'simutils.R'
-    'xmlValidate.R'
     'updateSimInput.R'

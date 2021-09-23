@@ -68,7 +68,8 @@ runDockerImage <- function(
 	}
 	initial_wd <- getwd()
 	setwd(dirname(dockerImage))
-
+	on.exit(setwd(initial_wd))
+	
 	# Prepare input files
 	if (!file.exists(output_folder)) {
 	  
@@ -142,7 +143,6 @@ runDockerImage <- function(
 	  system(paste0("sudo -u ", username, " docker ", cmd_args) )
 	}
   
-	setwd(initial_wd)
 	return(invisible(NULL))
 	
 }
