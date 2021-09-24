@@ -1,16 +1,14 @@
 Package: simutils
 Type: Package
 Title: Basic functionalities to deal with simulated mobile network data
-Description: This package provides a collection of functions implementing basic 
-    functionalities to deal with different aspects of simulated mobile network 
-    data
+Description: This package provides a collection of functions implementing basic functionalities to deal with different aspects of simulated mobile network data.
 Version: 0.1.0
 Date: 2021-09-17
 Encoding: UTF-8
 Authors@R: c(person("David", "Salgado", email = "david.Salgado.fernandez@gmail.com", role = c("aut", "cre")), person("Bogdan", "Oancea", email = "bogdan.oancea@gmail.com", role = c("aut", "ctb")))
 URL: https://github.com/bogdanoancea/simutils
 BugReports: https://github.com/bogdanoancea/simutils/issues
-License: GPL-3 and EUPL
+License: EUPL
 Depends:
     R (>= 4.1.0),
     rJava (>= 1.0-4),
@@ -18,7 +16,13 @@ Depends:
 Imports:
     purrr (>= 0.3.4),
     configr (>= 0.3.5),
-    fs (>= 1.5.0)
+    fs (>= 1.5.0),
+    sf (>= 1.0-2),
+    rgeos (>= 0.5-8),
+    stars (>= 0.5-3),
+    readr (>= 2.0.1),
+    data.table (>= 1.14.0),
+    tibble (>= 3.1.4)
 SystemRequirements: Java JDK 8 or higher (for JRI/REngine JDK 8 or higher)
 Suggests:
     covr,
@@ -27,6 +31,10 @@ RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
 Collate: 
     'checkXML.R'
+    'readWKT_as_sf.R'
+    'xml_attrs2dt.R'
+    'readWKT_as_sfc.R'
+    'create_simElements.R'
     'flatten_deepest.R'
     'getRootPath.R'
     'list_deepest.R'
@@ -35,3 +43,4 @@ Collate:
     'runExeFile.R'
     'simutils.R'
     'updateSimInput.R'
+    'xml_getters.R'
