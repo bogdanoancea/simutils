@@ -28,7 +28,7 @@
 #' mapFile           <- 'map.wkt'
 #' personsCFGFile    <- 'persons.xml'
 #' antennasCFGFile   <- 'antennas.xml'
-#' output_folder     <- file.path(Sys.getenv('R_USER'), 'example_docker')
+#' output_folder     <- file.path(path_home(), 'example_docker')
 #' runDockerImage(
 #'   dockerImage = dockerImage,
 #'   input_folder = input_folder,
@@ -39,6 +39,7 @@
 #'   output_folder = output_folder
 #' )
 #' 
+#' @import fs
 #' @export 
 runDockerImage <- function(
   dockerImage,
@@ -67,25 +68,27 @@ runDockerImage <- function(
 		
 	}
 	initial_wd <- getwd()
-	setwd(dirname(dockerImage))
+	#setwd(output_folder)
 	on.exit(setwd(initial_wd))
 	
 	# Prepare input files
 	if (!file.exists(output_folder)) {
 	  
-		result <- dir.create(output_folder)
-		if(result[[1]] != TRUE){
+		of <- file.path(output_folder, 'output')
+	  result <- dir.create(of, recursive = TRUE)
+		if (result[[1]] != TRUE) {
 		  
 			stop("[simutils::runDockerImage] output folder for docker cannot be created")
 		  
 		}
+		
 	} else {
 	  
-		existingFiles <- list.files(output_folder)
+		existingFiles <- list.files(of)
 		if (length(existingFiles) >= 1) {
-			for (i in 1:length(existingFiles)){
+			for (i in 1:length(existingFiles)) {
 			  
-				file.remove(file.path(output_folder, existingFiles[[i]]))
+				file.remove(file.path(of, existingFiles[[i]]))
 			  
 			}
 		}
@@ -93,46 +96,47 @@ runDockerImage <- function(
 	# Copy the input files files
 	file.copy(
 	  from      = file.path(input_folder, simulationCFGFile), 
-	  to        = output_folder, 
+	  to        = of, 
 	  overwrite = TRUE
 	)
 	file.copy( 
 	  from      = file.path(input_folder, mapFile), 
-	  to        = output_folder, 
+	  to        = of, 
 	  overwrite = TRUE 
 	)
 	file.copy( 
 	  from      = file.path(input_folder, personsCFGFile), 
-	  to        = output_folder, 
+	  to        = of, 
 	  overwrite = TRUE
 	)
 	file.copy( 
 	  from      = file.path(input_folder, antennasCFGFile),
-	  to        = output_folder, 
+	  to        = of, 
 	  overwrite = TRUE
 	)
 
 	# Command line arguments for docker
 	simargs <- paste0(
 		" -s ",
-		file.path(output_folder, simulationCFGFile),
+		file.path('output', simulationCFGFile),
 		" -m ",
-		file.path(output_folder, mapFile),
+		file.path('output', mapFile),
 		" -p ",
-		file.path(output_folder, personsCFGFile),
+		file.path('output', personsCFGFile),
 		" -a ",
-		file.path(output_folder, antennasCFGFile)
+		file.path('output', antennasCFGFile)
 	)
 
 	# Run!
 	cmd_args = paste0(
 		"run --rm -v ",
-		file.path(output_folder),
+		file.path(of),
 		":/repo/",
-		output_folder,
-		" simulator ",
+		'output',
+		" simulator -t -i ",
 		simargs
 	)
+	setwd(output_folder)
 	if (sysinfo['sysname'] == "Windows"){
 	  
 		system2( "docker", args = cmd_args )
