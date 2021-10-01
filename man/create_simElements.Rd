@@ -28,6 +28,7 @@ to each antenna, and the telecommunication signal measures (RSS, SDM, ...).
 \examples{
 filename_map      <- system.file(
   "extdata/input_files", "map.wkt", package = "simutils")
+  
 filename_network  <- c(
  csv= system.file("extdata/output_files/antennas.csv", package = "simutils"),
  xml= system.file("extdata/metadata/output_files/antennas_dict.xml", 

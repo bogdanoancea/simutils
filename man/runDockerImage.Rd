@@ -45,7 +45,7 @@ simulationCFGFile <- 'simulation.xml'
 mapFile           <- 'map.wkt'
 personsCFGFile    <- 'persons.xml'
 antennasCFGFile   <- 'antennas.xml'
-output_folder     <- file.path(Sys.getenv('R_USER'), 'example_docker')
+output_folder     <- file.path(path_home(), 'example_docker')
 runDockerImage(
   dockerImage = dockerImage,
   input_folder = input_folder,
