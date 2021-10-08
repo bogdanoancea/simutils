@@ -86,7 +86,7 @@ create_simElements <- function(filenames, id = NULL, crs = NA_integer_, ...){
   cat(' ok.\n')
   
   # Read network parameters
-  cat('[simutils::create_simElements] Reading and parsing network parameters file...\n')
+  cat('[simutils::create_simElements] Reading and parsing network parameters file...')
   netParam_names <- names(filenames$network_parameters)
   if (netParam_names[1] == 'csv') {
     network.dt <- fread(filenames$network_parameters['csv'], sep = ",", stringsAsFactors = FALSE)
@@ -172,11 +172,12 @@ create_simElements <- function(filenames, id = NULL, crs = NA_integer_, ...){
     ny <- grid.dt[, getGridNoTilesY(filenames$grid['xml'], 'grid')]
     grid.stars <- st_as_stars(st_geometry(map_polygon), nx, ny )
     cat(' ok.\n')
-    network.sf <- st_as_sf(network.dt, coords = coords_name, crs = crs)
+    #network.sf <- st_as_sf(network.dt, coords = coords_name, crs = crs)
   }
   
     
   # Read individuals
+  cat('[simutils::create_simElements] Reading and parsing persons file ...')
   individuals.dt <- fread(filenames$individuals[['csv']], sep = '\n', stringsAsFactors = FALSE)
   names_individuals.dt <- strsplit(names(individuals.dt), split=",")[[1]]
   
@@ -211,6 +212,7 @@ create_simElements <- function(filenames, id = NULL, crs = NA_integer_, ...){
     !is.na(`Device 1`) & !is.na(`Device 2`), 2L)]
   
   individuals.df <- as.data.table(individuals_parsed.dt)
+  cat(' ok.\n')
   
   simElements <- list(
     map = map_polygon,
