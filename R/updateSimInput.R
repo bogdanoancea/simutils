@@ -23,7 +23,7 @@
 #' \code{newFileName} is specified, this object is written in the corresponding
 #'  xml file.
 #' 
-#' @include validate_XML.R flatten_deepest.R list_deepest.R
+#' @include validate_xml.R flatten_deepest.R list_deepest.R
 #' 
 #' @import xml2 
 #' 
@@ -55,7 +55,7 @@ updateSimInput <- function(xmlSimInput, newParam, xsdName, newFileName = NULL){
   xmlSimInputName <- deparse(substitute(xmlSimInput))
   cat(paste0('[simutils::updateSimInput] Validating ', xmlSimInputName , '...   '))
   
-  xmlValid <- validate_XML(xsdName, xmlSimInput) 
+  xmlValid <- validate_xml(xsdName, xmlSimInput) 
   if (xmlValid != 0) {
     
     stop(paste0('[simutils::updateSimInput] The xml object ', xmlSimInputName, ' is not valid.\n'))
@@ -77,7 +77,7 @@ updateSimInput <- function(xmlSimInput, newParam, xsdName, newFileName = NULL){
   newxmlInput.lst <- list_deepest(purrr::list_modify(xmlInput.lst, newParam))
   newxmlInput.xml <- as_xml_document(newxmlInput.lst)
   cat('[simutils::updateSimInput] Validating updated xml object... \n')
-  newxmlValid <- validate_XML(xsdName, newxmlInput.xml)
+  newxmlValid <- validate_xml(xsdName, newxmlInput.xml)
   if (newxmlValid != 0) {
     
     stop(paste0('[simutils::updateSimInput] The new xml object ', xmlSimInputName, ' is not valid.\n'))

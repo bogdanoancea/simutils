@@ -1,6 +1,6 @@
 #' @title Validate an xml file using an xsd schema file.
 #' 
-#' @description \code{validate_XML} validates an xml file using an xsd schema 
+#' @description \code{validate_xml} validates an xml file using an xsd schema 
 #' file.
 #' 
 #' This function is a wrapper for a validator written in Java. Thus, it needs a 
@@ -27,23 +27,23 @@
 #' xml_fn <- file.path(rootPath, "input_files", "simulation.xml")
 #' xsd_fn <- file.path(rootPath, "metadata/input_files/schema_definition",
 #'     "simulation_dict.xsd")
-#' validate_XML(xsd_fn, xml_fn)
+#' validate_xml(xsd_fn, xml_fn)
 #' 
 #' # antennas file (by filename)
 #' xml_fn <- file.path(rootPath, "input_files", "antennas.xml")
 #' xsd_fn <- file.path(rootPath, "metadata/input_files/schema_definition", 
 #'     "antennas_dict.xsd")
-#' validate_XML(xsd_fn, xml_fn)
+#' validate_xml(xsd_fn, xml_fn)
 
 #' 
 #' # persons file (by filename)
 #' xml_fn <- file.path(rootPath, "input_files", "persons.xml")
 #' xsd_fn <- file.path(rootPath, "metadata/input_files/schema_definition", 
 #'     "persons_dict.xsd")
-#' validate_XML(xsd_fn, xml_fn)
+#' validate_xml(xsd_fn, xml_fn)
 #' 
 #' @export
-validate_XML <- function(xsdFileName, xmlObject) {
+validate_xml <- function(xsdFileName, xmlObject) {
   
   if (inherits(xmlObject, 'xml_document')) {
     
