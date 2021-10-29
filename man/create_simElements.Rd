@@ -33,7 +33,12 @@ filename_network  <- c(
  csv= system.file("extdata/output_files/antennas.csv", package = "simutils"),
  xml= system.file("extdata/metadata/output_files/antennas_dict.xml", 
                    package = "simutils"))
-                       
+
+filename_signal <- c(
+ csv= system.file("extdata/output_files/SignalMeasure_MNO1.csv", package = "simutils"),
+ xml= system.file("extdata/metadata/output_files/SignalMeasure_dict.xml", 
+                   package = "simutils"))
+                        
 filename_coverage <- c(
  csv= system.file("extdata/output_files", "AntennaCells_MNO1.csv", 
                   package = "simutils"),
@@ -57,6 +62,7 @@ filenames <- list(
   grid               = filename_grid,
   individuals        = filename_individ)
   
-create_simElements(filenames, crs = 2062)
+simElements <- create_simElements(filenames, crs = 2062)
+str(simElements)
 
 }
