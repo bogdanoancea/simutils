@@ -1,6 +1,6 @@
 #' @title Validate an xml file using an xsd schema file.
 #' 
-#' @description \code{checkXML} validates an xml file using an xsd schema 
+#' @description \code{validate_xml} validates an xml file using an xsd schema 
 #' file.
 #' 
 #' This function is a wrapper for a validator written in Java. Thus, it needs a 
@@ -13,7 +13,7 @@
 #' @param xsdFileName Path of the xsd file containing the schema.
 #' 
 #' @param xmlObject Object of class \code{xml-document} from package \code{xml2}
-#' or \code{character} of lenght 1 with the path of the xml file.
+#' or \code{character} of length 1 with the path of the xml file.
 #' 
 #' 
 #' @details Return 0 if xml file is validated and a non-zero value otherwise.
@@ -21,22 +21,29 @@
 #' @import rJava
 #' 
 #' @examples 
-#' rootPath <- system.file(package = "simutils")  
+#' rootPath <- file.path(system.file(package = "simutils"), 'extdata')  
 #' 
-#' # xml file 1
-#' xsdName  <- file.path(rootPath, 
-#'     "extdata/metadata/input_files/schema_definition", "antennas_dict.xsd")
-#' xmlFileName  <- file.path(rootPath, "extdata/input_files", "antennas.xml")
-#' checkXML(xsdName, xmlFileName)
+#' # simulation file (by filename)
+#' xml_fn <- file.path(rootPath, "input_files", "simulation.xml")
+#' xsd_fn <- file.path(rootPath, "metadata/input_files/schema_definition",
+#'     "simulation_dict.xsd")
+#' validate_xml(xsd_fn, xml_fn)
 #' 
-#' # xml file 2
-#' xsdName  <- file.path(rootPath, 
-#'     "extdata/metadata/input_files/schema_definition", "simulation_dict.xsd")
-#' xmlObject  <- xml2::read_xml(file.path(rootPath, "extdata/input_files", "simulation.xml"))
-#' checkXML(xsdName, xmlObject)
+#' # antennas file (by filename)
+#' xml_fn <- file.path(rootPath, "input_files", "antennas.xml")
+#' xsd_fn <- file.path(rootPath, "metadata/input_files/schema_definition", 
+#'     "antennas_dict.xsd")
+#' validate_xml(xsd_fn, xml_fn)
+
+#' 
+#' # persons file (by filename)
+#' xml_fn <- file.path(rootPath, "input_files", "persons.xml")
+#' xsd_fn <- file.path(rootPath, "metadata/input_files/schema_definition", 
+#'     "persons_dict.xsd")
+#' validate_xml(xsd_fn, xml_fn)
 #' 
 #' @export
-checkXML <- function(xsdFileName, xmlObject) {
+validate_xml <- function(xsdFileName, xmlObject) {
   
   if (inherits(xmlObject, 'xml_document')) {
     
@@ -59,6 +66,8 @@ checkXML <- function(xsdFileName, xmlObject) {
     file.remove(xmlFileName)
     
   } 
+  
+  out <- ifelse(out == 0, TRUE, FALSE)
   
   return(out)
 }
