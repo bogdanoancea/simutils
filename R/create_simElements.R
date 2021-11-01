@@ -43,7 +43,13 @@
 #'                   package = "simutils"),
 #'  xml= system.file("extdata/metadata/output_files/AntennaCells_dict.xml", 
 #'                   package = "simutils"))
-#'                        
+#'  
+#' filename_signal <- c(
+#'   csv = system.file("extdata/output_files", "SignalMeasure_MNO1.csv", 
+#'                   package = "simutils"),
+#'  xml= system.file("extdata/metadata/output_files/SignalMeasure_dict.xml", 
+#'                   package = "simutils"))
+#'                                                                    
 #' filename_grid <- c(
 #'   csv= system.file("extdata/output_files/grid.csv", package = "simutils"),
 #'   xml= system.file("extdata/metadata/output_files/grid_dict.xml", 
@@ -58,6 +64,7 @@
 #'   map                = filename_map,
 #'   network_parameters = filename_network,
 #'   coverage_cells     = filename_coverage,
+#'   signal_tile        = filename_signal,
 #'   grid               = filename_grid,
 #'   individuals        = filename_individ)
 #'   
@@ -73,7 +80,7 @@ create_simElements <- function(filenames, id = NULL, crs = NA_integer_, ...){
     stop('[simutils::create_simElements] filenames must be a named list.\n')
   }
   
-  if (!all(names(filenames) %in% c('map', 'network_parameters', 'coverage_cells', 'grid', 'individuals'))){
+  if (!all(names(filenames) %in% c('map', 'network_parameters', 'coverage_cells', 'signal_tile', 'grid', 'individuals'))){
     stop("[simutils::create_simElements] The names of list filenames must be contained in c('map', 'network_parameters', 'coverage_cells', 'telco_measures', 'grid', 'individuals').\n")
   }
   
@@ -144,6 +151,8 @@ create_simElements <- function(filenames, id = NULL, crs = NA_integer_, ...){
 
   }
   cat(' ok.\n')  
+  
+  
   
   # Read grid
   cat('[simutils::create_simElements] Reading grid file and creating stars object...')

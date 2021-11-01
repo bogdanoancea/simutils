@@ -41,7 +41,8 @@ xmlTypes2RTypes <- function(xmlType) {
 #' @export
 xml_attrs2dt <- function(xmlname, dataset){
   
-  if (dataset == 'antennas' || dataset == 'antenna_cells' || dataset == 'grid' || dataset == 'individuals') {
+  if (dataset == 'antennas' || dataset == 'antenna_cells' || dataset == 'grid' || dataset == 'individuals' || dataset == 'signal') {
+    
     xml <- read_xml(xmlname)
     ant <- as_list(xml)[[1]]
     #get column names and column types
