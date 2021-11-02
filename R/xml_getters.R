@@ -118,3 +118,64 @@ getGridNoTilesY <- function(xmlname, dataset) {
   }
   stop('[getCoords] dataset not yet implemented.\n')
 }
+
+#' @rdname xml_getters
+#' 
+#' @export
+getSignalType <- function(xmlname, dataset) {
+  if (dataset == 'signal') {
+    xml <- read_xml(xmlname)
+    signal_type <- xml_attr(xml_child(xml, 'specs_signal'), attr = 'type')
+    return(signal_type)
+  } 
+  stop('[simutils::getSignalType] dataset not yet implemented.\n')
+}
+
+
+#' @rdname xml_getters
+#' 
+#' @export
+getXTileDimColName <- function(xmlname, dataset) {
+  if (dataset == 'grid') {
+    xml <- read_xml(xmlname)
+    XTileDimColName <- xml_text(xml_child(xml_child(xml, 'specs_grid_tile_dim'), 'XTileDimColName'))
+    return(XTileDimColName)
+  } 
+  stop('[simutils::getSignalType] dataset not yet implemented.\n')
+}
+
+#' @rdname xml_getters
+#' 
+#' @export
+getYTileDimColName <- function(xmlname, dataset) {
+  if (dataset == 'grid') {
+    xml <- read_xml(xmlname)
+    YTileDimColName <- xml_text(xml_child(xml_child(xml, 'specs_grid_tile_dim'), 'YTileDimColName'))
+    return(YTileDimColName)
+  } 
+  stop('[simutils::getSignalType] dataset not yet implemented.\n')
+}
+
+
+#' @rdname xml_getters
+#' 
+#' @export
+getCellCoordName <- function(xmlname, dataset) {
+  if (dataset == 'cells') {
+    xml <- read_xml(xmlname)
+    cellCoordName <- xml_text(xml_find_all(xml, './/cellCoordsColName'))
+    return(cellCoordName)
+  } 
+  stop('[simutils::getCellCoordName] dataset not yet implemented.\n')
+}
+#' @rdname xml_getters
+#' 
+#' @export
+getCellIDName <- function(xmlname, dataset) {
+  if (dataset == 'cells') {
+    xml <- read_xml(xmlname)
+    cellIDName <- xml_text(xml_find_all(xml, './/cellIDColName'))
+    return(cellIDName)
+  } 
+  stop('[simutils::getCellIDName] dataset not yet implemented.\n')
+}

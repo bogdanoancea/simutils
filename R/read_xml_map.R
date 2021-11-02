@@ -1,18 +1,11 @@
-#' Read string in WKT format and convert it into an sf object.
+#' Read and parse xml file with map specifications.
 #'
-#' Read the input WKT string, parse it, and convert it into an sf object.
+#' Read and parse the input xml file to return an sf object.
 #'
-#' @param text Character string of WKT
+#' @param xmlname Name of the xml file with the map specifications.
 #'
-#' @param id Character vector of unique ids to label geometries as in function
-#' \code{rgeos::readWKT}. Length must match the number of subgeometries in the
-#' WKT
-#'
-#' @param p4s Either a character string or an object of class \code{CRS} as in
-#' the function \code{rgeos::readWKT}
-#' 
-#' @param ... passed on to \code{sf::st_as_sf}, might included named arguments
-#'  crs or precision
+#' @details Return an sf object with the geolmetry column parsed from the
+#' input xml file.
 #'
 #' @rdname read_xml_map
 #'
@@ -35,9 +28,9 @@ read_xml_map <- function(xmlname){
     stop('[simutils::read_xml_map] Multiple spatial syntaxes are not supported.\n')
     
   }
-
-  if (sp_syntax == 'WKT') {
   
+  if (sp_syntax == 'WKT') {
+    
     wkt <- xml_text(xml_find_all(xml_object, './/sp_spec'))
     name_long <- xml_text(xml_find_all(xml_object, './/name_long'))
     if(length(unique(name_long)) > 1) {
@@ -55,7 +48,7 @@ read_xml_map <- function(xmlname){
     )
     new_names <- gsub('name', name_long, names(wkt.dt))
     setnames(wkt.dt, new_names)
-
+    
     nesting_units <- as_list(xml_find_all(xml_object, './/nesting_unit'))
     nesting_units <- lapply(nesting_units, function(nest_unit){
       

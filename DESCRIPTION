@@ -22,7 +22,8 @@ Imports:
     stars (>= 0.5-3),
     readr (>= 2.0.1),
     data.table (>= 1.14.0),
-    tibble (>= 3.1.4)
+    tibble (>= 3.1.4),
+    Rcpp (>= 1.0.0)
 SystemRequirements: Java JDK 8 or higher (for JRI/REngine JDK 8 or higher)
 Suggests:
     covr,
@@ -30,20 +31,25 @@ Suggests:
 RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
 Collate: 
+    'RcppExports.R'
     'readWKT_as_sf.R'
+    'xml_getters.R'
     'xml_attrs2dt.R'
+    'validate_csv.R'
+    'read_csv.R'
     'readWKT_as_sfc.R'
     'create_simElements.R'
     'flatten_deepest.R'
     'getRootPath.R'
     'list_deepest.R'
     'onLoad.R'
-    'validate_csv.R'
-    'read_csv.R'
+    'onUnLoad.R'
     'read_xml_map.R'
     'runDockerImage.R'
     'runExeFile.R'
     'simutils.R'
     'validate_xml.R'
     'updateSimInput.R'
-    'xml_getters.R'
+    'usedynLib.R'
+LinkingTo: 
+    Rcpp

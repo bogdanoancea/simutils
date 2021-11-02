@@ -27,7 +27,7 @@
 #' 
 #' @importFrom tibble as_tibble 
 #' 
-#' @include read_xml_map.R xml_attrs2dt.R readWKT_as_sfc.R
+#' @include readWKT_as_sf.R readWKT_as_sfc.R read_csv.R xml_attrs2dt.R RcppExports.R xml_getters.R
 #' 
 #' @examples
 #' filename_map      <- c(
@@ -38,24 +38,18 @@
 #'  csv= system.file("extdata/output_files/antennas.csv", package = "simutils"),
 #'  xml= system.file("extdata/metadata/output_files/antennas_dict.xml", 
 #'                    package = "simutils"))
-#' 
+#'                    
 #' filename_signal <- c(
 #'  csv= system.file("extdata/output_files/SignalMeasure_MNO1.csv", package = "simutils"),
 #'  xml= system.file("extdata/metadata/output_files/SignalMeasure_dict.xml", 
 #'                    package = "simutils"))
-#'                         
+#'                  
 #' filename_coverage <- c(
 #'  csv= system.file("extdata/output_files", "AntennaCells_MNO1.csv", 
 #'                   package = "simutils"),
 #'  xml= system.file("extdata/metadata/output_files/AntennaCells_dict.xml", 
 #'                   package = "simutils"))
-#'  
-#' filename_signal <- c(
-#'   csv = system.file("extdata/output_files", "SignalMeasure_MNO1.csv", 
-#'                   package = "simutils"),
-#'  xml= system.file("extdata/metadata/output_files/SignalMeasure_dict.xml", 
-#'                   package = "simutils"))
-#'                                                                    
+#'                        
 #' filename_grid <- c(
 #'   csv= system.file("extdata/output_files/grid.csv", package = "simutils"),
 #'   xml= system.file("extdata/metadata/output_files/grid_dict.xml", 
@@ -69,8 +63,8 @@
 #' filenames <- list(
 #'   map                = filename_map,
 #'   network_parameters = filename_network,
+#'   signal             = filename_signal,
 #'   coverage_cells     = filename_coverage,
-#'   signal_tile        = filename_signal,
 #'   grid               = filename_grid,
 #'   individuals        = filename_individ)
 #'   
@@ -87,8 +81,8 @@ create_simElements <- function(filenames, id = NULL, crs = NA_integer_, ...){
     stop('[simutils::create_simElements] filenames must be a named list.\n')
   }
   
-  if (!all(names(filenames) %in% c('map', 'network_parameters', 'coverage_cells', 'signal_tile', 'grid', 'individuals'))){
-    stop("[simutils::create_simElements] The names of list filenames must be contained in c('map', 'network_parameters', 'coverage_cells', 'telco_measures', 'grid', 'individuals').\n")
+  if (!all(names(filenames) %in% c('map', 'network_parameters', 'signal', 'coverage_cells', 'grid', 'individuals'))){
+    stop("[simutils::create_simElements] The names of list filenames must be contained in c('map', 'network_parameters', 'signal', 'coverage_cells', 'grid', 'individuals').\n")
   }
   
   
@@ -100,106 +94,77 @@ create_simElements <- function(filenames, id = NULL, crs = NA_integer_, ...){
   cat(' ok.\n')
   
   # Read network parameters
-  cat('[simutils::create_simElements] Reading and parsing network parameters file...')
-  netParam_names <- names(filenames$network_parameters)
-  if (netParam_names[1] == 'csv') {
-    network.dt <- fread(filenames$network_parameters['csv'], sep = ",", stringsAsFactors = FALSE)
-    xmlParam.dt <- xml_attrs2dt(filenames$network_parameters['xml'], 'antennas')
-    colnames_csv <- xmlParam.dt$name
-    xmlParam.dt <- xmlParam.dt[name %in% names(network.dt)]
-    classes_csv  <- xmlParam.dt$class
-    names(classes_csv) <- xmlParam.dt$name
-    classes_csv_num  <- classes_csv[which(classes_csv == 'numeric')]
-    classes_csv_int  <- classes_csv[which(classes_csv == 'integer')]
-    classes_csv_char <- classes_csv[which(classes_csv == 'character')]
-    if ( length(classes_csv_num) > 0 ) {
-      network.dt[, names(classes_csv_num) := lapply(.SD, as.numeric), .SDcols = names(classes_csv_num)]
-    }
-    if ( length(classes_csv_int) > 0 ) {
-      network.dt[, names(classes_csv_int) := lapply(.SD, as.integer), .SDcols = names(classes_csv_int)]
-    }
-    if ( length(classes_csv_char) > 0 ) {
-      network.dt[, names(classes_csv_char) := lapply(.SD, as.character), .SDcols = names(classes_csv_char)]
-    }
-    coords_name <- getCoordsNames(filenames$network_parameters['xml'], 'antennas')
-    network.sf <- st_as_sf(network.dt, coords = coords_name, crs = crs)
-  }
+  cat('[simutils::create_simElements] Reading and parsing network parameters file...\n')
+  network.dt <- read_csv(filenames$network_parameters['xml'], filenames$network_parameters['csv'])
+  coords_name <- getCoordsNames(filenames$network_parameters['xml'], 'antennas')
+  network.sf <- st_as_sf(network.dt, coords = coords_name, crs = crs)
   cat(' ok.\n')
   
   # Read coverage file 
   cat('[simutils::create_simElements] Reading and parsing coverage cells file...')
-  coverParam_names <- names(filenames$coverage_cells)
-  if (coverParam_names[1] == 'csv') {
-    
-    coverage.sf <- read_sf(filenames$coverage_cells['csv'], options = 'GEOM_POSSIBLE_NAMES=Cell Coordinates')
-    coverage.sf <- st_set_crs(coverage.sf, st_crs(crs))
-    coverage.sf <- st_intersection(coverage.sf, st_union(map.sf))
-    return(coverage.sf)
-### Seguir aquí    
-    coverage.dt <- fread(filenames$coverage_cells['csv'], sep = '\n', stringsAsFactors = FALSE)
-    setnames(coverage.dt, 'V1')
-    coverage_parsed.dt <- coverage.dt[, tstrsplit(V1, split = ',POLYGON')]
-    xmlParam.dt <- xml_attrs2dt(filenames$coverage_cells['xml'], 'antennas')
-    setnames(coverage_parsed.dt, xmlParam.dt$name)
-    classes_csv  <- xmlParam.dt$class
-    names(classes_csv) <- xmlParam.dt$name
-    classes_csv_num  <- classes_csv[which(classes_csv == 'numeric')]
-    classes_csv_int  <- classes_csv[which(classes_csv == 'integer')]
-    classes_csv_char <- classes_csv[which(classes_csv == 'character')]
-    if ( length(classes_csv_num) > 0 ) {
-      coverage_parsed.dt[, names(classes_csv_num) := lapply(.SD, as.numeric), .SDcols = names(classes_csv_num)]
-    }
-    if ( length(classes_csv_int) > 0 ) {
-      coverage_parsed.dt[, names(classes_csv_int) := lapply(.SD, as.integer), .SDcols = names(classes_csv_int)]
-    }
-    if ( length(classes_csv_char) > 0 ) {
-      coverage_parsed.dt[, names(classes_csv_char) := lapply(.SD, as.character), .SDcols = names(classes_csv_char)]
-    }
-    coverage_parsed.dt[
-      , (names(classes_csv)[2]) := paste0('POLYGON', get(names(classes_csv)[2]))]
-    geometry.list <- lapply(coverage_parsed.dt[[names(classes_csv[2])]], readWKT_as_sfc, crs = crs)
-    geometry.list <- lapply(geometry.list, st_intersection, st_union(map.sf))
-#return(geometry.list)
-    geometry.sfc <- Reduce(c, geometry.list)
-return(list(coverage_parsed.dt, geometry.sfc))
-    coverage.sf <- st_sf(coverage_parsed.dt, geometry = geometry.sfc)
-
-  }
+  cellCoord_name <- getCellCoordName(filenames$coverage_cells['xml'], 'cells')
+  options_wkt <- paste0('GEOM_POSSIBLE_NAMES=', cellCoord_name)
+  cellID_name <- getCellIDName(filenames$coverage_cells['xml'], 'cells')
+  aggr_spec <- 'identity'
+  names(aggr_spec) <- cellID_name
+  coverage.sf <- read_sf(filenames$coverage_cells['csv'], options = options_wkt,
+                         agr = aggr_spec)
+  cellCoord_colname <- gsub(' ', '.', cellCoord_name, fixed = TRUE)
+  coverage.sf <- st_set_crs(coverage.sf, st_crs(crs))
+  coverage.sf[[cellCoord_colname]] <- NULL
+  coverage.sf <- st_intersection(coverage.sf, st_union(map.sf))
+  coverage.sf$area <- st_area(coverage.sf)
   cat(' ok.\n')  
   
-  
+  # Read signal per tile
+  cat('[simutils::create_simElements] Reading and parsing signal file...\n')
+  signal.dt <- read_csv(filenames$signal['xml'], filenames$signal['csv'])
+  signal_type <- getSignalType(filenames$signal['xml'], 'signal')
+  cat(' ok.\n')
   
   # Read grid
   cat('[simutils::create_simElements] Reading grid file and creating stars object...')
-  gridParam_names <- names(filenames$grid)
-  if (gridParam_names[1] == 'csv') {
-    grid.dt <- fread(filenames$grid['csv'], sep = ",", stringsAsFactors = FALSE)
-    xmlParam.dt <- xml_attrs2dt(filenames$grid['xml'], 'grid')
-    colnames_csv <- xmlParam.dt$name
-    xmlParam.dt <- xmlParam.dt[name %in% names(grid.dt)]
-    classes_csv  <- xmlParam.dt$class
-    names(classes_csv) <- xmlParam.dt$name
-    classes_csv_num  <- classes_csv[which(classes_csv == 'numeric')]
-    classes_csv_int  <- classes_csv[which(classes_csv == 'integer')]
-    classes_csv_char <- classes_csv[which(classes_csv == 'character')]
-    if ( length(classes_csv_num) > 0 ) {
-      grid.dt[, names(classes_csv_num) := lapply(.SD, as.numeric), .SDcols = names(classes_csv_num)]
-    }
-    if ( length(classes_csv_int) > 0 ) {
-      grid.dt[, names(classes_csv_int) := lapply(.SD, as.integer), .SDcols = names(classes_csv_int)]
-    }
-    if ( length(classes_csv_char) > 0 ) {
-      grid.dt[, names(classes_csv_char) := lapply(.SD, as.character), .SDcols = names(classes_csv_char)]
-    }
-
-    nx <- grid.dt[, getGridNoTilesX(filenames$grid['xml'], 'grid')]
-    ny <- grid.dt[, getGridNoTilesY(filenames$grid['xml'], 'grid')]
-    grid.stars <- st_as_stars(st_geometry(map_polygon), nx, ny )
-    cat(' ok.\n')
-    #network.sf <- st_as_sf(network.dt, coords = coords_name, crs = crs)
-  }
+  grid.dt <- read_csv(filenames$grid['xml'], filenames$grid['csv'])
+  nx <- as.integer(grid.dt[[getGridNoTilesX(filenames$grid['xml'], 'grid')]])
+  ny <- as.integer(grid.dt[[getGridNoTilesY(filenames$grid['xml'], 'grid')]])
+  deltax <- grid.dt[[getXTileDimColName(filenames$grid['xml'], 'grid')]]
+  deltay <- grid.dt[[getYTileDimColName(filenames$grid['xml'], 'grid')]]
   
-    
+  idVar <- names(signal.dt)[!grepl('[Tt]ile', names(signal.dt))]
+  tileCols <- setdiff(names(signal.dt), idVar)
+  signal.array <- array(t(as.matrix(signal.dt[, ..tileCols])), 
+                        dim = c(nx, ny, nrow(signal.dt)),
+                        dimnames = list(0:(nx-1), 0:(ny-1), signal.dt[[idVar]])
+  )
+  
+  grid.stars <- st_as_stars(signal.array)
+  names(grid.stars) <- signal_type
+  names(attr(grid.stars, 'dimensions')) <- c('x', 'y', idVar)
+  
+  map_bbox <- st_bbox(map.sf)
+  xmin <- map_bbox$xmin
+  ymax <- map_bbox$ymax
+  
+  attr(grid.stars, 'dimensions')[['x']][['offset']] <- unname(xmin)
+  attr(grid.stars, 'dimensions')[['x']][['delta']]  <- deltax
+  attr(grid.stars, 'dimensions')[['x']][['refsys']] <- st_crs(crs)
+  attr(grid.stars, 'dimensions')[['x']][['point']]  <- FALSE
+  attr(grid.stars, 'dimensions')[['x']][['values']]  <- NULL
+  
+  attr(grid.stars, 'dimensions')[['y']][['offset']] <- unname(ymax)
+  attr(grid.stars, 'dimensions')[['y']][['delta']]  <- -deltay
+  attr(grid.stars, 'dimensions')[['y']][['refsys']] <- st_crs(crs)
+  attr(grid.stars, 'dimensions')[['y']][['point']]  <- FALSE
+  attr(grid.stars, 'dimensions')[['y']][['values']]  <- NULL
+  
+  attr(grid.stars, 'dimensions')[[idVar]][['values']]  <- NULL
+  
+  attr(attr(grid.stars, 'dimensions'), 'raster')[['dimensions']] <- c('x', 'y')
+  grid.stars <- st_crop(grid.stars, st_union(map.sf))
+  cat(' ok.\n')
+  
+  ##### REVISE INDIVIDUALS  
+  
   # Read individuals
   cat('[simutils::create_simElements] Reading and parsing persons file ...')
   individuals.dt <- fread(filenames$individuals[['csv']], sep = '\n', stringsAsFactors = FALSE)
@@ -220,7 +185,7 @@ return(list(coverage_parsed.dt, geometry.sfc))
   
   
   if ( length(classes_csv_num) > 0 ) {
-      individuals_parsed.dt[, names(classes_csv_num) := lapply(.SD, as.numeric), .SDcols = names(classes_csv_num)]
+    individuals_parsed.dt[, names(classes_csv_num) := lapply(.SD, as.numeric), .SDcols = names(classes_csv_num)]
   }
   if ( length(classes_csv_int) > 0 ) {
     individuals_parsed.dt[, names(classes_csv_int) := lapply(.SD, as.integer), .SDcols = names(classes_csv_int)]

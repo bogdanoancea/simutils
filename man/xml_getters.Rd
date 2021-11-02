@@ -4,6 +4,11 @@
 \alias{getCoordsNames}
 \alias{getGridNoTilesX}
 \alias{getGridNoTilesY}
+\alias{getSignalType}
+\alias{getXTileDimColName}
+\alias{getYTileDimColName}
+\alias{getCellCoordName}
+\alias{getCellIDName}
 \title{Get different elements from an xml file.}
 \usage{
 getCoordsNames(xmlname, dataset)
@@ -11,6 +16,16 @@ getCoordsNames(xmlname, dataset)
 getGridNoTilesX(xmlname, dataset)
 
 getGridNoTilesY(xmlname, dataset)
+
+getSignalType(xmlname, dataset)
+
+getXTileDimColName(xmlname, dataset)
+
+getYTileDimColName(xmlname, dataset)
+
+getCellCoordName(xmlname, dataset)
+
+getCellIDName(xmlname, dataset)
 }
 \arguments{
 \item{xmlname}{character vector of length 1 with the name of the xml file}

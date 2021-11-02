@@ -28,9 +28,9 @@ validate_csv <- function(xmlFileName, csvFileName) {
   xml <- read_xml(xmlFileName)
   xml.list <- as_list(xml)[[1]]
 
-  antennas_fn <- xml.list$specs_file$fileName[[1]]
+  csv_fn <- xml.list$specs_file$fileName[[1]]
 
-  if (basename(csvFileName) != antennas_fn) {
+  if (basename(csvFileName) != csv_fn) {
     
     stop('[simviz::validate_csv] The name of the csv file is not valid.')
   }
@@ -38,8 +38,19 @@ validate_csv <- function(xmlFileName, csvFileName) {
   colnames_xml <- unlist(purrr::map(xml.list, function(x){x[grep('ColName', names(x))]}))
   specnames_xml <- vapply(strsplit(names(colnames_xml), '.', fixed = TRUE), `[`, 1, FUN.VALUE = character(1))
   names(colnames_xml) <- specnames_xml
+
+  if (grepl('[Ss]ignal', csv_fn)) {
+    
+    noTiles <- as.integer(xml.list$specs_signal$noTiles[[1]])
+    tilenames <- paste0('Tile', 0:(noTiles-1))
+    names(tilenames) <- rep('specs_signal', noTiles)
+    colnames_xml <- colnames_xml[-which(colnames_xml == 'Tile')]
+    colnames_xml <- c(colnames_xml, tilenames)
+    
+  }
   colnames_csv <- names(fread(csvFileName, nrows = 0))
   invalid_colnames <- colnames_csv[!colnames_csv %in% colnames_xml] 
+
   if (length(invalid_colnames) > 0) {
     
     stop(paste0('[simviz::validate_csv] Column names ', 
