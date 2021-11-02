@@ -2,31 +2,11 @@
 % Please edit documentation in R/read_xml_map.R
 \name{read_xml_map}
 \alias{read_xml_map}
-<<<<<<< HEAD
-\title{Read string in WKT format and convert it into an sf object.}
-=======
 \title{Read and parse xml file with map specifications.}
->>>>>>> 629cea66da132a1bf264f31734dcfcdb1e5ccf5e
 \usage{
 read_xml_map(xmlname)
 }
 \arguments{
-<<<<<<< HEAD
-\item{text}{Character string of WKT}
-
-\item{id}{Character vector of unique ids to label geometries as in function
-\code{rgeos::readWKT}. Length must match the number of subgeometries in the
-WKT}
-
-\item{p4s}{Either a character string or an object of class \code{CRS} as in
-the function \code{rgeos::readWKT}}
-
-\item{...}{passed on to \code{sf::st_as_sf}, might included named arguments
-crs or precision}
-}
-\description{
-Read the input WKT string, parse it, and convert it into an sf object.
-=======
 \item{xmlname}{Name of the xml file with the map specifications.}
 }
 \description{
@@ -35,7 +15,6 @@ Read and parse the input xml file to return an sf object.
 \details{
 Return an sf object with the geolmetry column parsed from the
 input xml file.
->>>>>>> 629cea66da132a1bf264f31734dcfcdb1e5ccf5e
 }
 \examples{
 read_xml_map(system.file(
