@@ -26,19 +26,20 @@ BTS, power, attenuation factor, etc.), the grid, the radio cells associated
 to each antenna, and the telecommunication signal measures (RSS, SDM, ...).
 }
 \examples{
-filename_map      <- system.file(
-  "extdata/input_files", "map.wkt", package = "simutils")
+filename_map      <- c(
+ xml= system.file("extdata/input_files", "map.xml", package = "simutils"),
+ xsd= '')
   
 filename_network  <- c(
  csv= system.file("extdata/output_files/antennas.csv", package = "simutils"),
  xml= system.file("extdata/metadata/output_files/antennas_dict.xml", 
                    package = "simutils"))
-
+                   
 filename_signal <- c(
  csv= system.file("extdata/output_files/SignalMeasure_MNO1.csv", package = "simutils"),
  xml= system.file("extdata/metadata/output_files/SignalMeasure_dict.xml", 
                    package = "simutils"))
-                        
+                 
 filename_coverage <- c(
  csv= system.file("extdata/output_files", "AntennaCells_MNO1.csv", 
                   package = "simutils"),
@@ -58,6 +59,7 @@ filename_individ <- c(
 filenames <- list(
   map                = filename_map,
   network_parameters = filename_network,
+  signal             = filename_signal,
   coverage_cells     = filename_coverage,
   grid               = filename_grid,
   individuals        = filename_individ)

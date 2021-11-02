@@ -22,9 +22,15 @@ Return a \code{data.table} with the contents of the csv file.
 \examples{
 rootPath <- file.path(system.file(package = "simutils"), 'extdata')  
 
-# simulation file (by filename)
+# simulation file
 csv_fn <- file.path(rootPath, "output_files", "antennas.csv")
 xml_fn <- file.path(rootPath, "metadata/output_files", "antennas_dict.xml")
+dt <- read_csv(xml_fn, csv_fn)
+str(dt)
+
+# coverage file
+csv_fn <- file.path(rootPath, "output_files", "AntennaCells_MNO1.csv")
+xml_fn <- file.path(rootPath, "metadata/output_files", "antennaCells_dict.xml")
 dt <- read_csv(xml_fn, csv_fn)
 str(dt)
 
