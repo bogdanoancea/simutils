@@ -27,11 +27,12 @@
 #' 
 #' @importFrom tibble as_tibble 
 #' 
-#' @include readWKT_as_sf.R readWKT_as_sfc.R xml_attrs2dt.R
+#' @include read_xml_map.R xml_attrs2dt.R readWKT_as_sfc.R
 #' 
 #' @examples
-#' filename_map      <- system.file(
-#'   "extdata/input_files", "map.wkt", package = "simutils")
+#' filename_map      <- c(
+#'  xml= system.file("extdata/input_files", "map.xml", package = "simutils"),
+#'  xsd= '')
 #'   
 #' filename_network  <- c(
 #'  csv= system.file("extdata/output_files/antennas.csv", package = "simutils"),
@@ -92,10 +93,10 @@ create_simElements <- function(filenames, id = NULL, crs = NA_integer_, ...){
   
   
   # Read map file
-  cat('[simutils::create_simElements] Reading and parsing wkt file for the map...')
-  WKTtxt <- readLines(filenames$map)
-  map_polygon <- readWKT_as_sf(WKTtxt, id = id)
-  map_polygon <- st_set_crs(map_polygon, st_crs(crs))
+  cat('[simutils::create_simElements] Reading and parsing xml file for the map...')
+  map.sf <- read_xml_map(filenames$map['xml'])
+  map.sf <-  st_set_crs(map.sf, st_crs(crs))
+  map.sf$area <- st_area(map.sf)
   cat(' ok.\n')
   
   # Read network parameters
@@ -129,6 +130,12 @@ create_simElements <- function(filenames, id = NULL, crs = NA_integer_, ...){
   cat('[simutils::create_simElements] Reading and parsing coverage cells file...')
   coverParam_names <- names(filenames$coverage_cells)
   if (coverParam_names[1] == 'csv') {
+    
+    coverage.sf <- read_sf(filenames$coverage_cells['csv'], options = 'GEOM_POSSIBLE_NAMES=Cell Coordinates')
+    coverage.sf <- st_set_crs(coverage.sf, st_crs(crs))
+    coverage.sf <- st_intersection(coverage.sf, st_union(map.sf))
+    return(coverage.sf)
+### Seguir aquí    
     coverage.dt <- fread(filenames$coverage_cells['csv'], sep = '\n', stringsAsFactors = FALSE)
     setnames(coverage.dt, 'V1')
     coverage_parsed.dt <- coverage.dt[, tstrsplit(V1, split = ',POLYGON')]
@@ -151,8 +158,10 @@ create_simElements <- function(filenames, id = NULL, crs = NA_integer_, ...){
     coverage_parsed.dt[
       , (names(classes_csv)[2]) := paste0('POLYGON', get(names(classes_csv)[2]))]
     geometry.list <- lapply(coverage_parsed.dt[[names(classes_csv[2])]], readWKT_as_sfc, crs = crs)
-    geometry.list <- lapply(geometry.list, st_intersection, map_polygon)
+    geometry.list <- lapply(geometry.list, st_intersection, st_union(map.sf))
+#return(geometry.list)
     geometry.sfc <- Reduce(c, geometry.list)
+return(list(coverage_parsed.dt, geometry.sfc))
     coverage.sf <- st_sf(coverage_parsed.dt, geometry = geometry.sfc)
 
   }

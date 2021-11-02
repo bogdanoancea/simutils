@@ -40,6 +40,7 @@ Collate:
     'onLoad.R'
     'validate_csv.R'
     'read_csv.R'
+    'read_xml_map.R'
     'runDockerImage.R'
     'runExeFile.R'
     'simutils.R'

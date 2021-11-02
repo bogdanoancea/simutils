@@ -27,7 +27,7 @@ to each antenna, and the telecommunication signal measures (RSS, SDM, ...).
 }
 \examples{
 filename_map      <- system.file(
-  "extdata/input_files", "map.wkt", package = "simutils")
+  "extdata/input_files", "map.xml", package = "simutils")
   
 filename_network  <- c(
  csv= system.file("extdata/output_files/antennas.csv", package = "simutils"),
@@ -44,7 +44,13 @@ filename_coverage <- c(
                   package = "simutils"),
  xml= system.file("extdata/metadata/output_files/AntennaCells_dict.xml", 
                   package = "simutils"))
-                       
+ 
+filename_signal <- c(
+  csv = system.file("extdata/output_files", "SignalMeasure_MNO1.csv", 
+                  package = "simutils"),
+ xml= system.file("extdata/metadata/output_files/SignalMeasure_dict.xml", 
+                  package = "simutils"))
+                                                                   
 filename_grid <- c(
   csv= system.file("extdata/output_files/grid.csv", package = "simutils"),
   xml= system.file("extdata/metadata/output_files/grid_dict.xml", 
@@ -59,6 +65,7 @@ filenames <- list(
   map                = filename_map,
   network_parameters = filename_network,
   coverage_cells     = filename_coverage,
+  signal_tile        = filename_signal,
   grid               = filename_grid,
   individuals        = filename_individ)
   
