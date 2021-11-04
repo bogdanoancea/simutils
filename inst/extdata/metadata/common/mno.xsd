@@ -3,6 +3,7 @@
 
 <xs:simpleType name = "mnoID_type">
 	<xs:restriction base="xs:string">
+		<xs:enumeration value="string"/>
 		<xs:enumeration value="nonNegativeInteger"/>
 		<xs:enumeration value="unsignedInt"/>
 		<xs:enumeration value="unsignedLong"/>
