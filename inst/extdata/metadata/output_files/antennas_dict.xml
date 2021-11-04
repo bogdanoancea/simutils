@@ -21,7 +21,7 @@
 	</specs_antenna_coords>
 	<specs_mno>
 		<idColName>MNO ID</idColName>
-		<id_value_type>string</id_value_type>
+		<id_value_type>unsignedInt</id_value_type>
 		<nameColName>mno_name</nameColName>
 		<name_value_type>string</name_value_type>
 	</specs_mno>
