@@ -6,16 +6,9 @@
 #' to each antenna, and the telecommunication signal measures (RSS, SDM, ...). 
 #'
 #' @param filenames Named list of filenames with each element of the simulation.
-#'
-#' @param id Character vector of unique ids to label geometries as in function
-#' \code{rgeos::readWKT}. Length must match the number of subgeometries in the
-#' WKT
 #' 
 #' @param crs integer or character; coordinate reference system for the geometry
 #'  as in function \code{sf::st_as_sfc}
-#' 
-#' @param ... passed on to \code{sf::st_as_sf}, might include named arguments
-#'  crs or precision
 #'
 #' @rdname create_simElements
 #'
@@ -72,7 +65,7 @@
 #' str(simElements)
 #'
 #' @export
-create_simElements <- function(filenames, id = NULL, crs = NA_integer_, ...){
+create_simElements <- function(filenames, crs = NA_integer_){
   
   
   name <- V1 <- nDev <- `Device 1` <- `Device 2` <- NULL
@@ -200,15 +193,15 @@ create_simElements <- function(filenames, id = NULL, crs = NA_integer_, ...){
     is.na(`Device 1`) & !is.na(`Device 2`), 1L,
     !is.na(`Device 1`) & !is.na(`Device 2`), 2L)]
   
-  individuals.df <- as.data.table(individuals_parsed.dt)
+  individuals.sf <- st_as_sf(individuals_parsed.dt, coords = c('x', 'y'), crs = crs)
   cat(' ok.\n')
   
   simElements <- list(
-    map = map_polygon,
+    map = map.sf,
     network = network.sf,
     coverage = coverage.sf,
     grid = grid.stars,
-    individuals = individuals.df
+    individuals = individuals.sf
   )
   return(simElements)
   
