@@ -57,11 +57,11 @@ read_csv <- function(xmlFileName, csvFileName) {
     names(tilenames) <- rep('specs_signal', noTiles)
     colnames_xml <- colnames_xml[-which(colnames_xml == 'Tile')]
     colnames_xml <- c(colnames_xml, tilenames)
-
+    
   }
-
+  
   colnames_csv <- names(fread(csvFileName, nrows = 0))
-
+  
   types_xml <- unlist(purrr::map(xml.list, function(x){x[grep('type', names(x))]}))
   specnames_xml <- vapply(strsplit(names(types_xml), '.', fixed = TRUE), `[`, 1, FUN.VALUE = character(1))
   names(types_xml) <- specnames_xml
@@ -69,7 +69,7 @@ read_csv <- function(xmlFileName, csvFileName) {
   specs.dt <- data.table(
     spec = names(colnames_xml), colnames_xml = colnames_xml
   )
-
+  
   types.dt <- data.table(
     spec = names(types_xml), types_xml = types_xml
   )[types_xml != '']  ## to supress the row on types (omnidirectional, directional) of antennas
@@ -78,8 +78,8 @@ read_csv <- function(xmlFileName, csvFileName) {
   
   types_csv <- specs.dt[colnames_xml %in% colnames_csv][['types_xml']]
   names(types_csv) <- specs.dt[colnames_xml %in% colnames_csv][['colnames_xml']]
-
+  
   csv.dt <- fread(csvFileName, colClasses = types_csv, header = TRUE, stringsAsFactors = FALSE)
-    
+  
   return(csv.dt)  
 }

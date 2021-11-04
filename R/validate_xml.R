@@ -59,7 +59,7 @@ validate_xml <- function(xsdFileName, xmlObject) {
   } 
   
   hjw <- .jnew("xsd/Parser")
-  out <- .jcall(hjw,"I", "testXML", xsdFileName, xmlFileName)
+  out <- .jcall(hjw, "I", "testXML", xsdFileName, xmlFileName)
   
   if (inherits(xmlObject, 'xml_document')) {
     

@@ -162,9 +162,9 @@ create_simElements <- function(filenames, id = NULL, crs = NA_integer_, ...){
   attr(attr(grid.stars, 'dimensions'), 'raster')[['dimensions']] <- c('x', 'y')
   grid.stars <- st_crop(grid.stars, st_union(map.sf))
   cat(' ok.\n')
-
+  
   ##### REVISE INDIVIDUALS  
-    
+  
   # Read individuals
   cat('[simutils::create_simElements] Reading and parsing persons file ...')
   individuals.dt <- fread(filenames$individuals[['csv']], sep = '\n', stringsAsFactors = FALSE)
@@ -185,7 +185,7 @@ create_simElements <- function(filenames, id = NULL, crs = NA_integer_, ...){
   
   
   if ( length(classes_csv_num) > 0 ) {
-      individuals_parsed.dt[, names(classes_csv_num) := lapply(.SD, as.numeric), .SDcols = names(classes_csv_num)]
+    individuals_parsed.dt[, names(classes_csv_num) := lapply(.SD, as.numeric), .SDcols = names(classes_csv_num)]
   }
   if ( length(classes_csv_int) > 0 ) {
     individuals_parsed.dt[, names(classes_csv_int) := lapply(.SD, as.integer), .SDcols = names(classes_csv_int)]

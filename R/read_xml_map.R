@@ -1,6 +1,6 @@
-#' Read and parse xml file with map specifications.
+#' @title Read and parse xml file with map specifications.
 #'
-#' Read and parse the input xml file to return an sf object.
+#' @description Read and parse the input xml file to return an sf object.
 #'
 #' @param xmlname Name of the xml file with the map specifications.
 #'
