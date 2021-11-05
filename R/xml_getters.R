@@ -179,3 +179,35 @@ getCellIDName <- function(xmlname, dataset) {
   } 
   stop('[simutils::getCellIDName] dataset not yet implemented.\n')
 }
+
+#' @rdname xml_getters
+#' 
+#' @export
+getSpatialUnitName <- function(xmlname, dataset) {
+  if (dataset == 'map') {
+    xml <- read_xml(xmlname)
+    SpatialUnitName <- xml_text(xml_find_all(xml, './/name_long'))
+    if (length(unique(SpatialUnitName)) > 1) {
+      
+      stop('[simutils::getSpatialUnitName] Multiple spatial units not allowed.\n')
+      
+    }
+    SpatialUnitName <- paste0(unique(SpatialUnitName), '_long')
+    return(SpatialUnitName)
+  } 
+  stop('[simutils::getSpatialUnitName] dataset not yet implemented.\n')
+}
+
+#' @rdname xml_getters
+#' 
+#' @export
+getNestingSpatialUnitName <- function(xmlname, dataset) {
+  if (dataset == 'map') {
+    xml <- read_xml(xmlname)
+    NestingSpatialUnitName <- xml_text(xml_find_all(xml, './/nest_name_long'))
+    
+    NestingSpatialUnitName <- paste0(unique(NestingSpatialUnitName), '_long')
+    return(NestingSpatialUnitName)
+  } 
+  stop('[simutils::getNestingSpatialUnitName] dataset not yet implemented.\n')
+}

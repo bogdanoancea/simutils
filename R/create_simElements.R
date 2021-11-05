@@ -83,14 +83,25 @@ create_simElements <- function(filenames, crs = NA_integer_){
   cat('[simutils::create_simElements] Reading and parsing xml file for the map...')
   map.sf <- read_xml_map(filenames$map['xml'])
   map.sf <-  st_set_crs(map.sf, st_crs(crs))
-  map.sf$area <- st_area(map.sf)
   cat(' ok.\n')
+  
+  # Region names
+  label_spUnit <- getSpatialUnitName(filename_map[['xml']], 'map')
+  names_spUnit <- map.sf[[label_spUnit]]
+  label_nestSpUnits <- getNestingSpatialUnitName(filename_map[['xml']], 'map')
   
   # Read network parameters
   cat('[simutils::create_simElements] Reading and parsing network parameters file...\n')
   network.dt <- read_csv(filenames$network_parameters['xml'], filenames$network_parameters['csv'])
   coords_name <- getCoordsNames(filenames$network_parameters['xml'], 'antennas')
   network.sf <- st_as_sf(network.dt, coords = coords_name, crs = crs)
+  
+  network_in_geom_unit_idx <- sapply(st_intersects(network.sf, map.sf), function(x) sample(x, 1))
+  network.sf[[label_spUnit]] <- names_spUnit[network_in_geom_unit_idx]
+  network.sf <- dplyr::left_join(
+    network.sf, 
+    st_drop_geometry(map.sf[, c(label_spUnit, label_nestSpUnits)]))
+  
   cat(' ok.\n')
   
   # Read coverage file 
@@ -106,7 +117,6 @@ create_simElements <- function(filenames, crs = NA_integer_){
   coverage.sf <- st_set_crs(coverage.sf, st_crs(crs))
   coverage.sf[[cellCoord_colname]] <- NULL
   coverage.sf <- st_intersection(coverage.sf, st_union(map.sf))
-  coverage.sf$area <- st_area(coverage.sf)
   cat(' ok.\n')  
   
   # Read signal per tile
@@ -159,7 +169,7 @@ create_simElements <- function(filenames, crs = NA_integer_){
   ##### REVISE INDIVIDUALS  
   
   # Read individuals
-  cat('[simutils::create_simElements] Reading and parsing persons file ...')
+  cat('[simutils::create_simElements] Reading and parsing persons file ...\n')
   individuals.dt <- fread(filenames$individuals[['csv']], sep = '\n', stringsAsFactors = FALSE)
   names_individuals.dt <- strsplit(names(individuals.dt), split=",")[[1]]
   
@@ -187,15 +197,21 @@ create_simElements <- function(filenames, crs = NA_integer_){
     individuals_parsed.dt[, names(classes_csv_char) := lapply(.SD, as.character), .SDcols = names(classes_csv_char)]
   }
   
-  individuals_parsed.dt[, nDev := fcase(
-    is.na(`Device 1`) & is.na(`Device 2`), 0L,
-    !is.na(`Device 1`) & is.na(`Device 2`), 1L,
-    is.na(`Device 1`) & !is.na(`Device 2`), 1L,
-    !is.na(`Device 1`) & !is.na(`Device 2`), 2L)]
+  #individuals_parsed.dt[, nDev := fcase(
+  #  is.na(`Device 1`) & is.na(`Device 2`), 0L,
+  #  !is.na(`Device 1`) & is.na(`Device 2`), 1L,
+  #  is.na(`Device 1`) & !is.na(`Device 2`), 1L,
+  #  !is.na(`Device 1`) & !is.na(`Device 2`), 2L)]
   
   individuals.sf <- st_as_sf(individuals_parsed.dt, coords = c('x', 'y'), crs = crs)
-  cat(' ok.\n')
   
+  individual_in_geom_unit_idx <- sapply(st_intersects(individuals.sf, map.sf), function(x) sample(x, 1))
+  individuals.sf[[label_spUnit]] <- names_spUnit[individual_in_geom_unit_idx]
+  individuals.sf <- dplyr::left_join(
+    individuals.sf, 
+    st_drop_geometry(map.sf[, c(label_spUnit, label_nestSpUnits)]))
+  cat(' ok.\n')
+
   simElements <- list(
     map = map.sf,
     network = network.sf,
