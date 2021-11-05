@@ -22,5 +22,6 @@ doXYFromCell(ncols, nrows, xmin, xmax, ymin, ymax, cell)
 \item{cell}{Vector of cell ID numbers.}
 }
 \description{
-Get x and y coordinates from cell ID number.
+NB: This source code is taken from \code{raster} package with a slight
+change of name.
 }

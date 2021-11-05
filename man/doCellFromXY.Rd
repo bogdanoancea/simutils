@@ -24,5 +24,6 @@ doCellFromXY(ncols, nrows, xmin, xmax, ymin, ymax, x, y)
 \item{y}{Vector of y coordinates.}
 }
 \description{
-Get cell number from x and y coordinates
+NB: This source code is taken from \code{raster} package with a slight
+change of name.
 }

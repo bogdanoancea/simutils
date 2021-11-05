@@ -3,6 +3,9 @@
 
 #' Get cell number from x and y coordinates
 #' 
+#' NB: This source code is taken from \code{raster} package with a slight 
+#' change of name.
+#' 
 #' @param ncols Number of colums of the raster grid.
 #' 
 #' @param nrows Number of rows of the raster grid.
@@ -25,6 +28,9 @@ doCellFromXY <- function(ncols, nrows, xmin, xmax, ymin, ymax, x, y) {
 }
 
 #' Get x and y coordinates from cell ID number.
+#' 
+#' NB: This source code is taken from \code{raster} package with a slight 
+#' change of name.
 #' 
 #' @param ncols Number of colums of the raster grid.
 #' 

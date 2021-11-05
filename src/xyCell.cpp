@@ -3,6 +3,9 @@ using namespace Rcpp;
 
 //' Get cell number from x and y coordinates
 //' 
+//' NB: This source code is taken from \code{raster} package with a slight 
+//' change of name.
+//' 
 //' @param ncols Number of colums of the raster grid.
 //' 
 //' @param nrows Number of rows of the raster grid.
@@ -51,7 +54,7 @@ using namespace Rcpp;
       if (row < 0 || row >= nrows || col < 0 || col >= ncols) {
         result[i] = NA_REAL;
       } else {
-        // result[i] = static_cast<int>(row) * ncols + static_cast<int>(col) + 1;
+       // result[i] = static_cast<int>(row) * ncols + static_cast<int>(col) + 1;
         result[i] = row * ncols + col + 1 ;
       }
     }
@@ -60,6 +63,9 @@ using namespace Rcpp;
   }
   
 //' Get x and y coordinates from cell ID number.
+//' 
+//' NB: This source code is taken from \code{raster} package with a slight 
+//' change of name.
 //' 
 //' @param ncols Number of colums of the raster grid.
 //' 
