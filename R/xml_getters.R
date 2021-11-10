@@ -211,3 +211,16 @@ getNestingSpatialUnitName <- function(xmlname, dataset) {
   } 
   stop('[simutils::getNestingSpatialUnitName] dataset not yet implemented.\n')
 }
+
+#' @rdname xml_getters
+#' 
+#' @export
+getDeviceIDColName <- function(xmlname, dataset) {
+  if (dataset == 'individuals') {
+    xml <- read_xml(xmlname)
+    deviceIDColName <- xml_text(xml_find_all(xml, './/devColName'))
+    
+    return(deviceIDColName)
+  } 
+  stop('[simutils::getNestingSpatialUnitName] dataset not yet implemented.\n')
+}

@@ -11,6 +11,7 @@
 \alias{getCellIDName}
 \alias{getSpatialUnitName}
 \alias{getNestingSpatialUnitName}
+\alias{getDeviceIDColName}
 \title{Get different elements from an xml file.}
 \usage{
 getCoordsNames(xmlname, dataset)
@@ -32,6 +33,8 @@ getCellIDName(xmlname, dataset)
 getSpatialUnitName(xmlname, dataset)
 
 getNestingSpatialUnitName(xmlname, dataset)
+
+getDeviceIDColName(xmlname, dataset)
 }
 \arguments{
 \item{xmlname}{character vector of length 1 with the name of the xml file}

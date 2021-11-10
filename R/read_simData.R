@@ -49,8 +49,8 @@
 #'                    package = "simutils")) 
 #' 
 #' filename_individ <- c(
-#'   csv= system.file("extdata/output_files/persons.csv", package = "simutils"),
-#'   xml= system.file("extdata/metadata/output_files/persons_dict.xml", 
+#'   csv= system.file("extdata/output_files/persons_dash.csv", package = "simutils"),
+#'   xml= system.file("extdata/metadata/output_files/persons_dash_dict.xml", 
 #'                    package = "simutils"))   
 #'                        
 #' filenames <- list(
@@ -177,34 +177,16 @@ read_simData <- function(filenames, crs = NA_integer_){
   
   # Read individuals
   cat('[simutils::read_simData] Reading and parsing persons file ...\n')
-  individuals.dt <- fread(filenames$individuals[['csv']], sep = '\n', stringsAsFactors = FALSE)
-  names_individuals.dt <- strsplit(names(individuals.dt), split=",")[[1]]
-  
-  xmlParam.dt <- xml_attrs2dt(filenames$individuals['xml'], 'individuals')
-  colnames_csv <- xmlParam.dt$name
-  xmlParam.dt <- xmlParam.dt[name %in% names_individuals.dt]
-  classes_csv  <- xmlParam.dt$class
-  names(classes_csv) <- xmlParam.dt$name
-  classes_csv_num  <- classes_csv[which(classes_csv == 'numeric')]
-  classes_csv_int  <- classes_csv[which(classes_csv == 'integer')]
-  classes_csv_char <- classes_csv[which(classes_csv == 'character')]
-  
-  setnames(individuals.dt, 'V1')
-  individuals_parsed.dt <- individuals.dt[, tstrsplit(V1, split = ',')]
-  setnames(individuals_parsed.dt, colnames_csv)
-  
-  
-  if ( length(classes_csv_num) > 0 ) {
-    individuals_parsed.dt[, names(classes_csv_num) := lapply(.SD, as.numeric), .SDcols = names(classes_csv_num)]
+  individuals.dt <- read_csv(filenames$individuals['xml'], filenames$individuals['csv'])
+  deviceColNames <- names(individuals.dt)[grep('Device', names(individuals.dt))]
+  for (devCol in deviceColNames){
+    
+    individuals.dt[, paste0('n_', devCol) := ifelse(is.na(get(devCol)), 0L, 1L)]
   }
-  if ( length(classes_csv_int) > 0 ) {
-    individuals_parsed.dt[, names(classes_csv_int) := lapply(.SD, as.integer), .SDcols = names(classes_csv_int)]
-  }
-  if ( length(classes_csv_char) > 0 ) {
-    individuals_parsed.dt[, names(classes_csv_char) := lapply(.SD, as.character), .SDcols = names(classes_csv_char)]
-  }
-  
-  individuals.sf <- st_as_sf(individuals_parsed.dt, coords = c('x', 'y'), crs = crs)
+  individuals.dt[
+    , nDev := rowSums(.SD, na.rm = TRUE), .SDcols = paste0('n_', deviceColNames)][
+    , (paste0('n_', deviceColNames)) := NULL]
+  individuals.sf <- st_as_sf(individuals.dt, coords = c('x', 'y'), crs = crs)
   
   individual_in_geom_unit_idx <- sapply(st_intersects(individuals.sf, map.sf), function(x) sample(x, 1))
   individuals.sf[[label_spUnit]] <- names_spUnit[individual_in_geom_unit_idx]

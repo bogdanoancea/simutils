@@ -96,7 +96,17 @@ read_csv <- function(xmlFileName, csvFileName) {
   specs_csv <- types_csv.dt[colnames_xml %in% colnames_csv][['spec']]
   names(specs_csv) <- types_csv.dt$colnames_xml
   specs_csv <- specs_csv[names(csv.dt)]
-  setattr(csv.dt, 'specs', specs_csv) 
+  setattr(csv.dt, 'specs', specs_csv)
+  
+  if (grepl('[Pp]ersons', basename(csvFileName))) {
+
+   colName <- getDeviceIDColName(xmlFileName, 'individuals')  
+   devIDs <- csv.dt[, tstrsplit(get(colName), split = '-')]
+   setnames(devIDs, paste0('Device', 1:dim(devIDs)[2]))
+   csv.dt <- data.table(csv.dt, devIDs)[
+     , (colName) := NULL]  
+      
+  }
   return(csv.dt)
 
 }
