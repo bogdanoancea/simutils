@@ -4,10 +4,13 @@
 \alias{read_xml_map}
 \title{Read and parse xml file with map specifications.}
 \usage{
-read_xml_map(xmlname)
+read_xml_map(xmlname, crs)
 }
 \arguments{
 \item{xmlname}{Name of the xml file with the map specifications.}
+
+\item{crs}{integer or character; coordinate reference system for the geometry
+as in function \code{sf::st_as_sfc}}
 }
 \description{
 Read and parse the input xml file to return an sf object.
@@ -17,8 +20,8 @@ Return an sf object with the geolmetry column parsed from the
 input xml file.
 }
 \examples{
-read_xml_map(system.file(
-   "extdata/input_files", "map.xml", package = "simutils"
-))
+read_xml_map(
+  system.file("extdata/input_files", "map.xml", package = "simutils"),
+  crs = 2062)
 
 }

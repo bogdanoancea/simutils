@@ -10,9 +10,9 @@
 #' @param crs integer or character; coordinate reference system for the geometry
 #'  as in function \code{sf::st_as_sfc}
 #'
-#' @rdname create_simElements
+#' @rdname read_simData
 #'
-#' @name create_simElements
+#' @name read_simData
 #' 
 #' @import sf data.table stars
 #' 
@@ -61,26 +61,26 @@
 #'   grid               = filename_grid,
 #'   individuals        = filename_individ)
 #'   
-#' simElements <- create_simElements(filenames, crs = 2062)
+#' simElements <- read_simData(filenames, crs = 2062)
 #' str(simElements)
 #'
 #' @export
-create_simElements <- function(filenames, crs = NA_integer_){
+read_simData <- function(filenames, crs = NA_integer_){
   
   
   name <- V1 <- nDev <- `Device 1` <- `Device 2` <- NULL
   
   if (is.null(names(filenames))) {
-    stop('[simutils::create_simElements] filenames must be a named list.\n')
+    stop('[simutils::read_simData] filenames must be a named list.\n')
   }
   
   if (!all(names(filenames) %in% c('map', 'network_parameters', 'signal', 'coverage_cells', 'grid', 'individuals'))){
-    stop("[simutils::create_simElements] The names of list filenames must be contained in c('map', 'network_parameters', 'signal', 'coverage_cells', 'grid', 'individuals').\n")
+    stop("[simutils::read_simData] The names of list filenames must be contained in c('map', 'network_parameters', 'signal', 'coverage_cells', 'grid', 'individuals').\n")
   }
   
   
   # Read map file
-  cat('[simutils::create_simElements] Reading and parsing xml file for the map...')
+  cat('[simutils::read_simData] Reading and parsing xml file for the map...')
   map.sf <- read_xml_map(filenames$map['xml'])
   map.sf <-  st_set_crs(map.sf, st_crs(crs))
   cat(' ok.\n')
@@ -91,21 +91,29 @@ create_simElements <- function(filenames, crs = NA_integer_){
   label_nestSpUnits <- getNestingSpatialUnitName(filename_map[['xml']], 'map')
   
   # Read network parameters
-  cat('[simutils::create_simElements] Reading and parsing network parameters file...\n')
+  cat('[simutils::read_simData] Reading and parsing network parameters file...\n')
   network.dt <- read_csv(filenames$network_parameters['xml'], filenames$network_parameters['csv'])
   coords_name <- getCoordsNames(filenames$network_parameters['xml'], 'antennas')
+  coords_name_idx <- which(names(network.dt) %in% coords_name)
+  network_attr <- attr(network.dt, 'specs')[-coords_name_idx]
   network.sf <- st_as_sf(network.dt, coords = coords_name, crs = crs)
-  
+  attr(network.sf, 'specs') <- unname(network_attr)
+
   network_in_geom_unit_idx <- sapply(st_intersects(network.sf, map.sf), function(x) sample(x, 1))
   network.sf[[label_spUnit]] <- names_spUnit[network_in_geom_unit_idx]
+  
+  map_nogeom <- st_drop_geometry(map.sf[, c(label_spUnit, label_nestSpUnits)])
+  map_cols_idx <- which(names(map.sf) %in% c(label_spUnit, label_nestSpUnits))
+  map_cols_attr <- attr(map.sf, 'specs')[map_cols_idx]
+
   network.sf <- dplyr::left_join(
     network.sf, 
     st_drop_geometry(map.sf[, c(label_spUnit, label_nestSpUnits)]))
-  
+  attr(network.sf, 'specs') <- c(unname(network_attr), map_cols_attr, 'geometry')
   cat(' ok.\n')
-  
+
   # Read coverage file 
-  cat('[simutils::create_simElements] Reading and parsing coverage cells file...')
+  cat('[simutils::read_simData] Reading and parsing coverage cells file...')
   cellCoord_name <- getCellCoordName(filenames$coverage_cells['xml'], 'cells')
   options_wkt <- paste0('GEOM_POSSIBLE_NAMES=', cellCoord_name)
   cellID_name <- getCellIDName(filenames$coverage_cells['xml'], 'cells')
@@ -117,16 +125,17 @@ create_simElements <- function(filenames, crs = NA_integer_){
   coverage.sf <- st_set_crs(coverage.sf, st_crs(crs))
   coverage.sf[[cellCoord_colname]] <- NULL
   coverage.sf <- st_intersection(coverage.sf, st_union(map.sf))
+  attr(coverage.sf, 'specs') <- c('specs_cells', 'geometry')
   cat(' ok.\n')  
-  
+
   # Read signal per tile
-  cat('[simutils::create_simElements] Reading and parsing signal file...\n')
+  cat('[simutils::read_simData] Reading and parsing signal file...\n')
   signal.dt <- read_csv(filenames$signal['xml'], filenames$signal['csv'])
   signal_type <- getSignalType(filenames$signal['xml'], 'signal')
   cat(' ok.\n')
   
   # Read grid
-  cat('[simutils::create_simElements] Reading grid file and creating stars object...')
+  cat('[simutils::read_simData] Reading grid file and creating stars object...')
   grid.dt <- read_csv(filenames$grid['xml'], filenames$grid['csv'])
   nx <- as.integer(grid.dt[[getGridNoTilesX(filenames$grid['xml'], 'grid')]])
   ny <- as.integer(grid.dt[[getGridNoTilesY(filenames$grid['xml'], 'grid')]])
@@ -166,10 +175,8 @@ create_simElements <- function(filenames, crs = NA_integer_){
   grid.stars <- st_crop(grid.stars, st_union(map.sf))
   cat(' ok.\n')
   
-  ##### REVISE INDIVIDUALS  
-  
   # Read individuals
-  cat('[simutils::create_simElements] Reading and parsing persons file ...\n')
+  cat('[simutils::read_simData] Reading and parsing persons file ...\n')
   individuals.dt <- fread(filenames$individuals[['csv']], sep = '\n', stringsAsFactors = FALSE)
   names_individuals.dt <- strsplit(names(individuals.dt), split=",")[[1]]
   
@@ -196,12 +203,6 @@ create_simElements <- function(filenames, crs = NA_integer_){
   if ( length(classes_csv_char) > 0 ) {
     individuals_parsed.dt[, names(classes_csv_char) := lapply(.SD, as.character), .SDcols = names(classes_csv_char)]
   }
-  
-  #individuals_parsed.dt[, nDev := fcase(
-  #  is.na(`Device 1`) & is.na(`Device 2`), 0L,
-  #  !is.na(`Device 1`) & is.na(`Device 2`), 1L,
-  #  is.na(`Device 1`) & !is.na(`Device 2`), 1L,
-  #  !is.na(`Device 1`) & !is.na(`Device 2`), 2L)]
   
   individuals.sf <- st_as_sf(individuals_parsed.dt, coords = c('x', 'y'), crs = crs)
   

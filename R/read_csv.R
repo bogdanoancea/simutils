@@ -46,10 +46,10 @@ read_csv <- function(xmlFileName, csvFileName) {
   
   xml <- read_xml(xmlFileName)
   xml.list <- as_list(xml)[[1]]
-  
   colnames_xml <- unlist(purrr::map(xml.list, function(x){x[grep('ColName', names(x))]}))
-  specnames_xml <- vapply(strsplit(names(colnames_xml), '.', fixed = TRUE), `[`, 1, FUN.VALUE = character(1))
+  specnames_xml <- names(colnames_xml)
   names(colnames_xml) <- specnames_xml
+
   if (grepl('[Ss]ignal', basename(csvFileName))) {
     
     noTiles <- as.integer(xml.list$specs_signal$noTiles[[1]])
@@ -60,26 +60,43 @@ read_csv <- function(xmlFileName, csvFileName) {
     
   }
   
-  colnames_csv <- names(fread(csvFileName, nrows = 0))
-  
-  types_xml <- unlist(purrr::map(xml.list, function(x){x[grep('type', names(x))]}))
-  specnames_xml <- vapply(strsplit(names(types_xml), '.', fixed = TRUE), `[`, 1, FUN.VALUE = character(1))
-  names(types_xml) <- specnames_xml
-  types_xml <- unlist(purrr::map(types_xml, xmlTypes2RTypes))
   specs.dt <- data.table(
     spec = names(colnames_xml), colnames_xml = colnames_xml
-  )
+  )[
+    , c('spec', 'variable') := tstrsplit(spec, split = '.', fixed = TRUE)][
+    , variable := gsub('ColName', '', variable)  
+    ]
   
+  types_xml <- unlist(purrr::map(xml.list, function(x){x[grep('value_type', names(x), fixed = TRUE)]}))
+  specnames_xml <- names(types_xml)
+  names(types_xml) <- specnames_xml
+  types_xml <- unlist(purrr::map(types_xml, xmlTypes2RTypes))
+
   types.dt <- data.table(
     spec = names(types_xml), types_xml = types_xml
-  )[types_xml != '']  ## to supress the row on types (omnidirectional, directional) of antennas
-  specs.dt <- specs.dt[types.dt, on = 'spec']
-  specs.dt <- specs.dt[!duplicated(specs.dt, by = c('spec', 'colnames_xml'))]
+  )[
+    , spec := gsub('value_type', '', spec, fixed = TRUE)][
+    , c('spec', 'variable2') := tstrsplit(spec, split = '.', fixed = TRUE)][
+    , variable2 := gsub('_', '', variable2)]
   
-  types_csv <- specs.dt[colnames_xml %in% colnames_csv][['types_xml']]
+
+  specs.dt <- merge(specs.dt, types.dt, all = TRUE)[, row := .I]
+  specs.dt[
+    , var_coincidence1 := (grep(variable, variable2) > 0) * 1L, by = 'row'][
+    , var_coincidence2 := (grep(variable2, variable) > 0) * 1L, by = 'row'][
+    , var_coincidence  := rowSums(.SD, na.rm= TRUE), .SDcols = c('var_coincidence1', 'var_coincidence2')]
+    specs.dt <- specs.dt[is.na(variable2) | var_coincidence > 0]
+  colnames_csv <- names(fread(csvFileName, nrows = 0))
+  types_csv.dt <- specs.dt[colnames_xml %in% colnames_csv]
+  types_csv <- types_csv.dt[['types_xml']]
   names(types_csv) <- specs.dt[colnames_xml %in% colnames_csv][['colnames_xml']]
   
   csv.dt <- fread(csvFileName, colClasses = types_csv, header = TRUE, stringsAsFactors = FALSE)
   
-  return(csv.dt)  
+  specs_csv <- types_csv.dt[colnames_xml %in% colnames_csv][['spec']]
+  names(specs_csv) <- types_csv.dt$colnames_xml
+  specs_csv <- specs_csv[names(csv.dt)]
+  setattr(csv.dt, 'specs', specs_csv) 
+  return(csv.dt)
+
 }
