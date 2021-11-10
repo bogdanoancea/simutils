@@ -32,6 +32,7 @@ RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
 Collate: 
     'RcppExports.R'
+    'compute_total.R'
     'flatten_deepest.R'
     'getRootPath.R'
     'list_deepest.R'

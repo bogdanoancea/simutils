@@ -104,8 +104,9 @@ read_csv <- function(xmlFileName, csvFileName) {
    devIDs <- csv.dt[, tstrsplit(get(colName), split = '-')]
    setnames(devIDs, paste0('Device', 1:dim(devIDs)[2]))
    csv.dt <- data.table(csv.dt, devIDs)[
-     , (colName) := NULL]  
-      
+     , (colName) := NULL]
+   specs_csv <- specs_csv[-which(names(specs_csv) == colName)]
+   setattr(csv.dt, 'specs', c(unname(specs_csv), paste0('specs_device_', 1:dim(devIDs)[2])))
   }
   return(csv.dt)
 
