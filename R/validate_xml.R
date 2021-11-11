@@ -4,10 +4,11 @@
 #' file.
 #' 
 #' This function is a wrapper for a validator written in Java. Thus, it needs a 
-#' jar file, which is included in this package. If the xml file does not conform to
-#'  the schema definition, it provides information where the error is.
+#' jar file, which is included in this package. If the xml file does not conform
+#'  to the schema definition, it provides information where the error is.
 #'  
-#' The xsdFileName and xmlFileName arguments must be provided with absolute paths. 
+#' The xsdFileName and xmlFileName arguments must be provided with absolute 
+#' paths. 
 #' 
 #' 
 #' @param xsdFileName Path of the xsd file containing the schema.
@@ -48,7 +49,7 @@
 #' validate_xml(xsd_fn, xml_fn)
 #' 
 #' # antennaCells_dict file (by filename)
-#' xml_fn <- file.path(rootPath, "metadata/output_files", "antennaCells_dict.xml")
+#' xml_fn<-file.path(rootPath, "metadata/output_files", "antennaCells_dict.xml")
 #' xsd_fn <- file.path(rootPath, "metadata/output_files/schema_definition", 
 #'     "antennaCells_dict.xsd")
 #' validate_xml(xsd_fn, xml_fn)
@@ -78,7 +79,7 @@
 #' validate_xml(xsd_fn, xml_fn)   
 #' 
 #' # SignalMeasure_dict file (by filename)
-#' xml_fn <- file.path(rootPath, "metadata/output_files", "SignalMeasure_dict.xml")
+#' xml_fn<-file.path(rootPath, "metadata/output_files","SignalMeasure_dict.xml")
 #' xsd_fn <- file.path(rootPath, "metadata/output_files/schema_definition", 
 #'     "SignalMeasure_dict.xsd")
 #' validate_xml(xsd_fn, xml_fn)
