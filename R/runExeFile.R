@@ -1,62 +1,45 @@
 #' @title Run an MND simulation using the simulator.exe file.
 #' 
-#' @description \code{runExeFile} reads the simulator path to exe from the 
-#' \code{configParamList} input parameter and execute the simulator.exe from 
-#' this path. This input parameter must have a component named \code{Path}, 
-#' which, in turn, must contain a list with a component named
-#' \code{SIMULATOR_PATH_TO_EXE} (see example below).
+#' @description \code{runExeFile} reads the simulator path to the executable
+#'  file of the simulator of mobile network event data and the input file 
+#' parameters to execute the simulator.exe from this path.
 #'  
 #' If the file doesn't exist, it returns an error.
 #' 
-#' @param configParamList \code{list} which must have a component named 
-#' \code{Path}, which, in turn, must contain a list with a component named
-#' \code{SIMULATOR_PATH_TO_EXE} (see example below).
+#' @param path_to_exe character vector with the absolute path to the executable 
+#' file of the simulator of mobile network event data.
 #' 
-#' @param sysinfo \code{character} with the info about the system (basically the
-#'  output from \code{Sys.info()}).
+#' @param input_folder absolute path where the simulation input files are.
 #' 
-#' @param input_folder Absolute path where the simulation input files are.
-#' 
-#' @param simulationCFGFile Name of the configuration simulation file 
+#' @param simulationCFGFile name of the configuration simulation file 
 #' (input file).
 #' 
-#' @param mapFile Name of the map file (input file).
+#' @param mapFile name of the map file (input file).
 #' 
-#' @param personsCFGFile Name of the persons file (input file).
+#' @param personsCFGFile name of the persons file (input file).
 #' 
-#' @param antennasCFGFile Name of the antennas file (input file).
+#' @param antennasCFGFile name of the antennas file (input file).
 #' 
-#' @param outputFolder Full path where the output files are going to be saved.
+#' @param outputFolder Absolute path where the output files are going to be saved.
 #' 
 #' @details Return invisible \code{NULL} after placing output files of the 
 #' simulation in the output folder.
 #' 
 #' @examples
-#' config <- list(
-#'   Path = list(
-#'     SIMULATOR_PATH_TO_EXE = file.path(system.file(package = "simutils"), "bin")))
-#' sysinfo           <- Sys.info()
-#' input_folder      <- file.path(system.file(package = "simutils", "extdata/input_files"))
-#' simulationCFGFile <- "simulation.xml"
-#' mapFile           <- "map.wkt"
-#' personsCFGFile    <- "persons.xml"
-#' antennasCFGFile   <- "antennas.xml"
-#' outputFolder      <- Sys.getenv('R_USER')
+#' rootPath <- system.file(package = "simutils")
 #' runExeFile(
-#'   configParamList   = config,
-#'   sysinfo           = sysinfo,
-#'   input_folder      = input_folder,
-#'   simulationCFGFile = simulationCFGFile,
-#'   mapFile           = mapFile,
-#'   personsCFGFile    = personsCFGFile,
-#'   antennasCFGFile   = antennasCFGFile,
-#'   outputFolder      = outputFolder)
+#'  path_to_exe       = file.path(rootPath, 'bin'),
+#'  input_folder      = file.path(rootPath, "extdata/input_files"),
+#'  simulationCFGFile = "simulation.xml",
+#'  mapFile           = "map.wkt",
+#'  personsCFGFile    = "persons.xml",
+#'  antennasCFGFile   = "antennas.xml",
+#'  outputFolder      = Sys.getenv('R_USER'))
 #'   
 #'   
 #' @export
 runExeFile <- function(
-  configParamList,
-	sysinfo,
+  path_to_exe,
 	input_folder,
 	simulationCFGFile,
 	mapFile,
@@ -64,35 +47,28 @@ runExeFile <- function(
 	antennasCFGFile,
 	outputFolder) {
   
-	path_to_exe <- configParamList$Path$SIMULATOR_PATH_TO_EXE
 	if (path_to_exe == ""){
 		
-	  stop("[runExeFile] Path to simulator.exe file not set in config.ini.\n")
+	  stop("[simutils::runExeFile] Path to simulator.exe file not set.\n")
 	  
 	}
-	
+	sysinfo <- Sys.info()
 	if (sysinfo['sysname'] == "Windows") {
 	  
 		exe_file <- file.path(path_to_exe, "simulator.exe")
 		
 	} else {
 	  
-		exe_file <- file.path(configParamList$Path$SIMULATOR_PATH_TO_EXE, "simulator")
+		exe_file <- file.path(path_to_exe, "simulator")
 		
 	}
 	
 	if (!file.exists(exe_file)) {
 	  
-		stop("[runExeFile] Path to simulator exe file is wrong.\n")
+		stop(paste0("[simutils::runExeFile] simulator.exe file cannot be found at ", path_to_exe, "\n"))
 	
 	}
 	# Execute the simulator
-	setwd(outputFolder)
-	return(list(exe_file, 
-	            s = file.path(input_folder, simulationCFGFile), 
-	            m = file.path(input_folder, mapFile),
-	            p = file.path(input_folder, personsCFGFile),
-	            a = file.path(input_folder, antennasCFGFile)))
 	if (sysinfo['sysname'] == 'Windows') {
 	  
 		system2(
@@ -106,10 +82,13 @@ runExeFile <- function(
 				file.path(input_folder, personsCFGFile),
 				" -a ",
 				file.path(input_folder, antennasCFGFile)
-			))
+			)
+		)
+	  
 	} else {
 	  
-		system(paste0(exe_file, 
+		system(
+		  paste0(exe_file, 
 					" -s ",
 					file.path(input_folder, simulationCFGFile),
 					" -m ",
@@ -118,7 +97,8 @@ runExeFile <- function(
 					file.path(input_folder, personsCFGFile),
 					" -a ",
 					file.path(input_folder, antennasCFGFile)
-				))
+			)
+		)
 	}
 	return(invisible(NULL))
 	

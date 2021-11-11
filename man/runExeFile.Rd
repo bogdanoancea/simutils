@@ -5,8 +5,7 @@
 \title{Run an MND simulation using the simulator.exe file.}
 \usage{
 runExeFile(
-  configParamList,
-  sysinfo,
+  path_to_exe,
   input_folder,
   simulationCFGFile,
   mapFile,
@@ -16,32 +15,26 @@ runExeFile(
 )
 }
 \arguments{
-\item{configParamList}{\code{list} which must have a component named
-\code{Path}, which, in turn, must contain a list with a component named
-\code{SIMULATOR_PATH_TO_EXE} (see example below).}
+\item{path_to_exe}{character vector with the absolute path to the executable
+file of the simulator of mobile network event data.}
 
-\item{sysinfo}{\code{character} with the info about the system (basically the
-output from \code{Sys.info()}).}
+\item{input_folder}{absolute path where the simulation input files are.}
 
-\item{input_folder}{Absolute path where the simulation input files are.}
-
-\item{simulationCFGFile}{Name of the configuration simulation file
+\item{simulationCFGFile}{name of the configuration simulation file
 (input file).}
 
-\item{mapFile}{Name of the map file (input file).}
+\item{mapFile}{name of the map file (input file).}
 
-\item{personsCFGFile}{Name of the persons file (input file).}
+\item{personsCFGFile}{name of the persons file (input file).}
 
-\item{antennasCFGFile}{Name of the antennas file (input file).}
+\item{antennasCFGFile}{name of the antennas file (input file).}
 
-\item{outputFolder}{Full path where the output files are going to be saved.}
+\item{outputFolder}{Absolute path where the output files are going to be saved.}
 }
 \description{
-\code{runExeFile} reads the simulator path to exe from the
-\code{configParamList} input parameter and execute the simulator.exe from
-this path. This input parameter must have a component named \code{Path},
-which, in turn, must contain a list with a component named
-\code{SIMULATOR_PATH_TO_EXE} (see example below).
+\code{runExeFile} reads the simulator path to the executable
+file of the simulator of mobile network event data and the input file
+parameters to execute the simulator.exe from this path.
 
 If the file doesn't exist, it returns an error.
 }
@@ -50,25 +43,15 @@ Return invisible \code{NULL} after placing output files of the
 simulation in the output folder.
 }
 \examples{
-config <- list(
-  Path = list(
-    SIMULATOR_PATH_TO_EXE = file.path(system.file(package = "simutils"), "bin")))
-sysinfo           <- Sys.info()
-input_folder      <- file.path(system.file(package = "simutils", "extdata/input_files"))
-simulationCFGFile <- "simulation.xml"
-mapFile           <- "map.wkt"
-personsCFGFile    <- "persons.xml"
-antennasCFGFile   <- "antennas.xml"
-outputFolder      <- Sys.getenv('R_USER')
+rootPath <- system.file(package = "simutils")
 runExeFile(
-  configParamList   = config,
-  sysinfo           = sysinfo,
-  input_folder      = input_folder,
-  simulationCFGFile = simulationCFGFile,
-  mapFile           = mapFile,
-  personsCFGFile    = personsCFGFile,
-  antennasCFGFile   = antennasCFGFile,
-  outputFolder      = outputFolder)
+ path_to_exe       = file.path(rootPath, 'bin'),
+ input_folder      = file.path(rootPath, "extdata/input_files"),
+ simulationCFGFile = "simulation.xml",
+ mapFile           = "map.wkt",
+ personsCFGFile    = "persons.xml",
+ antennasCFGFile   = "antennas.xml",
+ outputFolder      = Sys.getenv('R_USER'))
   
   
 }
