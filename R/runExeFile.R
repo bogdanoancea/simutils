@@ -87,7 +87,12 @@ runExeFile <- function(
 	
 	}
 	# Execute the simulator
-  setwd(outputFolder)
+	setwd(outputFolder)
+	return(list(exe_file, 
+	            s = file.path(input_folder, simulationCFGFile), 
+	            m = file.path(input_folder, mapFile),
+	            p = file.path(input_folder, personsCFGFile),
+	            a = file.path(input_folder, antennasCFGFile)))
 	if (sysinfo['sysname'] == 'Windows') {
 	  
 		system2(
@@ -115,7 +120,6 @@ runExeFile <- function(
 					file.path(input_folder, antennasCFGFile)
 				))
 	}
-	
 	return(invisible(NULL))
 	
 }

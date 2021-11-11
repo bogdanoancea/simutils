@@ -44,14 +44,13 @@ newParam.lst <- list(
         list(mean = 140, sd = 18),
         type = 'Normal')),
     type = 'random_walk_closed_map'))
-xsdName  <- file.path(
-  rootPath, 
+xsdName  <- file.path(rootPath, 
   'extdata/metadata/input_files/schema_definition', 'simulation_dict.xsd')
 newSimInputFile <- file.path(Sys.getenv('R_USER'), 'newSimulation.xml')
 updateSimInput(
-xmlSimInput = xmlSimInput, 
-newParam = newParam.lst, 
-xsdName  = xsdName,
-newFileName = newSimInputFile)
+   xmlSimInput = xmlSimInput, 
+   newParam = newParam.lst, 
+   xsdName  = xsdName,
+   newFileName = newSimInputFile)
 
 }

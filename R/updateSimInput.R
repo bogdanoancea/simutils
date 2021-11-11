@@ -38,15 +38,14 @@
 #'         list(mean = 140, sd = 18),
 #'         type = 'Normal')),
 #'     type = 'random_walk_closed_map'))
-#' xsdName  <- file.path(
-#'   rootPath, 
+#' xsdName  <- file.path(rootPath, 
 #'   'extdata/metadata/input_files/schema_definition', 'simulation_dict.xsd')
 #' newSimInputFile <- file.path(Sys.getenv('R_USER'), 'newSimulation.xml')
 #' updateSimInput(
-#' xmlSimInput = xmlSimInput, 
-#' newParam = newParam.lst, 
-#' xsdName  = xsdName,
-#' newFileName = newSimInputFile)
+#'    xmlSimInput = xmlSimInput, 
+#'    newParam = newParam.lst, 
+#'    xsdName  = xsdName,
+#'    newFileName = newSimInputFile)
 #' 
 #' @export
 
@@ -56,7 +55,7 @@ updateSimInput <- function(xmlSimInput, newParam, xsdName, newFileName = NULL){
   cat(paste0('[simutils::updateSimInput] Validating ', xmlSimInputName , '...   '))
   
   xmlValid <- validate_xml(xsdName, xmlSimInput) 
-  if (xmlValid != 0) {
+  if (xmlValid != TRUE) {
     
     stop(paste0('[simutils::updateSimInput] The xml object ', xmlSimInputName, ' is not valid.\n'))
     
@@ -78,7 +77,7 @@ updateSimInput <- function(xmlSimInput, newParam, xsdName, newFileName = NULL){
   newxmlInput.xml <- as_xml_document(newxmlInput.lst)
   cat('[simutils::updateSimInput] Validating updated xml object... \n')
   newxmlValid <- validate_xml(xsdName, newxmlInput.xml)
-  if (newxmlValid != 0) {
+  if (newxmlValid != TRUE) {
     
     stop(paste0('[simutils::updateSimInput] The new xml object ', xmlSimInputName, ' is not valid.\n'))
     

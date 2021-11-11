@@ -28,7 +28,9 @@
 #' mapFile           <- 'map.wkt'
 #' personsCFGFile    <- 'persons.xml'
 #' antennasCFGFile   <- 'antennas.xml'
-#' output_folder     <- file.path(path_home(), 'example_docker')
+#' output_folder     <- file.path(fs::path_home(), 'example_docker')
+#' \dontrun{
+#' # run only after checking your installation of docker
 #' runDockerImage(
 #'   dockerImage = dockerImage,
 #'   input_folder = input_folder,
@@ -36,9 +38,8 @@
 #'   mapFile = mapFile,
 #'   personsCFGFile = personsCFGFile,
 #'   antennasCFGFile = antennasCFGFile,
-#'   output_folder = output_folder
-#' )
-#' 
+#'   output_folder = output_folder)
+#' }
 #' @import fs
 #' @export 
 runDockerImage <- function(

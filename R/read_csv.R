@@ -35,6 +35,9 @@
 #' @export
 read_csv <- function(xmlFileName, csvFileName) {
   
+  spec <- variable <- variable2 <- var_coincidence1 <- var_coincidence2 <-
+    var_coincidence <- NULL
+  
   mc <- match.call()
   mc[[1L]] <- validate_csv
   valid_csv <- eval(mc, parent.frame())

@@ -34,13 +34,55 @@
 #' xsd_fn <- file.path(rootPath, "metadata/input_files/schema_definition", 
 #'     "antennas_dict.xsd")
 #' validate_xml(xsd_fn, xml_fn)
-
 #' 
 #' # persons file (by filename)
 #' xml_fn <- file.path(rootPath, "input_files", "persons.xml")
 #' xsd_fn <- file.path(rootPath, "metadata/input_files/schema_definition", 
 #'     "persons_dict.xsd")
 #' validate_xml(xsd_fn, xml_fn)
+#' 
+#' # probabilities file (by filename)
+#' xml_fn <- file.path(rootPath, "input_files", "probabilities.xml")
+#' xsd_fn <- file.path(rootPath, "metadata/input_files/schema_definition", 
+#'     "probabilities_dict.xsd")
+#' validate_xml(xsd_fn, xml_fn)
+#' 
+#' # antennaCells_dict file (by filename)
+#' xml_fn <- file.path(rootPath, "metadata/output_files", "antennaCells_dict.xml")
+#' xsd_fn <- file.path(rootPath, "metadata/output_files/schema_definition", 
+#'     "antennaCells_dict.xsd")
+#' validate_xml(xsd_fn, xml_fn)
+#'
+#' # antennas_dict file (by filename)
+#' xml_fn <- file.path(rootPath, "metadata/output_files", "antennas_dict.xml")
+#' xsd_fn <- file.path(rootPath, "metadata/output_files/schema_definition", 
+#'     "antennas_dict.xsd")
+#' validate_xml(xsd_fn, xml_fn)
+#' 
+#' # events_dict file (by filename)
+#' xml_fn <- file.path(rootPath, "metadata/output_files", "events_dict.xml")
+#' xsd_fn <- file.path(rootPath, "metadata/output_files/schema_definition", 
+#'     "events_dict.xsd")
+#' validate_xml(xsd_fn, xml_fn)
+#' 
+#' # grid_dict file (by filename)
+#' xml_fn <- file.path(rootPath, "metadata/output_files", "grid_dict.xml")
+#' xsd_fn <- file.path(rootPath, "metadata/output_files/schema_definition", 
+#'     "grid_dict.xsd")
+#' validate_xml(xsd_fn, xml_fn)
+#'  
+#' # persons_dict file (by filename)
+#' xml_fn <- file.path(rootPath, "metadata/output_files", "persons_dict.xml")
+#' xsd_fn <- file.path(rootPath, "metadata/output_files/schema_definition", 
+#'     "persons_dict.xsd")
+#' validate_xml(xsd_fn, xml_fn)   
+#' 
+#' # SignalMeasure_dict file (by filename)
+#' xml_fn <- file.path(rootPath, "metadata/output_files", "SignalMeasure_dict.xml")
+#' xsd_fn <- file.path(rootPath, "metadata/output_files/schema_definition", 
+#'     "SignalMeasure_dict.xsd")
+#' validate_xml(xsd_fn, xml_fn)
+#'     
 #' 
 #' @export
 validate_xml <- function(xsdFileName, xmlObject) {

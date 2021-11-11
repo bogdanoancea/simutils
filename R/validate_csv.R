@@ -21,6 +21,37 @@
 #' csv_fn <- file.path(rootPath, "output_files", "antennas.csv")
 #' xml_fn <- file.path(rootPath, "metadata/output_files", "antennas_dict.xml")
 #' validate_csv(xml_fn, csv_fn)
+#' 
+#'# antennacells_mno1 file
+#' csv_fn <- file.path(rootPath, "output_files", "AntennaCells_MNO1.csv")
+#' xml_fn <- file.path(rootPath, "metadata/output_files", "antennaCells_dict.xml")
+#' validate_csv(xml_fn, csv_fn)
+#' 
+#' # antennainfo_mno_mno1 file
+#' csv_fn <- file.path(rootPath, "output_files", "AntennaInfo_MNO_MNO1.csv")
+#' xml_fn <- file.path(rootPath, "metadata/output_files", "events_dict.xml")
+#' validate_csv(xml_fn, csv_fn)
+#'  
+#' # grid file
+#' csv_fn <- file.path(rootPath, "output_files", "grid.csv")
+#' xml_fn <- file.path(rootPath, "metadata/output_files", "grid_dict.xml")
+#' validate_csv(xml_fn, csv_fn)
+#' 
+#' # Column names Tile ID, Mobile Phone(s) ID are not valid column name
+#' # persons file 
+#' \dontrun{ 
+#' csv_fn <- file.path(rootPath, "output_files", "persons.csv")
+#' xml_fn <- file.path(rootPath, "metadata/output_files", "persons_dict.xml")
+#' validate_csv(xml_fn, csv_fn)
+#' }
+#' csv_fn <- file.path(rootPath, "output_files", "persons_dash.csv")
+#' xml_fn <- file.path(rootPath, "metadata/output_files", "persons_dash_dict.xml")
+#' validate_csv(xml_fn, csv_fn)
+#'  
+#' # signalmeasure_mno1 file 
+#' csv_fn <- file.path(rootPath, "output_files", "SignalMeasure_MNO1.csv")
+#' xml_fn <- file.path(rootPath, "metadata/output_files", "SignalMeasure_dict.xml")
+#' validate_csv(xml_fn, csv_fn) 
 #'  
 #' @export
 validate_csv <- function(xmlFileName, csvFileName) {

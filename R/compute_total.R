@@ -59,29 +59,30 @@
 #'   
 #' simData <- simutils::read_simData(filenames, crs = 2062)
 #' # Counting individuals by subregion and time
-#' compute_total(filenames$individuals, 'individuals', by = c('t', 'Subregion_long'))
+#' compute_total(simData$individuals, 'individuals', by = c('t', 'Subregion_long'))
 #'
 #' # Counting individuals by subregion and time with 0 devices
-#' compute_total(filenames$individuals, 'individuals_dev0', by = c('t', 'Subregion_long'))
+#' compute_total(simData$individuals, 'individuals_dev0', by = c('t', 'Subregion_long'))
 #' 
 #' # Counting individuals by subregion and time with 1 device
-#' compute_total(filenames$individuals, 'individuals_dev1', by = c('t', 'Subregion_long'))
+#' compute_total(simData$individuals, 'individuals_dev1', by = c('t', 'Subregion_long'))
 #'
 #' # Counting individuals by subregion and time with 2 devices
-#' compute_total(filenames$individuals, 'individuals_dev2', by = c('t', 'Subregion_long'))
+#' compute_total(simData$individuals, 'individuals_dev2', by = c('t', 'Subregion_long'))
 #' 
 #' # Counting devices by subregion and time
-#' compute_total(filenames$individuals, 'devices', by = c('t', 'Subregion_long'))
+#' compute_total(simData$individuals, 'devices', by = c('t', 'Subregion_long'))
 #' 
 #' 
 #' @export
 compute_total <- function(individuals.sf, what, by){
   
   by_missing <- setdiff(by, names(individuals.sf))
+
   if (length(by_missing)) {
     
     stop(paste0('[simutils::compute_total] The following variables in by are missing in the data set:', 
-                paste0(by_missing, collapse = TRUE)))
+                paste0(by_missing, collapse = ', ')))
     
   }
   
@@ -102,7 +103,8 @@ compute_total <- function(individuals.sf, what, by){
     N.dt <- individuals.dt[
     , .N, by = by]
     setnames(N.dt, 'N', what)
-    N.dt <- merge(N.dt, master.dt, by = by, all = TRUE)
+    N.dt <- merge(N.dt, master.dt, by = by, all = TRUE)[
+      is.na(get(what)), (what) := 0]
     return(N.dt)
   }
   

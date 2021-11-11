@@ -16,11 +16,7 @@
 #' 
 #' @import sf data.table stars
 #' 
-#' @importFrom readr read_delim
-#' 
-#' @importFrom tibble as_tibble 
-#' 
-#' @include readWKT_as_sf.R readWKT_as_sfc.R read_csv.R xml_attrs2dt.R RcppExports.R xml_getters.R
+#' @include read_csv.R xml_attrs2dt.R RcppExports.R xml_getters.R
 #' 
 #' @examples
 #' filename_map      <- c(
@@ -86,9 +82,9 @@ read_simData <- function(filenames, crs = NA_integer_){
   cat(' ok.\n')
   
   # Region names
-  label_spUnit <- getSpatialUnitName(filename_map[['xml']], 'map')
+  label_spUnit <- getSpatialUnitName(filenames$map[['xml']], 'map')
   names_spUnit <- map.sf[[label_spUnit]]
-  label_nestSpUnits <- getNestingSpatialUnitName(filename_map[['xml']], 'map')
+  label_nestSpUnits <- getNestingSpatialUnitName(filenames$map[['xml']], 'map')
   
   # Read network parameters
   cat('[simutils::read_simData] Reading and parsing network parameters file...\n')
@@ -144,7 +140,7 @@ read_simData <- function(filenames, crs = NA_integer_){
   
   idVar <- names(signal.dt)[!grepl('[Tt]ile', names(signal.dt))]
   tileCols <- setdiff(names(signal.dt), idVar)
-  signal.array <- array(t(as.matrix(signal.dt[, ..tileCols])), 
+  signal.array <- array(t(as.matrix(signal.dt[, .SD, .SDcols = tileCols])), 
                         dim = c(nx, ny, nrow(signal.dt)),
                         dimnames = list(0:(nx-1), 0:(ny-1), signal.dt[[idVar]])
   )
