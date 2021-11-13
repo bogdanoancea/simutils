@@ -16,7 +16,7 @@
 #' 
 #' @import sf data.table stars
 #' 
-#' @include read_csv.R xml_attrs2dt.R RcppExports.R xml_getters.R
+#' @include read_csv.R xml_attrs2dt.R xml_getters.R
 #' 
 #' @examples
 #' filename_map      <- c(
