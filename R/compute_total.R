@@ -58,24 +58,28 @@
 #'   
 #' simData <- simutils::read_simData(filenames, crs = 2062)
 #' # Counting individuals by subregion and time
-#' compute_total(simData$individuals, 'individuals', by = c('t', 'Subregion_long'))
+#' compute_total(simData$individuals, 'individuals', 
+#'               by = c('t', 'Subregion_long'))
 #'
 #' # Counting individuals by subregion and time with 0 devices
-#' compute_total(simData$individuals, 'individuals_dev0', by = c('t', 'Subregion_long'))
+#' compute_total(simData$individuals, 'individuals_dev0', 
+#'               by = c('t', 'Subregion_long'))
 #' 
 #' # Counting individuals by subregion and time with 1 device
-#' compute_total(simData$individuals, 'individuals_dev1', by = c('t', 'Subregion_long'))
+#' compute_total(simData$individuals, 'individuals_dev1', 
+#'               by = c('t', 'Subregion_long'))
 #'
 #' # Counting individuals by subregion and time with 2 devices
-#' compute_total(simData$individuals, 'individuals_dev2', by = c('t', 'Subregion_long'))
+#' compute_total(simData$individuals, 'individuals_dev2', 
+#'               by = c('t', 'Subregion_long'))
 #' 
 #' # Counting devices by subregion and time
-#' compute_total(simData$individuals, 'devices', by = c('t', 'Subregion_long'))
+#' compute_total(simData$individuals, 'devices', 
+#'               by = c('t', 'Subregion_long'))
 #' 
 #' # Counting multiple totals by subregion and time
-#' compute_total(simData$individuals, 
-#'    c('individuals', 'individuals_dev0', 'individuals_dev1', 
-#'      'individuals_dev2', 'devices'), by = c('t', 'Subregion_long'))
+#' totals <- c('individuals', 'individuals_dev0', 'devices')
+#' compute_total(simData$individuals, totals, by = c('t', 'Subregion_long'))
 #' 
 #' @export
 compute_total <- function(individuals.sf, what, by){
