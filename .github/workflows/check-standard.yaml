@@ -46,9 +46,8 @@ jobs:
       - uses: r-lib/actions/check-r-package@v1
       
       -name: Check
-        run: rcmdcheck::rcmdcheck(args = c("--no-multiarch"))
-        
-    	shell: bash
+        run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran", "--no-multiarch"), error_on = "warning", check_dir = "check")
+    	  shell: bash
     	    
       - name: Show testthat output
         if: always()
