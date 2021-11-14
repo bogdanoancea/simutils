@@ -31,6 +31,7 @@ Suggests:
 RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
 Collate: 
+    'compute_odmatrix.R'
     'compute_total.R'
     'flatten_deepest.R'
     'getRootPath.R'
