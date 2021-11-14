@@ -23,7 +23,6 @@ Imports:
     readr (>= 2.0.1),
     data.table (>= 1.14.0),
     tibble (>= 3.1.4),
-    Rcpp (>= 1.0.0),
     dplyr (>= 1.0.7)
 SystemRequirements: Java JDK 8 or higher (for JRI/REngine JDK 8 or higher)
 Suggests:
@@ -32,7 +31,6 @@ Suggests:
 RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
 Collate: 
-    'RcppExports.R'
     'compute_total.R'
     'flatten_deepest.R'
     'getRootPath.R'
@@ -52,6 +50,3 @@ Collate:
     'simutils.R'
     'validate_xml.R'
     'updateSimInput.R'
-    'usedynLib.R'
-LinkingTo: 
-    Rcpp

@@ -17,7 +17,6 @@
 #' 
 #' @import sf data.table
 #' 
-#' 
 #' @examples
 #' filename_map      <- c(
 #'  xml= system.file("extdata/input_files", "map.xml", package = "simutils"),
@@ -59,34 +58,57 @@
 #'   
 #' simData <- simutils::read_simData(filenames, crs = 2062)
 #' # Counting individuals by subregion and time
-#' compute_total(simData$individuals, 'individuals', by = c('t', 'Subregion_long'))
+#' compute_total(simData$individuals, 'individuals', 
+#'               by = c('t', 'Subregion_long'))
 #'
 #' # Counting individuals by subregion and time with 0 devices
-#' compute_total(simData$individuals, 'individuals_dev0', by = c('t', 'Subregion_long'))
+#' compute_total(simData$individuals, 'individuals_dev0', 
+#'               by = c('t', 'Subregion_long'))
 #' 
 #' # Counting individuals by subregion and time with 1 device
-#' compute_total(simData$individuals, 'individuals_dev1', by = c('t', 'Subregion_long'))
+#' compute_total(simData$individuals, 'individuals_dev1', 
+#'               by = c('t', 'Subregion_long'))
 #'
 #' # Counting individuals by subregion and time with 2 devices
-#' compute_total(simData$individuals, 'individuals_dev2', by = c('t', 'Subregion_long'))
+#' compute_total(simData$individuals, 'individuals_dev2', 
+#'               by = c('t', 'Subregion_long'))
 #' 
 #' # Counting devices by subregion and time
-#' compute_total(simData$individuals, 'devices', by = c('t', 'Subregion_long'))
+#' compute_total(simData$individuals, 'devices', 
+#'               by = c('t', 'Subregion_long'))
 #' 
+#' # Counting multiple totals by subregion and time
+#' totals <- c('individuals', 'individuals_dev0', 'devices')
+#' compute_total(simData$individuals, totals, by = c('t', 'Subregion_long'))
 #' 
 #' @export
 compute_total <- function(individuals.sf, what, by){
   
+  
+  what_allwdVal <- c(
+    'individuals', 'individuals_dev0', 'individuals_dev1', 
+    'individuals_dev2', 'devices'
+  )
+  
+  what_wrong <- setdiff(what, what_allwdVal)
+  
+  if (length(what_wrong) > 0) {
+    
+    stop(paste0('[simutils::compute_total] The following variables in what are not allowed:', 
+                paste0(what_wrong, collapse = ', ')))
+    
+  }
+  
   by_missing <- setdiff(by, names(individuals.sf))
 
-  if (length(by_missing)) {
+  if (length(by_missing) > 0) {
     
     stop(paste0('[simutils::compute_total] The following variables in by are missing in the data set:', 
                 paste0(by_missing, collapse = ', ')))
     
   }
   
-  individuals.dt <- st_drop_geometry(individuals.sf)
+  individuals.dt <- sf::st_drop_geometry(individuals.sf)
   by_values.list <- vector('list', length(by))
   names(by_values.list) <- by
   for (by_var in by) {
@@ -96,67 +118,73 @@ compute_total <- function(individuals.sf, what, by){
   }
   master.dt <- data.table(Reduce(expand.grid, by_values.list))
   setnames(master.dt, by)
-
-  # what == individuals
-  if (what == 'individuals'){
-    
-    N.dt <- individuals.dt[
-    , .N, by = by]
-    setnames(N.dt, 'N', what)
-    N.dt <- merge(N.dt, master.dt, by = by, all = TRUE)[
-      is.na(get(what)), (what) := 0]
-    return(N.dt)
-  }
   
-  # what == individuals with 0 devices
-  if (what == 'individuals_dev0'){
-    
-    var_ndev <- names(individuals.dt)[which(attr(individuals.dt, 'specs') == 'specs_ndev')]
-    N.dt <- individuals.dt[
-      get(var_ndev) == 0][
+  totals.list <- lapply(what, function(wt){
+  
+    # what == individuals
+    if (wt == 'individuals'){
+      
+      N.dt <- individuals.dt[
       , .N, by = by]
-    setnames(N.dt, 'N', what)
-    N.dt <- merge(N.dt, master.dt, by = by, all = TRUE)[
-      is.na(get(what)), (what) := 0]
-    return(N.dt)
-  }
-  
-  # what == individuals with 0 devices
-  if (what == 'individuals_dev1'){
+      setnames(N.dt, 'N', wt)
+      N.dt <- merge(N.dt, master.dt, by = by, all = TRUE)[
+        is.na(get(wt)), (wt) := 0]
+      return(N.dt)
+    }
     
-    var_ndev <- names(individuals.dt)[which(attr(individuals.dt, 'specs') == 'specs_ndev')]
-    N.dt <- individuals.dt[
-      get(var_ndev) == 1][
+    # what == individuals with 0 devices
+    if (wt == 'individuals_dev0'){
+      
+      var_ndev <- names(individuals.dt)[which(attr(individuals.dt, 'specs') == 'specs_ndev')]
+      N.dt <- individuals.dt[
+        get(var_ndev) == 0][
         , .N, by = by]
-    setnames(N.dt, 'N', what)
-    N.dt <- merge(N.dt, master.dt, by = by, all = TRUE)[
-      is.na(get(what)), (what) := 0]
-    return(N.dt)
-  }
-  
-  # what == individuals with 2 devices
-  if (what == 'individuals_dev2'){
+      setnames(N.dt, 'N', wt)
+      N.dt <- merge(N.dt, master.dt, by = by, all = TRUE)[
+        is.na(get(wt)), (wt) := 0]
+      return(N.dt)
+    }
     
-    var_ndev <- names(individuals.dt)[which(attr(individuals.dt, 'specs') == 'specs_ndev')]
-    N.dt <- individuals.dt[
-      get(var_ndev) == 2][
-        , .N, by = by]
-    setnames(N.dt, 'N', what)
-    N.dt <- merge(N.dt, master.dt, by = by, all = TRUE)[
-      is.na(get(what)), (what) := 0]
-    return(N.dt)
-  }
-  
-  # what == devices
-  if (what == 'devices'){
+    # what == individuals with 0 devices
+    if (wt == 'individuals_dev1'){
+      
+      var_ndev <- names(individuals.dt)[which(attr(individuals.dt, 'specs') == 'specs_ndev')]
+      N.dt <- individuals.dt[
+        get(var_ndev) == 1][
+          , .N, by = by]
+      setnames(N.dt, 'N', wt)
+      N.dt <- merge(N.dt, master.dt, by = by, all = TRUE)[
+        is.na(get(wt)), (wt) := 0]
+      return(N.dt)
+    }
     
-    var_ndev <- names(individuals.dt)[which(attr(individuals.dt, 'specs') == 'specs_ndev')]
-    N.dt <- individuals.dt[
-        , list(devices = sum(get(var_ndev))), by = by]
-    N.dt <- merge(N.dt, master.dt, by = by, all = TRUE)[
-      is.na(get(what)), (what) := 0]
-    return(N.dt)
-  }
-  
-  
+    # what == individuals with 2 devices
+    if (wt == 'individuals_dev2'){
+      
+      var_ndev <- names(individuals.dt)[which(attr(individuals.dt, 'specs') == 'specs_ndev')]
+      N.dt <- individuals.dt[
+        get(var_ndev) == 2][
+          , .N, by = by]
+      setnames(N.dt, 'N', wt)
+      N.dt <- merge(N.dt, master.dt, by = by, all = TRUE)[
+        is.na(get(wt)), (wt) := 0]
+      return(N.dt)
+    }
+    
+    # what == devices
+    if (wt == 'devices'){
+      
+      var_ndev <- names(individuals.dt)[which(attr(individuals.dt, 'specs') == 'specs_ndev')]
+      N.dt <- individuals.dt[
+          , list(devices = sum(get(var_ndev))), by = by]
+      N.dt <- merge(N.dt, master.dt, by = by, all = TRUE)[
+        is.na(get(wt)), (wt) := 0]
+      return(N.dt)
+    }
+    
+  }) # totals.list
+  N_combined.dt <- Reduce(function(x, y){merge(x, y, by = intersect(names(x), names(y)))}, totals.list)
+  return(N_combined.dt)
+
+
 }

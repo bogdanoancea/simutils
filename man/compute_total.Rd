@@ -77,5 +77,9 @@ compute_total(simData$individuals, 'individuals_dev2', by = c('t', 'Subregion_lo
 # Counting devices by subregion and time
 compute_total(simData$individuals, 'devices', by = c('t', 'Subregion_long'))
 
+# Counting multiple totals by subregion and time
+compute_total(simData$individuals, 
+   c('individuals', 'individuals_dev0', 'individuals_dev1', 
+     'individuals_dev2', 'devices'), by = c('t', 'Subregion_long'))
 
 }
