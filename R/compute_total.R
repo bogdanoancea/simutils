@@ -8,8 +8,17 @@
 #' 
 #' @param by character vector denoting the variable names to group the 
 #' computation.
+#'
+#' @param by_values named list (names given by variable \code{by}) with the
+#' values of each by variable. The default value is \code{NULL}, in which case
+#' values are taken from \code{individuals.sf}.
 #' 
-#' @details Return a data.table with the totals by group.
+#' @details Return a data.table with the totals by group. Notice than when 
+#' not specifying the values of the \code{by} argument, missing values are not
+#' included in the final \code{data.table}, i.e. amounting to implicit value 0.
+#' Otherwise, all values of the \code{by} variable will be included with the 
+#' corresponding increase of computational overhead to explicitly include zero
+#' values.
 #' 
 #' @rdname compute_total
 #'
@@ -81,8 +90,14 @@
 #' totals <- c('individuals', 'individuals_dev0', 'devices')
 #' compute_total(simData$individuals, totals, by = c('t', 'Subregion_long'))
 #' 
+#' 
+#' # Counting devices by tile and time
+#' compute_total(simData$individuals, 'devices', by = c('t', 'TILE ID'),
+#'               by_values = list(`TILE ID` = 0:1599))
+#'               
+#'               
 #' @export
-compute_total <- function(individuals.sf, what, by){
+compute_total <- function(individuals.sf, what, by, by_values = NULL){
   
   
   what_allwdVal <- c(
@@ -109,13 +124,43 @@ compute_total <- function(individuals.sf, what, by){
   }
   
   individuals.dt <- sf::st_drop_geometry(individuals.sf)
-  by_values.list <- vector('list', length(by))
-  names(by_values.list) <- by
-  for (by_var in by) {
+  
+  if (is.null(by_values)) {
     
-    by_values.list[[by_var]] <- unique(individuals.dt[[by_var]])
+    by_values.list <- vector('list', length(by))
+    names(by_values.list) <- by
+    for (by_var in by) {
+    
+      by_values.list[[by_var]] <- sort(unique(individuals.dt[[by_var]]))
+    
+    }
+  } else {
+    
+    if (any(!names(by_values) %in% by)) {
+      
+      stop('[simutils::compute_total] The names of the list by_values must be the variables in by.')
+      
+    }
+    
+    values_nonSpec <- setdiff(by, names(by_values))
+    by_values.list <- vector('list', length(by))
+    names(by_values.list) <- by
+    for (by_var in by) {
+      
+      if (by_var %in% values_nonSpec){
+        
+        by_values.list[[by_var]] <- sort(unique(individuals.dt[[by_var]]))
+        
+      } else {
+        
+        by_values.list[[by_var]] <- sort(by_values[[by_var]])
+
+      }
+      
+    }
     
   }
+  
   master.dt <- data.table(Reduce(expand.grid, by_values.list))
   setnames(master.dt, by)
   
@@ -127,6 +172,7 @@ compute_total <- function(individuals.sf, what, by){
       N.dt <- individuals.dt[
       , .N, by = by]
       setnames(N.dt, 'N', wt)
+      
       N.dt <- merge(N.dt, master.dt, by = by, all = TRUE)[
         is.na(get(wt)), (wt) := 0]
       return(N.dt)
