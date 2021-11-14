@@ -13,7 +13,6 @@
 #' 
 #' @param xsdFileName Path of the xsd file containing the schema.
 #' 
-#' 
 #' @param xmlObject Object of class \code{xml-document} from package \code{xml2}
 #' or \code{character} of length 1 with the path of the xml file.
 #' 
