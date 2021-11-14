@@ -66,6 +66,7 @@ validate_csv <- function(xmlFileName, csvFileName) {
     stop('[simviz::validate_csv] The name of the csv file is not valid.')
   }
 
+  
   colnames_xml <- unlist(purrr::map(xml.list, function(x){x[grep('ColName', names(x))]}))
   specnames_xml <- vapply(strsplit(names(colnames_xml), '.', fixed = TRUE), `[`, 1, FUN.VALUE = character(1))
   names(colnames_xml) <- specnames_xml

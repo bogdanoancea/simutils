@@ -15,7 +15,7 @@ build: doc
 	R CMD build .
 
 check: build
-	-R CMD check --as-cran simutils_$(VERSION).tar.gz
+	-R CMD check --no-multiarch --with-keep.source --as-cran simutils_$(VERSION).tar.gz
 	rm -rf simutils.Rcheck/
 
 man: doc
