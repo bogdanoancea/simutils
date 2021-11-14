@@ -20,38 +20,34 @@ computation.}
 Compute od matrix for different entities (individuals, devices...).
 }
 \details{
-Return a data.table with the origin-destination matrices by group.
+Return a data.table with the origin-destination matrices by group. Notice that missing
+count values in the \code{by} variables are not included in the final \code{data.table}, i.e.
+amounting to implicit zero values.
 }
 \examples{
 filename_map      <- c(
- xml= system.file("extdata/input_files", "map.xml", package = "simutils"),
- xsd= '')
+  xml= system.file("extdata/input_files", "map.xml", package = "simutils"), 
+  xsd= '')
   
 filename_network  <- c(
  csv= system.file("extdata/output_files/antennas.csv", package = "simutils"),
- xml= system.file("extdata/metadata/output_files/antennas_dict.xml", 
-                   package = "simutils"))
+ xml= system.file("extdata/metadata/output_files/antennas_dict.xml", package = "simutils"))
                    
 filename_signal <- c(
  csv= system.file("extdata/output_files/SignalMeasure_MNO1.csv", package = "simutils"),
- xml= system.file("extdata/metadata/output_files/SignalMeasure_dict.xml", 
-                   package = "simutils"))
+ xml= system.file("extdata/metadata/output_files/SignalMeasure_dict.xml", package = "simutils"))
                  
 filename_coverage <- c(
- csv= system.file("extdata/output_files", "AntennaCells_MNO1.csv", 
-                  package = "simutils"),
- xml= system.file("extdata/metadata/output_files/AntennaCells_dict.xml", 
-                  package = "simutils"))
+ csv= system.file("extdata/output_files", "AntennaCells_MNO1.csv", package = "simutils"),
+ xml= system.file("extdata/metadata/output_files/AntennaCells_dict.xml", package = "simutils"))
                        
 filename_grid <- c(
-  csv= system.file("extdata/output_files/grid.csv", package = "simutils"),
-  xml= system.file("extdata/metadata/output_files/grid_dict.xml", 
-                   package = "simutils")) 
+  csv= system.file("extdata/output_files/grid.csv", package = "simutils"), 
+  xml= system.file("extdata/metadata/output_files/grid_dict.xml", package = "simutils")) 
 
 filename_individ <- c(
   csv= system.file("extdata/output_files/persons_dash.csv", package = "simutils"),
-  xml= system.file("extdata/metadata/output_files/persons_dash_dict.xml", 
-                   package = "simutils"))   
+  xml= system.file("extdata/metadata/output_files/persons_dash_dict.xml", package = "simutils"))   
                        
 filenames <- list(
   map                = filename_map,
@@ -63,24 +59,19 @@ filenames <- list(
   
 simData <- simutils::read_simData(filenames, crs = 2062)
 # Counting individuals by subregion and time
-compute_odmatrix(simData$individuals, 'individuals', 
-              by = c('t', 'Subregion_long'))
+compute_odmatrix(simData$individuals, 'individuals', by = c('t', 'Subregion_long'))
 
 # Counting individuals by subregion and time with 0 devices
-compute_odmatrix(simData$individuals, 'individuals_dev0', 
-              by = c('t', 'Subregion_long'))
+compute_odmatrix(simData$individuals, 'individuals_dev0', by = c('t', 'Subregion_long'))
 
 # Counting individuals by subregion and time with 1 device
-compute_odmatrix(simData$individuals, 'individuals_dev1', 
-              by = c('t', 'Subregion_long'))
+compute_odmatrix(simData$individuals, 'individuals_dev1', by = c('t', 'Subregion_long'))
 
 # Counting individuals by subregion and time with 2 devices
-compute_total(simData$individuals, 'individuals_dev2', 
-compute_odmatrixby = c('t', 'Subregion_long'))
+compute_total(simData$individuals, 'individuals_dev2', by = c('t', 'Subregion_long'))
 
 # Counting devices by subregion and time
-compute_odmatrix(simData$individuals, 'devices', 
-              by = c('t', 'Subregion_long'))
+compute_odmatrix(simData$individuals, 'devices', by = c('t', 'Subregion_long'))
 
 # Counting multiple totals by subregion and time
 totals <- c('individuals', 'individuals_dev0', 'devices')

@@ -9,44 +9,40 @@
 #' @param by character vector denoting the variable names to group the 
 #' computation.
 #' 
-#' @details Return a data.table with the origin-destination matrices by group.
+#' @details Return a data.table with the origin-destination matrices by group. Notice that missing 
+#' count values in the \code{by} variables are not included in the final \code{data.table}, i.e. 
+#' amounting to implicit zero values.
 #' 
 #' @rdname compute_odmatrix
 #'
 #' @name compute_odmatrix
 #' 
-#' @import sf data.table
+#' @import data.table
 #' 
 #' @examples
 #' filename_map      <- c(
-#'  xml= system.file("extdata/input_files", "map.xml", package = "simutils"),
-#'  xsd= '')
+#'   xml= system.file("extdata/input_files", "map.xml", package = "simutils"), 
+#'   xsd= '')
 #'   
 #' filename_network  <- c(
 #'  csv= system.file("extdata/output_files/antennas.csv", package = "simutils"),
-#'  xml= system.file("extdata/metadata/output_files/antennas_dict.xml", 
-#'                    package = "simutils"))
+#'  xml= system.file("extdata/metadata/output_files/antennas_dict.xml", package = "simutils"))
 #'                    
 #' filename_signal <- c(
 #'  csv= system.file("extdata/output_files/SignalMeasure_MNO1.csv", package = "simutils"),
-#'  xml= system.file("extdata/metadata/output_files/SignalMeasure_dict.xml", 
-#'                    package = "simutils"))
+#'  xml= system.file("extdata/metadata/output_files/SignalMeasure_dict.xml", package = "simutils"))
 #'                  
 #' filename_coverage <- c(
-#'  csv= system.file("extdata/output_files", "AntennaCells_MNO1.csv", 
-#'                   package = "simutils"),
-#'  xml= system.file("extdata/metadata/output_files/AntennaCells_dict.xml", 
-#'                   package = "simutils"))
+#'  csv= system.file("extdata/output_files", "AntennaCells_MNO1.csv", package = "simutils"),
+#'  xml= system.file("extdata/metadata/output_files/AntennaCells_dict.xml", package = "simutils"))
 #'                        
 #' filename_grid <- c(
-#'   csv= system.file("extdata/output_files/grid.csv", package = "simutils"),
-#'   xml= system.file("extdata/metadata/output_files/grid_dict.xml", 
-#'                    package = "simutils")) 
+#'   csv= system.file("extdata/output_files/grid.csv", package = "simutils"), 
+#'   xml= system.file("extdata/metadata/output_files/grid_dict.xml", package = "simutils")) 
 #' 
 #' filename_individ <- c(
 #'   csv= system.file("extdata/output_files/persons_dash.csv", package = "simutils"),
-#'   xml= system.file("extdata/metadata/output_files/persons_dash_dict.xml", 
-#'                    package = "simutils"))   
+#'   xml= system.file("extdata/metadata/output_files/persons_dash_dict.xml", package = "simutils"))   
 #'                        
 #' filenames <- list(
 #'   map                = filename_map,
@@ -58,24 +54,19 @@
 #'   
 #' simData <- simutils::read_simData(filenames, crs = 2062)
 #' # Counting individuals by subregion and time
-#' compute_odmatrix(simData$individuals, 'individuals', 
-#'               by = c('t', 'Subregion_long'))
+#' compute_odmatrix(simData$individuals, 'individuals', by = c('t', 'Subregion_long'))
 #'
 #' # Counting individuals by subregion and time with 0 devices
-#' compute_odmatrix(simData$individuals, 'individuals_dev0', 
-#'               by = c('t', 'Subregion_long'))
+#' compute_odmatrix(simData$individuals, 'individuals_dev0', by = c('t', 'Subregion_long'))
 #' 
 #' # Counting individuals by subregion and time with 1 device
-#' compute_odmatrix(simData$individuals, 'individuals_dev1', 
-#'               by = c('t', 'Subregion_long'))
+#' compute_odmatrix(simData$individuals, 'individuals_dev1', by = c('t', 'Subregion_long'))
 #'
 #' # Counting individuals by subregion and time with 2 devices
-#' compute_total(simData$individuals, 'individuals_dev2', 
-#'compute_odmatrixby = c('t', 'Subregion_long'))
+#' compute_total(simData$individuals, 'individuals_dev2', by = c('t', 'Subregion_long'))
 #' 
 #' # Counting devices by subregion and time
-#' compute_odmatrix(simData$individuals, 'devices', 
-#'               by = c('t', 'Subregion_long'))
+#' compute_odmatrix(simData$individuals, 'devices', by = c('t', 'Subregion_long'))
 #' 
 #' # Counting multiple totals by subregion and time
 #' totals <- c('individuals', 'individuals_dev0', 'devices')
@@ -123,16 +114,6 @@ compute_odmatrix <- function(individuals.sf, what, by){
   time_increm.dt <- data.table(t = times[-length(times)], t_increm = time_increm)
   setnames(time_increm.dt, 't', var_t)
   
-  
-  by_values.list <- vector('list', length(by))
-  names(by_values.list) <- by
-  for (by_var in by) {
-    
-    by_values.list[[by_var]] <- unique(individuals.dt[[by_var]])
-    
-  }
-  master.dt <- data.table(Reduce(expand.grid, by_values.list))
-  setnames(master.dt, by)
 
   od_to.dt <- merge(individuals.dt, time_increm.dt, by = var_t, all.x = TRUE)[
     , time_pk := get(var_t) + t_increm][
@@ -161,11 +142,8 @@ compute_odmatrix <- function(individuals.sf, what, by){
         , .N, by = names_tofrom][order(get(paste0('from_', var_t)))]
       setnames(od.dt, 'N', wt)
       
-      od.dt <- merge(od.dt, master.dt, by.x = names_from, by.y = by, all = TRUE)[
-        !is.na(get(paste0('to_', var_t)))][
-        is.na(get(wt)), (wt) := 0]
+      return(od.dt)      
       
-      return(od.dt)
     }
     
     if (wt == 'individuals_dev0') {
@@ -176,10 +154,6 @@ compute_odmatrix <- function(individuals.sf, what, by){
           , .N, by = names_tofrom][order(get(paste0('from_', var_t)))]
       setnames(od.dt, 'N', wt)
       
-      
-      od.dt <- merge(od.dt, master.dt, by.x = names_from, by.y = by, all = TRUE)[
-        !is.na(get(paste0('to_', var_t)))][
-          is.na(get(wt)), (wt) := 0]
       
       return(od.dt)    
       
@@ -193,10 +167,6 @@ compute_odmatrix <- function(individuals.sf, what, by){
           , .N, by = names_tofrom][order(get(paste0('from_', var_t)))]
       setnames(od.dt, 'N', wt)
       
-      od.dt <- merge(od.dt, master.dt, by.x = names_from, by.y = by, all = TRUE)[
-        !is.na(get(paste0('to_', var_t)))][
-          is.na(get(wt)), (wt) := 0]
-      
       return(od.dt)    
       
     }
@@ -209,10 +179,6 @@ compute_odmatrix <- function(individuals.sf, what, by){
           , .N, by = names_tofrom][order(get(paste0('from_', var_t)))]
       setnames(od.dt, 'N', wt)
       
-      od.dt <- merge(od.dt, master.dt, by.x = names_from, by.y = by, all = TRUE)[
-        !is.na(get(paste0('to_', var_t)))][
-          is.na(get(wt)), (wt) := 0]
-      
       return(od.dt)    
       
     }
@@ -222,11 +188,7 @@ compute_odmatrix <- function(individuals.sf, what, by){
       var_ndev <- names(individuals.dt)[which(attr(individuals.dt, 'specs') == 'specs_ndev')]
       od.dt <- od.dt[
         , list(devices = sum(get(var_ndev))), by = names_tofrom][order(get(paste0('from_', var_t)))]
-  
-      od.dt <- merge(od.dt, master.dt, by.x = names_from, by.y = by, all = TRUE)[
-        !is.na(get(paste0('to_', var_t)))][
-          is.na(get(wt)), (wt) := 0]
-      
+
       return(od.dt)    
       
     }

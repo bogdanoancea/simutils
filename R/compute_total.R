@@ -24,7 +24,7 @@
 #'
 #' @name compute_total
 #' 
-#' @import sf data.table
+#' @import data.table
 #' 
 #' @examples
 #' filename_map      <- c(
@@ -125,6 +125,8 @@ compute_total <- function(individuals.sf, what, by, by_values = NULL){
   
   individuals.dt <- sf::st_drop_geometry(individuals.sf)
   
+  
+  
   if (is.null(by_values)) {
     
     by_values.list <- vector('list', length(by))
@@ -134,6 +136,7 @@ compute_total <- function(individuals.sf, what, by, by_values = NULL){
       by_values.list[[by_var]] <- sort(unique(individuals.dt[[by_var]]))
     
     }
+    
   } else {
     
     if (any(!names(by_values) %in% by)) {
