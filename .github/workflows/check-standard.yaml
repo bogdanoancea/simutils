@@ -44,7 +44,11 @@ jobs:
           extra-packages: rcmdcheck
 
       - uses: r-lib/actions/check-r-package@v1
-
+      
+      -name: Check
+        run: rcmdcheck::rcmdcheck(args = c(--no-multiarch))
+    	shell: bash
+    	    
       - name: Show testthat output
         if: always()
         run: find check -name 'testthat.Rout*' -exec cat '{}' \; || true
