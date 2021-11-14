@@ -4,7 +4,7 @@
 \alias{compute_total}
 \title{Compute totals for the number of entities (individuals, devices...).}
 \usage{
-compute_total(individuals.sf, what, by)
+compute_total(individuals.sf, what, by, by_values = NULL)
 }
 \arguments{
 \item{individuals.sf}{sf object with data about the individuals.}
@@ -15,12 +15,21 @@ are 'individuals', 'individuals_dev0', 'individuals_dev1', 'individuals_dev2'
 
 \item{by}{character vector denoting the variable names to group the
 computation.}
+
+\item{by_values}{named list (names given by variable \code{by}) with the
+values of each by variable. The default value is \code{NULL}, in which case
+values are taken from \code{individuals.sf}.}
 }
 \description{
 Compute totals for the number of entities (individuals, devices...).
 }
 \details{
-Return a data.table with the totals by group.
+Return a data.table with the totals by group. Notice than when
+not specifying the values of the \code{by} argument, missing values are not
+included in the final \code{data.table}, i.e. amounting to implicit value 0.
+Otherwise, all values of the \code{by} variable will be included with the
+corresponding increase of computational overhead to explicitly include zero
+values.
 }
 \examples{
 filename_map      <- c(
@@ -63,23 +72,33 @@ filenames <- list(
   
 simData <- simutils::read_simData(filenames, crs = 2062)
 # Counting individuals by subregion and time
-compute_total(simData$individuals, 'individuals', by = c('t', 'Subregion_long'))
+compute_total(simData$individuals, 'individuals', 
+              by = c('t', 'Subregion_long'))
 
 # Counting individuals by subregion and time with 0 devices
-compute_total(simData$individuals, 'individuals_dev0', by = c('t', 'Subregion_long'))
+compute_total(simData$individuals, 'individuals_dev0', 
+              by = c('t', 'Subregion_long'))
 
 # Counting individuals by subregion and time with 1 device
-compute_total(simData$individuals, 'individuals_dev1', by = c('t', 'Subregion_long'))
+compute_total(simData$individuals, 'individuals_dev1', 
+              by = c('t', 'Subregion_long'))
 
 # Counting individuals by subregion and time with 2 devices
-compute_total(simData$individuals, 'individuals_dev2', by = c('t', 'Subregion_long'))
+compute_total(simData$individuals, 'individuals_dev2', 
+              by = c('t', 'Subregion_long'))
 
 # Counting devices by subregion and time
-compute_total(simData$individuals, 'devices', by = c('t', 'Subregion_long'))
+compute_total(simData$individuals, 'devices', 
+              by = c('t', 'Subregion_long'))
 
 # Counting multiple totals by subregion and time
-compute_total(simData$individuals, 
-   c('individuals', 'individuals_dev0', 'individuals_dev1', 
-     'individuals_dev2', 'devices'), by = c('t', 'Subregion_long'))
+totals <- c('individuals', 'individuals_dev0', 'devices')
+compute_total(simData$individuals, totals, by = c('t', 'Subregion_long'))
 
+
+# Counting devices by tile and time
+compute_total(simData$individuals, 'devices', by = c('t', 'TILE ID'),
+              by_values = list(`TILE ID` = 0:1599))
+              
+              
 }
