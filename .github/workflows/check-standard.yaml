@@ -46,7 +46,7 @@ jobs:
           _R_CHECK_CRAN_INCOMING_: false
         run: |
           options(crayon.enabled = TRUE)
-          rcmdcheck::rcmdcheck(args = c("--no=multiarch"), build_args = c("--no-multiarch"))
+          rcmdcheck::rcmdcheck(args = c("--no-multiarch"), build_args = c("--no-multiarch"))
         shell: Rscript {0}
       
       - name: Show testthat output
