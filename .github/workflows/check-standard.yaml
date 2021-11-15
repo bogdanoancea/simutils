@@ -7,10 +7,6 @@ on:
     branches: [main, master]
 
 name: R-CMD-check
-inputs:
-  args:
-    description: 'Arguments to pass to the `args` parameter of rcmdcheck'
-    default: '"--no-multiarch", "--as-cran"'
 
 jobs:
   R-CMD-check:
@@ -43,6 +39,10 @@ jobs:
           use-public-rspm: true
 
       - uses: r-lib/actions/setup-r-dependencies@v1
+        inputs:
+          args:
+            description: 'Arguments to pass to the `args` parameter of rcmdcheck'
+            default: '"--no-multiarch", "--as-cran"'
         with:
           extra-packages: rcmdcheck
 
