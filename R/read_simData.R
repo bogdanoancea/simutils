@@ -154,6 +154,7 @@ read_simData <- function(filenames, crs = NA_integer_){
                         dimnames = list(0:(ny-1), 0:(nx-1), signal.dt[[idVar]])
   )
   
+
   grid.stars <- st_as_stars(signal.array)
   names(grid.stars) <- signal_type
   names(attr(grid.stars, 'dimensions')) <- c('x', 'y', idVar)
