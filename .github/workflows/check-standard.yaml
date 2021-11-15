@@ -7,10 +7,10 @@ on:
     branches: [main, master]
 
 name: R-CMD-check
-    inputs:
-      args:
-        description: 'Arguments to pass to the `args` parameter of rcmdcheck'
-        default: '"--no-multiarch", "--as-cran"'
+inputs:
+  args:
+    description: 'Arguments to pass to the `args` parameter of rcmdcheck'
+    default: '"--no-multiarch", "--as-cran"'
 
 jobs:
   R-CMD-check:
