@@ -41,21 +41,15 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
           extra-packages: rcmdcheck
-     - name: check-r-package
-        description: 'Action to check R package with rcmdcheck. Assumes that rcmdcheck has already been installed.'
-        author: 'Jim Hester'
+     - name: check r package
         inputs:
           args:
-            description: 'Arguments to pass to the `args` parameter of rcmdcheck'
             default: '"--no-multiarch", "--as-cran"'
           build_args:
-            description: 'Arguments to pass to the `build_args` parameter of rcmdcheck'
             default: '"--no-multiarch"'
           error-on:
-            description: 'What type of result should cause a build error?'
             default: '"warning"'
           check-dir:
-            description: 'Where should the check output go?'
             default: '"check"'
         runs:
           using: "composite"
