@@ -14,6 +14,11 @@ jobs:
 
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
 
+    inputs:
+      args:
+        description: 'Arguments to pass to the `args` parameter of rcmdcheck'
+        default: '"--no-multiarch", "--as-cran"'
+        
     strategy:
       fail-fast: false
       matrix:
@@ -45,8 +50,6 @@ jobs:
 
       - uses: r-lib/actions/check-r-package@v1
       
-      - name: Check
-        run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran", "--no-multiarch"), error_on = "warning", check_dir = "check")
       - name: Show testthat output
         if: always()
         run: find check -name 'testthat.Rout*' -exec cat '{}' \; || true
