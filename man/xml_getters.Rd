@@ -5,8 +5,8 @@
 \alias{getGridNoTilesX}
 \alias{getGridNoTilesY}
 \alias{getSignalType}
-\alias{getXTileDimColName}
-\alias{getYTileDimColName}
+\alias{getXTileDim}
+\alias{getYTileDim}
 \alias{getCellCoordName}
 \alias{getCellIDName}
 \alias{getSpatialUnitName}
@@ -22,9 +22,9 @@ getGridNoTilesY(xmlname, dataset)
 
 getSignalType(xmlname, dataset)
 
-getXTileDimColName(xmlname, dataset)
+getXTileDim(xmlname, dataset)
 
-getYTileDimColName(xmlname, dataset)
+getYTileDim(xmlname, dataset)
 
 getCellCoordName(xmlname, dataset)
 

@@ -135,11 +135,11 @@ getSignalType <- function(xmlname, dataset) {
 #' @rdname xml_getters
 #' 
 #' @export
-getXTileDimColName <- function(xmlname, dataset) {
+getXTileDim <- function(xmlname, dataset) {
   if (dataset == 'grid') {
     xml <- read_xml(xmlname)
-    XTileDimColName <- xml_text(xml_child(xml_child(xml, 'specs_grid_tile_dim'), 'XTileDimColName'))
-    return(XTileDimColName)
+    XTileDim <- xml_text(xml_child(xml_child(xml, 'specs_grid_tile_dim'), 'XTileDimColName'))
+    return(XTileDim)
   } 
   stop('[simutils::getSignalType] dataset not yet implemented.\n')
 }
@@ -147,11 +147,11 @@ getXTileDimColName <- function(xmlname, dataset) {
 #' @rdname xml_getters
 #' 
 #' @export
-getYTileDimColName <- function(xmlname, dataset) {
+getYTileDim <- function(xmlname, dataset) {
   if (dataset == 'grid') {
     xml <- read_xml(xmlname)
-    YTileDimColName <- xml_text(xml_child(xml_child(xml, 'specs_grid_tile_dim'), 'YTileDimColName'))
-    return(YTileDimColName)
+    YTileDim <- xml_text(xml_child(xml_child(xml, 'specs_grid_tile_dim'), 'YTileDimColName'))
+    return(YTileDim)
   } 
   stop('[simutils::getSignalType] dataset not yet implemented.\n')
 }

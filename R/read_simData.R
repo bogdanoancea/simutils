@@ -141,8 +141,8 @@ read_simData <- function(filenames, crs = NA_integer_){
   grid.dt <- read_csv(filenames$grid['xml'], filenames$grid['csv'])
   nx <- as.integer(grid.dt[[getGridNoTilesX(filenames$grid['xml'], 'grid')]])
   ny <- as.integer(grid.dt[[getGridNoTilesY(filenames$grid['xml'], 'grid')]])
-  deltax <- grid.dt[[getXTileDimColName(filenames$grid['xml'], 'grid')]]
-  deltay <- grid.dt[[getYTileDimColName(filenames$grid['xml'], 'grid')]]
+  deltax <- grid.dt[[getXTileDim(filenames$grid['xml'], 'grid')]]
+  deltay <- grid.dt[[getYTileDim(filenames$grid['xml'], 'grid')]]
   
   idVar <- names(signal.dt)[!grepl('[Tt]ile', names(signal.dt))]
   tileCols <- setdiff(names(signal.dt), idVar)
@@ -150,18 +150,20 @@ read_simData <- function(filenames, crs = NA_integer_){
   
   nAntennas <- nrow(signal.dt)
   signal.array <- array(t(as.matrix(signal.dt[, .SD, .SDcols = tileCols])), 
-                        dim = c(nx, ny, nAntennas),
-                        dimnames = list(0:(nx-1), 0:(ny-1), signal.dt[[idVar]])
+                        dim = c(ny, nx, nAntennas),
+                        dimnames = list(0:(ny-1), 0:(nx-1), signal.dt[[idVar]])
   )
-  signal.array <- aperm(signal.array, c(2,1,3))[nx:1,,]
-
+  
   grid.stars <- st_as_stars(signal.array)
   names(grid.stars) <- signal_type
   names(attr(grid.stars, 'dimensions')) <- c('x', 'y', idVar)
   
   map_bbox <- st_bbox(map.sf)
   xmin <- map_bbox$xmin
+  ymin <- map_bbox$ymin
+  xmax <- map_bbox$xmax
   ymax <- map_bbox$ymax
+  
   
   attr(grid.stars, 'dimensions')[['x']][['offset']] <- unname(xmin)
   attr(grid.stars, 'dimensions')[['x']][['delta']]  <- deltax
@@ -169,8 +171,8 @@ read_simData <- function(filenames, crs = NA_integer_){
   attr(grid.stars, 'dimensions')[['x']][['point']]  <- FALSE
   attr(grid.stars, 'dimensions')[['x']][['values']]  <- NULL
   
-  attr(grid.stars, 'dimensions')[['y']][['offset']] <- unname(ymax)
-  attr(grid.stars, 'dimensions')[['y']][['delta']]  <- -deltay
+  attr(grid.stars, 'dimensions')[['y']][['offset']] <- unname(ymin)
+  attr(grid.stars, 'dimensions')[['y']][['delta']]  <- deltay
   attr(grid.stars, 'dimensions')[['y']][['refsys']] <- st_crs(crs)
   attr(grid.stars, 'dimensions')[['y']][['point']]  <- FALSE
   attr(grid.stars, 'dimensions')[['y']][['values']]  <- NULL
@@ -181,7 +183,7 @@ read_simData <- function(filenames, crs = NA_integer_){
   grid.stars <- st_crop(grid.stars, st_union(map.sf))
   
   cat(' ok.\n')
-  
+
   # Read individuals
   cat('[simutils::read_simData] Reading and parsing persons file ...\n')
   individuals.dt <- read_csv(filenames$individuals['xml'], filenames$individuals['csv'])
