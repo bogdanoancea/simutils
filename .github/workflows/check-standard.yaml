@@ -41,26 +41,13 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
           extra-packages: rcmdcheck
-     - name: check r package
-        inputs:
-          args:
-            default: '"--no-multiarch", "--as-cran"'
-          build_args:
-            default: '"--no-multiarch"'
-          error-on:
-            default: '"warning"'
-          check-dir:
-            default: '"check"'
-        runs:
-          using: "composite"
-          steps:
-            - name: Check
-              env:
-                _R_CHECK_CRAN_INCOMING_: false
-              run: |
-                options(crayon.enabled = TRUE)
-                rcmdcheck::rcmdcheck(args = c(${{ inputs.args }}), build_args = c(${{ inputs.build_args }}), error_on = ${{ inputs.error-on }}, check_dir = ${{ inputs.check-dir }})
-              shell: Rscript {0}
+      - name: Check
+        env:
+          _R_CHECK_CRAN_INCOMING_: false
+        run: |
+          options(crayon.enabled = TRUE)
+          rcmdcheck::rcmdcheck(args = c("--no=multiarch""), build_args = c("--no-multiarch"))
+        shell: Rscript {0}
       
       - name: Show testthat output
         if: always()
