@@ -101,6 +101,10 @@ read_simData <- function(filenames, crs = NA_integer_){
   map_nogeom <- st_drop_geometry(map.sf[, c(label_spUnit, label_nestSpUnits)])
   map_cols_idx <- which(names(map.sf) %in% c(label_spUnit, label_nestSpUnits))
   map_cols_attr <- attr(map.sf, 'specs')[map_cols_idx]
+  
+  var_time    <- names(network.sf)[which(attr(network.sf, 'specs') == 'specs_time')]
+  var_antenna <- names(network.sf)[which(attr(network.sf, 'specs') == 'specs_cells')]
+  network.sf <- network.sf[order(network.sf[[var_antenna]], network.sf[[var_time]]), ]
 
   network.sf <- dplyr::left_join(
     network.sf, 
@@ -122,6 +126,8 @@ read_simData <- function(filenames, crs = NA_integer_){
   coverage.sf[[cellCoord_colname]] <- NULL
   coverage.sf <- st_intersection(coverage.sf, st_union(map.sf))
   attr(coverage.sf, 'specs') <- c('specs_cells', 'geometry')
+  var_antenna <- names(coverage.sf)[which(attr(coverage.sf, 'specs') == 'specs_cells')]
+  coverage.sf <- coverage.sf[order(coverage.sf[[var_antenna]]), ]
   cat(' ok.\n')  
 
   # Read signal per tile

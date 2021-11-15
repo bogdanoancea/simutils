@@ -75,6 +75,7 @@
 #' @export
 compute_odmatrix <- function(individuals.sf, what, by){
   
+  t_increm <- time_pk <- NULL
   
   what_allwdVal <- c(
     'individuals', 'individuals_dev0', 'individuals_dev1', 
