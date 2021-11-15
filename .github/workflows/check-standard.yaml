@@ -41,7 +41,6 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
           extra-packages: rcmdcheck
-
      - name: 'check-r-package'
         description: 'Action to check R package with rcmdcheck. Assumes that rcmdcheck has already been installed.'
         author: 'Jim Hester'
