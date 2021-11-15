@@ -146,11 +146,15 @@ read_simData <- function(filenames, crs = NA_integer_){
   
   idVar <- names(signal.dt)[!grepl('[Tt]ile', names(signal.dt))]
   tileCols <- setdiff(names(signal.dt), idVar)
+  signal.dt <- signal.dt[order(get(idVar))]
+  
+  nAntennas <- nrow(signal.dt)
   signal.array <- array(t(as.matrix(signal.dt[, .SD, .SDcols = tileCols])), 
-                        dim = c(nx, ny, nrow(signal.dt)),
+                        dim = c(nx, ny, nAntennas),
                         dimnames = list(0:(nx-1), 0:(ny-1), signal.dt[[idVar]])
   )
-  
+  signal.array <- aperm(signal.array, c(2,1,3))[nx:1,,]
+
   grid.stars <- st_as_stars(signal.array)
   names(grid.stars) <- signal_type
   names(attr(grid.stars, 'dimensions')) <- c('x', 'y', idVar)
@@ -175,6 +179,7 @@ read_simData <- function(filenames, crs = NA_integer_){
   
   attr(attr(grid.stars, 'dimensions'), 'raster')[['dimensions']] <- c('x', 'y')
   grid.stars <- st_crop(grid.stars, st_union(map.sf))
+  
   cat(' ok.\n')
   
   # Read individuals
