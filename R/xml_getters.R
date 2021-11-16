@@ -6,8 +6,6 @@
 #' 
 #' @import sf xml2 data.table
 #' 
-#' @include readWKT_as_sf.R
-#' 
 #' @examples
 #' xmlname <- system.file(
 #'   "extdata/metadata/output_files/antennas_dict.xml", package = "simutils") 
