@@ -16,7 +16,7 @@
 #' 
 #' @import sf data.table stars
 #' 
-#' @include read_csv.R xml_attrs2dt.R xml_getters.R
+#' @include read_csv.R xml_attrs2dt.R xml_getters.R read_xml_map.R
 #' 
 #' @examples
 #' filename_map      <- c(
@@ -128,6 +128,9 @@ read_simData <- function(filenames, crs = NA_integer_){
   attr(coverage.sf, 'specs') <- c('specs_cells', 'geometry')
   var_antenna <- names(coverage.sf)[which(attr(coverage.sf, 'specs') == 'specs_cells')]
   coverage.sf <- coverage.sf[order(coverage.sf[[var_antenna]]), ]
+  coverage_geometry <- st_geometry(coverage.sf)
+  coverage.dt <- as.data.table(st_drop_geometry(coverage.sf))
+  coverage.sf <- st_set_geometry(coverage.dt, coverage_geometry)
   cat(' ok.\n')  
 
   # Read signal per tile
