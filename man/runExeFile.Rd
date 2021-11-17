@@ -29,23 +29,33 @@ file of the simulator of mobile network event data.}
 
 \item{antennasCFGFile}{name of the antennas file (input file).}
 
-\item{outputFolder}{Absolute path where the output files are going to be saved.}
+\item{outputFolder}{Absolute path where the output files are going to be
+saved.}
 }
 \description{
 \code{runExeFile} reads the simulator path to the executable
 file of the simulator of mobile network event data and the input file
 parameters to execute the simulator.exe from this path.
 
-If the file doesn't exist, it returns an error.
+If the executable file doesn't exist, it returns an error.
+
+The executable file must be download from the Assets section of this URL
+in github.com:
+
+https://github.com/bogdanoancea/simulator/releases/tag/1.2.0
+
+The name of the executable file is \code{simulator.exe}.
 }
 \details{
 Return invisible \code{NULL} after placing output files of the
 simulation in the output folder.
 }
 \examples{
+# exe file dowloaded into the R_USER folder:
+local_exe<- file.path(Sys.getenv('R_USER'), 'simulator.exe')
 rootPath <- system.file(package = "simutils")
 runExeFile(
- path_to_exe       = file.path(rootPath, 'bin'),
+ path_to_exe       = dirname(local_exe),
  input_folder      = file.path(rootPath, "extdata/input_files"),
  simulationCFGFile = "simulation.xml",
  mapFile           = "map.wkt",
