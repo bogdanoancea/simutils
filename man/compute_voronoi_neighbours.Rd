@@ -30,10 +30,6 @@ antenna in addition to the distance matrix. If latlong is TRUE then it
 returns the distance matrix in km.
 }
 \examples{
-data <- data.frame(i = 1:6, x = c(10,2,1,3,6,8), y = c(1,10,5,7,4,8))
-a <- compute_voronoi_neighbours(data, TRUE)
-
-
 filename_map      <- c(
  xml= system.file("extdata/input_files", "map.xml", package = "simutils"),
  xsd= '')
