@@ -19,7 +19,8 @@ Imports:
     sf (>= 1.0-2),
     stars (>= 0.5-3),
     data.table (>= 1.14.0),
-    dplyr (>= 1.0.7)
+    dplyr (>= 1.0.7),
+    deldir (>= 1.0-6)
 SystemRequirements: Java JDK 8 or higher (for JRI/REngine JDK 8 or higher)
 Suggests:
     covr,
@@ -29,6 +30,7 @@ Roxygen: list(markdown = TRUE)
 Collate: 
     'compute_odmatrix.R'
     'compute_total.R'
+    'compute_voronoi_neighbours.R'
     'flatten_deepest.R'
     'list_deepest.R'
     'onLoad.R'

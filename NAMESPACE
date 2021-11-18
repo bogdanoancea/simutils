@@ -2,6 +2,7 @@
 
 export(compute_odmatrix)
 export(compute_total)
+export(compute_voronoi_neighbours)
 export(flatten_deepest)
 export(getCellCoordName)
 export(getCellIDName)
