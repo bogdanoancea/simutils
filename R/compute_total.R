@@ -126,7 +126,6 @@ compute_total <- function(individuals.sf, what, by, by_values = NULL){
   individuals.dt <- sf::st_drop_geometry(individuals.sf)
   
   
-  
   if (is.null(by_values)) {
     
     by_values.list <- vector('list', length(by))
@@ -163,10 +162,10 @@ compute_total <- function(individuals.sf, what, by, by_values = NULL){
     }
     
   }
-  
-  master.dt <- data.table(Reduce(expand.grid, by_values.list))
+
+  master.dt <- data.table(Reduce(function(x, y){expand.grid(x, y, stringsAsFactors = FALSE)}, by_values.list))
   setnames(master.dt, by)
-  
+
   totals.list <- lapply(what, function(wt){
   
     # what == individuals
@@ -225,7 +224,7 @@ compute_total <- function(individuals.sf, what, by, by_values = NULL){
       
       var_ndev <- names(individuals.dt)[which(attr(individuals.dt, 'specs') == 'specs_ndev')]
       N.dt <- individuals.dt[
-          , list(devices = sum(get(var_ndev))), by = by]
+          , list(devices = as.integer(sum(get(var_ndev)))), by = by]
       N.dt <- merge(N.dt, master.dt, by = by, all = TRUE)[
         is.na(get(wt)), (wt) := 0]
       return(N.dt)
