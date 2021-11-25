@@ -4,14 +4,16 @@
 #' of mobile network event data and the input file parameters to execute the simulator.exe from this
 #'  path.
 #'  
-#' If the executable file doesn't exist, it returns an error.
-#' 
-#' The executable file must be download from the Assets section of this URL
-#' in github.com:
+#' If the executable file doesn't exist, the function will donwload it automatically from the 
+#' Assests  section of this URL in github.com (for version 1.2.0):
 #' 
 #' https://github.com/bogdanoancea/simulator/releases/tag/1.2.0
 #' 
 #' The name of the executable file is \code{simulator.exe}.
+#' 
+#' For Windows, the user can download an installer from the URL (for version 1.2.0):
+#' 
+#' https://github.com/bogdanoancea/simulator/releases/tag/1.2.0-kit
 #' 
 #' @param path_to_exe character vector with the absolute path to the executable file of the 
 #' simulator of mobile network event data.
