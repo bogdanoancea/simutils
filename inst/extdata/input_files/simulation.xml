@@ -38,7 +38,7 @@
 	<persons_file>persons.csv</persons_file>
 	<antennas_file>antennas.csv</antennas_file>
 	<random_seed>12</random_seed>
-	<output_dir>example_simutils</output_dir>
+	<output_dir>output</output_dir>
 </simulation>
 
 

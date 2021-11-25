@@ -59,22 +59,23 @@ runDockerImage <- function(
 	sysinfo <- Sys.info()
 	if (sysinfo['sysname'] == "Windows"){
 	  
-		system2("docker", args = paste0("load -i ", dockerImage))
-	  
+	  system2("docker", args = paste0(" pull bogdanoancea/simulator"))
+	  #system2("docker", args = paste0("load -i ", dockerImage))
 	} else {
 	  
 	  username <- sysinfo[['user']]
-		system(paste0("sudo -u ", username, " docker load -i ", dockerImage))
+	  system(paste0("sudo -u ", username, " docker pull bogdanoancea/simulator"))
+		#system(paste0("sudo -u ", username, " docker load -i ", dockerImage))
 		
 	}
 	initial_wd <- getwd()
-	#setwd(output_folder)
+	setwd(output_folder)
 	on.exit(setwd(initial_wd))
-	
+	of <- file.path(output_folder, 'output')
 	# Prepare input files
 	if (!file.exists(output_folder)) {
 	  
-		of <- file.path(output_folder, 'output')
+	
 	  result <- dir.create(of, recursive = TRUE)
 		if (result[[1]] != TRUE) {
 		  
@@ -126,7 +127,7 @@ runDockerImage <- function(
 		" -a ",
 		file.path('output', antennasCFGFile)
 	)
-
+	cat(file.path(of))
 	# Run!
 	cmd_args = paste0(
 		"run --rm -v ",
@@ -136,7 +137,9 @@ runDockerImage <- function(
 		" simulator -t -i ",
 		simargs
 	)
+	
 	setwd(output_folder)
+
 	if (sysinfo['sysname'] == "Windows"){
 	  
 		system2( "docker", args = cmd_args )
