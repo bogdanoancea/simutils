@@ -6,6 +6,7 @@
 \usage{
 runExeFile(
   path_to_exe,
+  simulator_version,
   input_folder,
   simulationCFGFile,
   mapFile,
@@ -14,13 +15,14 @@ runExeFile(
 )
 }
 \arguments{
-\item{path_to_exe}{character vector with the absolute path to the executable
-file of the simulator of mobile network event data.}
+\item{path_to_exe}{character vector with the absolute path to the executable file of the
+simulator of mobile network event data.}
+
+\item{simulator_version}{character denoting the version of the simulator (e.g. "1.2.0")}
 
 \item{input_folder}{absolute path where the simulation input files are.}
 
-\item{simulationCFGFile}{name of the configuration simulation file
-(input file).}
+\item{simulationCFGFile}{name of the configuration simulation file (input file).}
 
 \item{mapFile}{name of the map file (input file).}
 
@@ -29,9 +31,9 @@ file of the simulator of mobile network event data.}
 \item{antennasCFGFile}{name of the antennas file (input file).}
 }
 \description{
-\code{runExeFile} reads the simulator path to the executable
-file of the simulator of mobile network event data and the input file
-parameters to execute the simulator.exe from this path.
+\code{runExeFile} reads the simulator path to the executable file of the simulator
+of mobile network event data and the input file parameters to execute the simulator.exe from this
+path.
 
 If the executable file doesn't exist, it returns an error.
 
@@ -48,13 +50,10 @@ simulation in the output folder.
 }
 \examples{
 \dontrun{
-# if exe file dowloaded into the R_USER folder:
-local_exe<- file.path(Sys.getenv('R_USER'), 'simulator.exe')
-# Otherwise specify your own path to the simulator.exe file
-
-rootPath <- system.file(package = "simutils")
+# simulator.exe will be downloaded from our github repo
 runExeFile(
- path_to_exe       = dirname(local_exe),
+ path_to_exe       = "",  
+ simulator_version = "1.2.0",
  input_folder      = file.path(rootPath, "extdata/input_files"),
  simulationCFGFile = "simulation.xml",
  mapFile           = "map.wkt",

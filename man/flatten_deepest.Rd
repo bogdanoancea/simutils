@@ -25,7 +25,7 @@ structure.
 \examples{
 rootPath  <- system.file(package = "simutils")  
 xmlFile   <- file.path(rootPath, "extdata/input_files", "simulation.xml")
-xmlObject <- as_list(xml2::read_xml(xmlFile))
+xmlObject <- xml2::as_list(xml2::read_xml(xmlFile))
 flatten_deepest(xmlObject)
  
 }

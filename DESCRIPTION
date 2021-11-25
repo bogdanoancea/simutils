@@ -5,14 +5,13 @@ Description: This package provides a collection of functions implementing basic 
 Version: 0.1.0
 Date: 2021-09-17
 Encoding: UTF-8
-Authors@R: c(person("David", "Salgado", email = "david.Salgado.fernandez@gmail.com", role = c("aut", "cre")), person("Bogdan", "Oancea", email = "bogdan.oancea@gmail.com", role = c("aut", "ctb")))
+Authors@R: c(person("David", "Salgado", email = "david.Salgado.fernandez@gmail.com", role = c("aut", "cre")), person("Bogdan", "Oancea", email = "bogdan.oancea@gmail.com", role = c("aut", "ctb")), person("Sandra", "Barragán", email = "sandra.barragan@gmail.com", role = c("aut", "ctb")))
 URL: https://github.com/bogdanoancea/simutils
 BugReports: https://github.com/bogdanoancea/simutils/issues
 License: EUPL
 Depends:
     R (>= 4.0.0),
-    rJava (>= 1.0-4),
-    xml2 (>= 1.3.2)
+    rJava (>= 1.0-4)
 Imports:
     purrr (>= 0.3.4),
     fs (>= 1.5.0),
@@ -20,7 +19,9 @@ Imports:
     stars (>= 0.5-3),
     data.table (>= 1.14.0),
     dplyr (>= 1.0.7),
-    deldir (>= 1.0-6)
+    deldir (>= 1.0-6),
+    utils (>= 4.1.1),
+    xml2 (>= 1.3.2)
 SystemRequirements: Java JDK 8 or higher (for JRI/REngine JDK 8 or higher)
 Suggests:
     covr,
