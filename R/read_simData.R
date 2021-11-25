@@ -25,34 +25,33 @@
 #'   
 #' filename_network  <- c(
 #'  csv= system.file("extdata/output_files/antennas.csv", package = "simutils"),
-#'  xml= system.file("extdata/metadata/output_files/antennas_dict.xml", 
-#'                    package = "simutils"))
+#'  xml= system.file("extdata/metadata/output_files/antennas_dict.xml", package = "simutils"))
 #'                    
 #' filename_signal <- c(
 #'  csv= system.file("extdata/output_files/SignalMeasure_MNO1.csv", package = "simutils"),
-#'  xml= system.file("extdata/metadata/output_files/SignalMeasure_dict.xml", 
-#'                    package = "simutils"))
+#'  xml= system.file("extdata/metadata/output_files/SignalMeasure_dict.xml", package = "simutils"))
 #'                  
 #' filename_coverage <- c(
-#'  csv= system.file("extdata/output_files", "AntennaCells_MNO1.csv", 
-#'                   package = "simutils"),
-#'  xml= system.file("extdata/metadata/output_files/AntennaCells_dict.xml", 
-#'                   package = "simutils"))
+#'  csv= system.file("extdata/output_files", "AntennaCells_MNO1.csv", package = "simutils"),
+#'  xml= system.file("extdata/metadata/output_files/AntennaCells_dict.xml", package = "simutils"))
+#'
+#' filename_events <- c(
+#'  csv= system.file("extdata/output_files/AntennaInfo_MNO_MNO1.csv", package = "simutils"),
+#'  xml= system.file("extdata/metadata/output_files/events_dict.xml", package = "simutils"))
 #'                        
 #' filename_grid <- c(
 #'   csv= system.file("extdata/output_files/grid.csv", package = "simutils"),
-#'   xml= system.file("extdata/metadata/output_files/grid_dict.xml", 
-#'                    package = "simutils")) 
+#'   xml= system.file("extdata/metadata/output_files/grid_dict.xml", package = "simutils")) 
 #' 
 #' filename_individ <- c(
 #'   csv= system.file("extdata/output_files/persons_dash.csv", package = "simutils"),
-#'   xml= system.file("extdata/metadata/output_files/persons_dash_dict.xml", 
-#'                    package = "simutils"))   
+#'   xml= system.file("extdata/metadata/output_files/persons_dash_dict.xml", package = "simutils"))   
 #'                        
 #' filenames <- list(
 #'   map                = filename_map,
 #'   network_parameters = filename_network,
 #'   signal             = filename_signal,
+#'   events             = filename_events,
 #'   coverage_cells     = filename_coverage,
 #'   grid               = filename_grid,
 #'   individuals        = filename_individ)
@@ -70,8 +69,8 @@ read_simData <- function(filenames, crs = NA_integer_){
     stop('[simutils::read_simData] filenames must be a named list.\n')
   }
   
-  if (!all(names(filenames) %in% c('map', 'network_parameters', 'signal', 'coverage_cells', 'grid', 'individuals'))){
-    stop("[simutils::read_simData] The names of list filenames must be contained in c('map', 'network_parameters', 'signal', 'coverage_cells', 'grid', 'individuals').\n")
+  if (!all(names(filenames) %in% c('map', 'network_parameters', 'signal', 'events', 'coverage_cells', 'grid', 'individuals'))){
+    stop("[simutils::read_simData] The names of list filenames must be contained in c('map', 'network_parameters', 'signal','events', 'coverage_cells', 'grid', 'individuals').\n")
   }
   
   
@@ -132,6 +131,32 @@ read_simData <- function(filenames, crs = NA_integer_){
   coverage.dt <- as.data.table(st_drop_geometry(coverage.sf))
   coverage.sf <- st_set_geometry(coverage.dt, coverage_geometry)
   cat(' ok.\n')  
+  
+  # Read events data
+  cat('[simutils::read_simData] Reading and parsing network event data file...\n')
+  events.dt <- read_csv(filenames$events['xml'], filenames$events['csv'])
+  coords_name <- getCoordsNames(filenames$events['xml'], 'events')
+  coords_name_idx <- which(names(events.dt) %in% coords_name)
+  events_attr <- attr(events.dt, 'specs')[-coords_name_idx]
+  events.sf <- st_as_sf(events.dt, coords = coords_name, crs = crs)
+  attr(events.sf, 'specs') <- unname(events_attr)
+  
+  event_in_geom_unit_idx <- sapply(st_intersects(events.sf, map.sf), function(x) sample(x, 1))
+  events.sf[[label_spUnit]] <- names_spUnit[event_in_geom_unit_idx]
+  
+  map_nogeom <- st_drop_geometry(map.sf[, c(label_spUnit, label_nestSpUnits)])
+  map_cols_idx <- which(names(map.sf) %in% c(label_spUnit, label_nestSpUnits))
+  map_cols_attr <- attr(map.sf, 'specs')[map_cols_idx]
+  
+  var_time    <- names(events.sf)[which(attr(events.sf, 'specs') == 'specs_time')]
+  var_antenna <- names(events.sf)[which(attr(events.sf, 'specs') == 'specs_cells')]
+  events.sf <- events.sf[order(events.sf[[var_antenna]], events.sf[[var_time]]), ]
+  
+  events.sf <- dplyr::left_join(
+    events.sf, 
+    st_drop_geometry(map.sf[, c(label_spUnit, label_nestSpUnits)]))
+  attr(events.sf, 'specs') <- c(unname(events_attr), map_cols_attr, 'geometry')
+  cat(' ok.\n')
 
   # Read signal per tile
   cat('[simutils::read_simData] Reading and parsing signal file...\n')
@@ -214,14 +239,15 @@ read_simData <- function(filenames, crs = NA_integer_){
   cat(' ok.\n')
   
   
-  simElements <- list(
+  simData <- list(
     map = map.sf,
     network = network.sf,
     coverage = coverage.sf,
+    events = events.sf,
     grid = grid.stars,
     individuals = individuals.sf
   )
-  return(simElements)
+  return(simData)
   
   
 }

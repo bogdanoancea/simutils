@@ -27,8 +27,6 @@
 #' 
 #' @param antennasCFGFile name of the antennas file (input file).
 #' 
-#' @param outputFolder Absolute path where the output files are going to be 
-#' saved.
 #' 
 #' @details Return invisible \code{NULL} after placing output files of the 
 #' simulation in the output folder.

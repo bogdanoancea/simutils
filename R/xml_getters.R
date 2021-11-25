@@ -24,6 +24,7 @@
 #' 
 #' @export
 getCoordsNames <- function(xmlname, dataset) {
+  
   if (dataset == 'antennas') {
     xml <- read_xml(xmlname)
     ant <- as_list(xml)$antennas
@@ -63,6 +64,28 @@ getCoordsNames <- function(xmlname, dataset) {
       }
     }
     return(persons_coords_colNames)
+  }
+  
+  
+  if (dataset == 'events') {
+    
+    xml <- read_xml(xmlname)
+    ant <- as_list(xml)$events
+    #get column names and column types
+    events_coords_colNames <- c()
+    
+    for(i in 1: length(ant)) {
+      if(names(ant)[i] == 'specs_event_coords') {
+        for(j in 1:length(ant[[i]])) {
+          nodeName <- names(ant[[i]])[j]
+          if(endsWith(nodeName, 'ColName')) {
+            coordsColName <- (ant[[i]])[[j]][[1]]
+            events_coords_colNames <- c(events_coords_colNames, coordsColName)
+          }
+        }
+      }
+    }
+    return(events_coords_colNames)
   }
   stop('[getCoords] dataset not yet implemented.\n')
 }

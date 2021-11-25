@@ -10,8 +10,7 @@ runExeFile(
   simulationCFGFile,
   mapFile,
   personsCFGFile,
-  antennasCFGFile,
-  outputFolder
+  antennasCFGFile
 )
 }
 \arguments{
@@ -28,9 +27,6 @@ file of the simulator of mobile network event data.}
 \item{personsCFGFile}{name of the persons file (input file).}
 
 \item{antennasCFGFile}{name of the antennas file (input file).}
-
-\item{outputFolder}{Absolute path where the output files are going to be
-saved.}
 }
 \description{
 \code{runExeFile} reads the simulator path to the executable
@@ -63,8 +59,7 @@ runExeFile(
  simulationCFGFile = "simulation.xml",
  mapFile           = "map.wkt",
  personsCFGFile    = "persons.xml",
- antennasCFGFile   = "antennas.xml",
- outputFolder      = Sys.getenv('R_USER'))
+ antennasCFGFile   = "antennas.xml")
  }
   
 }
