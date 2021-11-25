@@ -34,8 +34,7 @@
 #' simulation in the output folder.
 #' 
 #' @examples
-#' # executable file dowloaded into the R_USER/simulator folder:
-#' local_exe_folder<- file.path(Sys.getenv('R_USER'), 'simulator')
+#' \dontrun {
 #' runExeFile(
 #'  path_to_exe       = local_exe_folder,
 #'  simulator_version = "1.2.0",
@@ -43,9 +42,8 @@
 #'  simulationCFGFile = "simulation.xml",
 #'  mapFile           = "map.wkt",
 #'  personsCFGFile    = "persons.xml",
-#'  antennasCFGFile   = "antennas.xml"
-#' )
-#'   
+#'  antennasCFGFile   = "antennas.xml")
+#'  }
 #'   
 #' @export
 runExeFile <- function(
@@ -166,7 +164,6 @@ runExeFile <- function(
 	}
 	simulation.xml <- xml2::read_xml(file.path(input_folder, simulationCFGFile))
 	outputFolder <- xml2::xml_contents(xml2::xml_child(simulation.xml, search = "output_dir"))
-	
 	
 	cat(paste0('[simutils::runExeFile] output written in ', paste0(path_to_exe, '/', outputFolder) ) )
 	return(invisible(NULL))
