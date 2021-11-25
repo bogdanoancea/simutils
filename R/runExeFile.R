@@ -36,6 +36,7 @@
 #' @examples
 #' # exe file dowloaded into the R_USER folder:
 #' local_exe<- file.path(Sys.getenv('R_USER'), 'simulator.exe')
+#' local_exe <- file.path('C:/Program Files/Simulator', 'simulator.exe')
 #' rootPath <- system.file(package = "simutils")
 #' runExeFile(
 #'  path_to_exe       = dirname(local_exe),
@@ -113,8 +114,7 @@ runExeFile <- function(
 		)
 	}
 	
-	cat(paste0('[simutils::runExeFile] output written in ', 
-	           file.path(getwd(), outputFolder)))
+	cat(paste0('[simutils::runExeFile] output written in ', outputFolder))
 	
 	return(invisible(NULL))
 	
