@@ -32,14 +32,10 @@
 #' simulation in the output folder.
 #' 
 #' @examples
-#' \dontrun{
-#' # if exe file dowloaded into the R_USER folder:
-#' local_exe<- file.path(Sys.getenv('R_USER'), 'simulator.exe')
-#' # Otherwise specify your own path to the simulator.exe file
-#' 
-#' rootPath <- system.file(package = "simutils")
+#' \dontrun {
 #' runExeFile(
-#'  path_to_exe       = dirname(local_exe),
+#'  path_to_exe       = local_exe_folder,
+#'  simulator_version = "1.2.0",
 #'  input_folder      = file.path(rootPath, "extdata/input_files"),
 #'  simulationCFGFile = "simulation.xml",
 #'  mapFile           = "map.wkt",
@@ -50,36 +46,89 @@
 #' @export
 runExeFile <- function(
   path_to_exe,
+  simulator_version,
 	input_folder,
 	simulationCFGFile,
 	mapFile,
 	personsCFGFile,
 	antennasCFGFile) {
   
-	if (path_to_exe == ""){
+  
+  sysinfo <- Sys.info()
+  if (sysinfo['sysname'] == "Windows") {
+    
+    exe_file_name <- "simulator.exe"
+    
+  } else {
+    
+    exe_file_name <- "simulator"
+    
+  }
+  
+	if (path_to_exe == "") {
 		
-	  stop("[simutils::runExeFile] Path to simulator.exe file not set.\n")
+	  cat("Path to simulator executable file not set.\n")
+	  if (simulator_version == "") {
+	    stop("[simutils::runExeFile] Please provide the version of the simulation software you want to use. For example simulator_version=1.2.0\n")
+	  }
+	  else {
+	    url_to_download = paste0("https://github.com/bogdanoancea/simulator/releases/download/", simulator_version, "/", exe_file_name)
+	    sim_path = file.path(paste0(Sys.getenv('R_USER'), "/simulator"))
+	    if (!file.exists(sim_path)) {
+	      result <- dir.create(sim_path, recursive = TRUE)
+	      if (result[[1]] != TRUE) {
+	        stop("[simutils::runExeFile] download folder for simulation software cannot be created")
+	      }
+	      
+	    }
+	    if (!file.exists(file.path(paste0(sim_path, "/", exe_file_name)))) {
+	      cat("Downloading the simulator executable file now.\n")
+	      download.file(url_to_download, file.path(paste0(sim_path, "/", exe_file_name)), mode = "wb")
+	    }
+	    else {
+	      cat("We found an already downloaded file and we will use it!\n")
+	    }
+	    path_to_exe <- sim_path
+	  }
 	  
 	}
-	sysinfo <- Sys.info()
-	if (sysinfo['sysname'] == "Windows") {
-	  
-		exe_file <- file.path(path_to_exe, "simulator.exe")
-		
-	} else {
-	  
-		exe_file <- file.path(path_to_exe, "simulator")
-		
-	}
+  else {
+    if ( !file.exists(file.path(path_to_exe, exe_file_name))) {
+      url_to_download = paste0("https://github.com/bogdanoancea/simulator/releases/download/", simulator_version, "/", exe_file_name)
+      sim_path = file.path(paste0(Sys.getenv('R_USER'), "/simulator"))
+      if (!file.exists(sim_path)) {
+        result <- dir.create(sim_path, recursive = TRUE)
+        if (result[[1]] != TRUE) {
+          stop("[simutils::runExeFile] download folder for simulation software cannot be created")
+        }
+        
+      }
+      if (!file.exists(file.path(paste0(sim_path, "/", exe_file_name)))) {
+        cat("Downloading the simulator executable file now.\n")
+        download.file(url_to_download, file.path(paste0(sim_path, "/", exe_file_name)), mode = "wb")
+      }
+      else {
+        cat("We found an already downloaded file and we will use it!\n")
+      }
+      path_to_exe <- sim_path
+    }
+  }
 	
+
+	exe_file <- file.path(path_to_exe, exe_file_name)
+	
+
 	if (!file.exists(exe_file)) {
 	  
-		stop(paste0("[simutils::runExeFile] simulator.exe file cannot be found at ", path_to_exe, "\n"))
+		stop(paste0("[simutils::runExeFile] simulator executable file cannot be found at ", path_to_exe, "\n"))
 	
 	}
 	
 	
 	# Execute the simulator
+	initial_wd = getwd()
+	setwd(path_to_exe)
+	on.exit(setwd(initial_wd))
 	if (sysinfo['sysname'] == 'Windows') {
 	  
 		system2(
@@ -111,12 +160,10 @@ runExeFile <- function(
 			)
 		)
 	}
-	
 	simulation.xml <- xml2::read_xml(file.path(input_folder, simulationCFGFile))
 	outputFolder <- xml2::xml_contents(xml2::xml_child(simulation.xml, search = "output_dir"))
 	
-	cat(paste0('[simutils::runExeFile] output written in ', outputFolder))
-	
+	cat(paste0('[simutils::runExeFile] output written in ', paste0(path_to_exe, '/', outputFolder) ) )
 	return(invisible(NULL))
 	
 }
