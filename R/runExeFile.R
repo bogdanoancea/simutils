@@ -46,8 +46,7 @@
 #'  simulationCFGFile = "simulation.xml",
 #'  mapFile           = "map.wkt",
 #'  personsCFGFile    = "persons.xml",
-#'  antennasCFGFile   = "antennas.xml",
-#'  outputFolder      = Sys.getenv('R_USER'))
+#'  antennasCFGFile   = "antennas.xml")
 #'  }
 #'   
 #' @export
@@ -57,8 +56,7 @@ runExeFile <- function(
 	simulationCFGFile,
 	mapFile,
 	personsCFGFile,
-	antennasCFGFile,
-	outputFolder) {
+	antennasCFGFile) {
   
 	if (path_to_exe == ""){
 		
@@ -115,6 +113,9 @@ runExeFile <- function(
 			)
 		)
 	}
+	
+	simulation.xml <- xml2::read_xml(file.path(input_folder, simulationCFGFile))
+	outputFolder <- xml2::xml_contents(xml2::xml_child(simulation.xml, search = "output_dir"))
 	
 	cat(paste0('[simutils::runExeFile] output written in ', outputFolder))
 	
