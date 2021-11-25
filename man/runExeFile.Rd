@@ -51,9 +51,11 @@ Return invisible \code{NULL} after placing output files of the
 simulation in the output folder.
 }
 \examples{
-# exe file dowloaded into the R_USER folder:
+\dontrun{
+# if exe file dowloaded into the R_USER folder:
 local_exe<- file.path(Sys.getenv('R_USER'), 'simulator.exe')
-local_exe <- file.path('C:/Program Files/Simulator', 'simulator.exe')
+# Otherwise specify your own path to the simulator.exe file
+
 rootPath <- system.file(package = "simutils")
 runExeFile(
  path_to_exe       = dirname(local_exe),
@@ -63,6 +65,6 @@ runExeFile(
  personsCFGFile    = "persons.xml",
  antennasCFGFile   = "antennas.xml",
  outputFolder      = Sys.getenv('R_USER'))
-  
+ }
   
 }
