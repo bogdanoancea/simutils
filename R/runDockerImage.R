@@ -140,7 +140,7 @@ runDockerImage <- function(
 	
 	setwd(output_folder)
 
-	if (sysinfo['sysname'] == "Windows"){
+	if (sysinfo['sysname'] == "Windows") {
 	  
 		system2( "docker", args = cmd_args )
 	  
