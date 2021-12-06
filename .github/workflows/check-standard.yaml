@@ -39,8 +39,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
-          cache-version: 2
-          extra-packages: rcmdcheck::rcmdcheck(args=c("--no-multiarch"))
+          extra-packages: rcmdcheck(args=c("--no-multiarch"))
       - name: Check
         env:
           _R_CHECK_CRAN_INCOMING_: false
