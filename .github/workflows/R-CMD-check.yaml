@@ -6,50 +6,27 @@ on:
   pull_request:
     branches: [main, master]
 
-name: R-CMD-check R-CMD-check_win
+name: R-CMD-check
 
 jobs:
   R-CMD-check:
-    runs-on: ${{ matrix.config.os }}
-
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
-
-        
-    strategy:
-      fail-fast: false
-      matrix:
-        config:
-          - {os: windows-latest,   r: 'release'}
-          - {os: macOS-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
-
+    runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
-      R_ARCH: /x64
-
     steps:
       - uses: actions/checkout@v2
 
-      - uses: r-lib/actions/setup-pandoc@v1
-
       - uses: r-lib/actions/setup-r@v1
         with:
-          r-version: ${{ matrix.config.r }}
-          http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
           extra-packages: rcmdcheck
-      - name: Check
-        env:
-          _R_CHECK_CRAN_INCOMING_: false
-        run: |
-          options(crayon.enabled = TRUE)
-          rcmdcheck::rcmdcheck(args = c('--no-multiarch'))
-        shell: Rscript {0}
-      
+
+      - uses: r-lib/actions/check-r-package@v1
+
       - name: Show testthat output
         if: always()
         run: find check -name 'testthat.Rout*' -exec cat '{}' \; || true
@@ -61,4 +38,3 @@ jobs:
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: check
-
