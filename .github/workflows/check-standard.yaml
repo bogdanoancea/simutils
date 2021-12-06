@@ -39,13 +39,13 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
-          extra-packages: rcmdcheck(args=c("--no-multiarch"))
+          extra-packages: rcmdcheck
       - name: Check
         env:
           _R_CHECK_CRAN_INCOMING_: false
         run: |
           options(crayon.enabled = TRUE)
-          rcmdcheck
+          rcmdcheck::rcmdcheck(args=c("--no-multiarch"))
         shell: Rscript {0}
       
       - name: Show testthat output
