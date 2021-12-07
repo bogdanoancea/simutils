@@ -1,4 +1,5 @@
 VERSION = $(shell grep ^Version DESCRIPTION | sed s/Version:\ //)
+R_ARCH =		--arch x64
 
 doc:
 	R --slave -e 'library(roxygen2); roxygenise()'
