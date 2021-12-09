@@ -67,11 +67,11 @@ run_DockerImage <- function(
 		
 	}
 	initial_wd <- getwd()
-	setwd(output_folder)
+	
 	on.exit(setwd(initial_wd))
 	of <- file.path(output_folder, 'output')
 	# Prepare input files
-	if (!file.exists(output_folder)) {
+	if (!file.exists(of)) {
 	  
 	
 	  result <- dir.create(of, recursive = TRUE)
