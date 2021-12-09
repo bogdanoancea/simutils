@@ -5,7 +5,6 @@
 \title{Run the simulation software using the docker image.}
 \usage{
 run_DockerImage(
-  dockerImage,
   input_folder,
   simulationCFGFile,
   mapFile,
@@ -15,8 +14,6 @@ run_DockerImage(
 )
 }
 \arguments{
-\item{dockerImage}{Absolute path where the file to run the docker image is.}
-
 \item{input_folder}{Absolute path of the folder which contains the input data.}
 
 \item{simulationCFGFile}{Name of the simulation configuration file.}
@@ -29,6 +26,8 @@ run_DockerImage(
 
 \item{output_folder}{Name of the output folder indicated in the
 simulation's configuration file.}
+
+\item{dockerImage}{Absolute path where the file to run the docker image is.}
 }
 \description{
 \code{run_DockerImage} runs the simulation software using
@@ -38,8 +37,6 @@ the docker image.
 Return invisible NULL after executing the docker image.
 }
 \examples{
-rootPath          <- system.file(package = 'simutils')
-dockerImage       <- file.path(rootPath, "extdata/docker/simulator.tar")
 input_folder      <- file.path(rootPath, "extdata/input_files")
 simulationCFGFile <- 'simulation.xml'
 mapFile           <- 'map.wkt'

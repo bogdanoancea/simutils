@@ -21,8 +21,6 @@
 #' @details Return invisible NULL after executing the docker image.
 #' 
 #' @examples 
-#' rootPath          <- system.file(package = 'simutils')
-#' dockerImage       <- file.path(rootPath, "extdata/docker/simulator.tar")
 #' input_folder      <- file.path(rootPath, "extdata/input_files")
 #' simulationCFGFile <- 'simulation.xml'
 #' mapFile           <- 'map.wkt'
@@ -42,7 +40,7 @@
 #' }
 #' @export 
 run_DockerImage <- function(
-  dockerImage,
+  #dockerImage,
 	input_folder,
 	simulationCFGFile,
 	mapFile,
@@ -50,11 +48,11 @@ run_DockerImage <- function(
 	antennasCFGFile,
 	output_folder) {
 
-	if (!file.exists(dockerImage)){
-	  
-		stop("[run_DockerImage] Docker image does not exists.\n")
-	  
-	}
+	# if (!file.exists(dockerImage)){
+	#   
+	# 	stop("[run_DockerImage] Docker image does not exists.\n")
+	#   
+	# }
   
 	sysinfo <- Sys.info()
 	if (sysinfo['sysname'] == "Windows"){
