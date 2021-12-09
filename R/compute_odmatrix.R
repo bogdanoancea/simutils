@@ -45,8 +45,8 @@
 #'   xml= system.file("extdata/metadata/output_files/grid_dict.xml", package = "simutils")) 
 #' 
 #' filename_individ <- c(
-#'   csv= system.file("extdata/output_files/persons_dash.csv", package = "simutils"),
-#'   xml= system.file("extdata/metadata/output_files/persons_dash_dict.xml", package = "simutils"))   
+#'   csv= system.file("extdata/output_files/persons.csv", package = "simutils"),
+#'   xml= system.file("extdata/metadata/output_files/persons_dict.xml", package = "simutils"))   
 #'                        
 #' filenames <- list(
 #'   map                = filename_map,

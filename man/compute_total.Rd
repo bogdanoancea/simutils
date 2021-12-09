@@ -57,8 +57,8 @@ filename_grid <- c(
   xml= system.file("extdata/metadata/output_files/grid_dict.xml", package = "simutils")) 
 
 filename_individ <- c(
-  csv= system.file("extdata/output_files/persons_dash.csv", package = "simutils"),
-  xml= system.file("extdata/metadata/output_files/persons_dash_dict.xml", package = "simutils"))   
+  csv= system.file("extdata/output_files/persons.csv", package = "simutils"),
+  xml= system.file("extdata/metadata/output_files/persons_dict.xml", package = "simutils"))   
                        
 filenames <- list(
   map                = filename_map,
@@ -72,33 +72,28 @@ filenames <- list(
 simData <- simutils::read_simData(filenames, crs = 2062)
 
 # Counting individuals by subregion and time
-compute_total(simData$individuals, 'individuals', 
-              by = c('t', 'Subregion_long'))
+compute_total(simData$individuals, 'individuals', by = c('t', 'Subregion_long'))
 
 # Counting individuals by subregion and time with 0 devices
-compute_total(simData$individuals, 'individuals_dev0', 
-              by = c('t', 'Subregion_long'))
+compute_total(simData$individuals, 'individuals_dev0', by = c('t', 'Subregion_long'))[]
 
 # Counting individuals by subregion and time with 1 device
-compute_total(simData$individuals, 'individuals_dev1', 
-              by = c('t', 'Subregion_long'))
+compute_total(simData$individuals, 'individuals_dev1', by = c('t', 'Subregion_long'))[]
 
 # Counting individuals by subregion and time with 2 devices
-compute_total(simData$individuals, 'individuals_dev2', 
-              by = c('t', 'Subregion_long'))
+compute_total(simData$individuals, 'individuals_dev2', by = c('t', 'Subregion_long'))[]
 
 # Counting devices by subregion and time
-compute_total(simData$individuals, 'devices', 
-              by = c('t', 'Subregion_long'))
+compute_total(simData$individuals, 'devices', by = c('t', 'Subregion_long'))[]
 
 # Counting multiple totals by subregion and time
 totals <- c('individuals', 'individuals_dev0', 'devices')
-compute_total(simData$individuals, totals, by = c('t', 'Subregion_long'))
+compute_total(simData$individuals, totals, by = c('t', 'Subregion_long'))[]
 
 
 # Counting devices by tile and time
-compute_total(simData$individuals, 'devices', by = c('t', 'TILE ID'),
-              by_values = list(`TILE ID` = 0:1599))
+compute_total(simData$individuals, 'devices', by = c('t', 'Tile ID'),
+              by_values = list(`Tile ID` = 0:1599))[]
               
               
 }

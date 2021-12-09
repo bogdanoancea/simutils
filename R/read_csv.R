@@ -43,7 +43,7 @@ read_csv <- function(xmlFileName, csvFileName) {
   valid_csv <- eval(mc, parent.frame())
   if (!valid_csv) {
     
-    stop('[simviz::read_csv] The csv file is not valid according to the xml file.\n')
+    stop('[simutils::read_csv] The csv file is not valid according to the xml file.\n')
     
   }
   

@@ -39,13 +39,8 @@
 #' 
 #' # Column names Tile ID, Mobile Phone(s) ID are not valid column name
 #' # persons file 
-#' \dontrun{ 
 #' csv_fn <- file.path(rootPath, "output_files", "persons.csv")
 #' xml_fn <- file.path(rootPath, "metadata/output_files", "persons_dict.xml")
-#' validate_csv(xml_fn, csv_fn)
-#' }
-#' csv_fn <- file.path(rootPath, "output_files", "persons_dash.csv")
-#' xml_fn <- file.path(rootPath, "metadata/output_files", "persons_dash_dict.xml")
 #' validate_csv(xml_fn, csv_fn)
 #'  
 #' # signalmeasure_mno1 file 
@@ -63,7 +58,7 @@ validate_csv <- function(xmlFileName, csvFileName) {
 
   if (basename(csvFileName) != csv_fn) {
     
-    stop('[simviz::validate_csv] The name of the csv file is not valid.')
+    stop('[simutils::validate_csv] The name of the csv file is not valid.')
   }
 
   
@@ -85,13 +80,13 @@ validate_csv <- function(xmlFileName, csvFileName) {
 
   if (length(invalid_colnames) > 0) {
     
-    stop(paste0('[simviz::validate_csv] Column names ', 
+    stop(paste0('[simutils::validate_csv] Column names ', 
                 paste0(invalid_colnames, collapse = ', '),
                  ' are not valid column names.'))
     
   }
   
-  cat('[simviz::validate_csv] The column names are valid.\n')
+  cat('[simutils::validate_csv] The column names are valid.\n')
   return(TRUE)
   
   # We should consider the possibility of specifying a range element for each 

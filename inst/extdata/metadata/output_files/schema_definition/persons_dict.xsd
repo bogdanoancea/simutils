@@ -48,7 +48,7 @@
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="specs_tile" type = "tile_type" minOccurs="1" maxOccurs="1"/>
-			<xs:element name="specs_devices" type = "device_type" minOccurs="2" maxOccurs="2"/>
+			<xs:element name="specs_devices" type = "device_type" minOccurs="1" maxOccurs="1"/>
 		</xs:sequence>
 	</xs:complexType>
 </xs:element>
