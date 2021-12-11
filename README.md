@@ -6,7 +6,7 @@
 
 Now that you've got a working package skeleton, there are a few steps to finish setting up all the integrations:
 
-### Git(Hub)
+## Git(Hub)
 
 Go to https://github.com/yourgithub and create a new repository. Then, in the directory where this package is, create your git repository from the command line, add the files, and push it to GitHub:
 
@@ -31,10 +31,10 @@ The pre-release version of the package can be pulled from GitHub using the [devt
 
 The repository includes a Makefile to facilitate some common tasks.
 
-### Running tests
+## Running tests
 
 `$ make test`. Requires the [testthat](https://github.com/hadley/testthat) package. You can also specify a specific test file or files to run by adding a "file=" argument, like `$ make test file=logging`. `test_package` will do a regular-expression pattern match within the file names. See its documentation in the `testthat` package.
 
-### Updating documentation
+## Updating documentation
 
 `$ make doc`. Requires the [roxygen2](https://github.com/klutometis/roxygen) package.
