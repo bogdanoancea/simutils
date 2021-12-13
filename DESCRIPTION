@@ -11,7 +11,7 @@ BugReports: https://github.com/bogdanoancea/simutils/issues
 License: EUPL
 Depends:
     R (>= 4.0.0),
-    rJava (>= 1.0.4)
+    rJava (>= 1.0.5)
 Imports:
     purrr (>= 0.3.4),
     fs (>= 1.5.0),
