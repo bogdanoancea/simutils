@@ -34,8 +34,8 @@ xml file.
 }
 \examples{
  
+library(fs)
 rootPath <- system.file(package = 'simutils')
-
 xmlSimInput  <- file.path(rootPath, 'extdata/input_files', 'simulation.xml')
 newParam.lst <- list(
  end_time = 11,
@@ -45,7 +45,7 @@ newParam.lst <- list(
     type = 'home_work_manhattan'))))
 xsdName  <- file.path(rootPath, 
   'extdata/metadata/input_files/schema_definition', 'simulation_dict.xsd')
-newSimInputFile <- file.path(Sys.getenv('R_USER'), 'newSimulation.xml')
+newSimInputFile <- file.path(path_home(), 'newSimulation.xml')
 update_SimInput(
    xmlSimInput = xmlSimInput, 
    newParam = newParam.lst, 

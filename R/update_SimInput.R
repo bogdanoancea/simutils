@@ -26,10 +26,11 @@
 #' @include validate_xml.R flatten_deepest.R list_deepest.R
 #' 
 #' @import xml2 
+#' @import fs
 #' 
 #' @examples  
+#' library(fs)
 #' rootPath <- system.file(package = 'simutils')
-#' 
 #' xmlSimInput  <- file.path(rootPath, 'extdata/input_files', 'simulation.xml')
 #' newParam.lst <- list(
 #'  end_time = 11,
@@ -39,7 +40,7 @@
 #'     type = 'home_work_manhattan'))))
 #' xsdName  <- file.path(rootPath, 
 #'   'extdata/metadata/input_files/schema_definition', 'simulation_dict.xsd')
-#' newSimInputFile <- file.path(Sys.getenv('R_USER'), 'newSimulation.xml')
+#' newSimInputFile <- file.path(path_home(), 'newSimulation.xml')
 #' update_SimInput(
 #'    xmlSimInput = xmlSimInput, 
 #'    newParam = newParam.lst, 
@@ -47,7 +48,6 @@
 #'    newFileName = newSimInputFile)
 #' 
 #' @export
-
 update_SimInput <- function(xmlSimInput, newParam, xsdName, newFileName = NULL){
   
   xmlSimInputName <- deparse(substitute(xmlSimInput))

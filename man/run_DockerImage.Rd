@@ -26,8 +26,6 @@ run_DockerImage(
 
 \item{output_folder}{Name of the output folder indicated in the
 simulation's configuration file.}
-
-\item{dockerImage}{Absolute path where the file to run the docker image is.}
 }
 \description{
 \code{run_DockerImage} runs the simulation software using
@@ -37,6 +35,7 @@ the docker image.
 Return invisible NULL after executing the docker image.
 }
 \examples{
+rootPath <- system.file(package = 'simutils')
 input_folder      <- file.path(rootPath, "extdata/input_files")
 simulationCFGFile <- 'simulation.xml'
 mapFile           <- 'map.wkt'
@@ -46,7 +45,6 @@ output_folder     <- file.path(Sys.getenv('HOME'), 'example_docker')
 \dontrun{
 # run only after checking your installation of docker
 run_DockerImage(
-  dockerImage = dockerImage,
   input_folder = input_folder,
   simulationCFGFile = simulationCFGFile,
   mapFile = mapFile,

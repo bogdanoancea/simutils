@@ -3,8 +3,6 @@
 #' @description \code{run_DockerImage} runs the simulation software using
 #' the docker image. 
 #' 
-#' @param dockerImage Absolute path where the file to run the docker image is.
-#' 
 #' @param input_folder Absolute path of the folder which contains the input data.
 #' 
 #' @param simulationCFGFile Name of the simulation configuration file.
@@ -21,6 +19,7 @@
 #' @details Return invisible NULL after executing the docker image.
 #' 
 #' @examples 
+#' rootPath <- system.file(package = 'simutils')
 #' input_folder      <- file.path(rootPath, "extdata/input_files")
 #' simulationCFGFile <- 'simulation.xml'
 #' mapFile           <- 'map.wkt'
@@ -30,7 +29,6 @@
 #' \dontrun{
 #' # run only after checking your installation of docker
 #' run_DockerImage(
-#'   dockerImage = dockerImage,
 #'   input_folder = input_folder,
 #'   simulationCFGFile = simulationCFGFile,
 #'   mapFile = mapFile,
@@ -40,7 +38,6 @@
 #' }
 #' @export 
 run_DockerImage <- function(
-  #dockerImage,
 	input_folder,
 	simulationCFGFile,
 	mapFile,
@@ -48,11 +45,6 @@ run_DockerImage <- function(
 	antennasCFGFile,
 	output_folder) {
 
-	# if (!file.exists(dockerImage)){
-	#   
-	# 	stop("[run_DockerImage] Docker image does not exists.\n")
-	#   
-	# }
   
 	sysinfo <- Sys.info()
 	if (sysinfo['sysname'] == "Windows"){
