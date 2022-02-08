@@ -7,7 +7,7 @@
 #' @param crs integer or character; coordinate reference system for the geometry
 #'  as in function \code{sf::st_as_sfc}
 #'
-#' @details Return an sf object with the geolmetry column parsed from the
+#' @details Return an sf object with the geometry column parsed from the
 #' input xml file.
 #'
 #' @rdname read_xml_map
@@ -41,40 +41,28 @@ read_xml_map <- function(xmlname, crs){
       stop('[simutiles::read_xml_map] All spatial units must have the same name_long (region, province, subregion,...).\n')
       
     }
-    name_long <- unique(name_long)
-    name_code <- xml_text(xml_find_all(xml_object, './/name_code'))
-    name_value <- xml_text(xml_find_all(xml_object, './/name_value'))
-    wkt.dt <- data.table(
-      wkt = wkt,
-      name_long = name_value,
-      name_code = name_code
-    )
-    new_names <- gsub('name', name_long, names(wkt.dt))
-    setnames(wkt.dt, new_names)
-    cols_attr <- c('wkt', 'specs_sp_name_long', 'specs_sp_name_code')
-    setattr(wkt.dt, 'specs', cols_attr)
-    nesting_units <- as_list(xml_find_all(xml_object, './/nesting_unit'))
-    nesting_units <- lapply(nesting_units, function(nest_unit){
-      
-      dt <- data.table(
-        name_long = nest_unit$nest_name_value[[1]],
-        name_code = nest_unit$nest_name_code[[1]]
-      )
-      
-      new_names <- gsub('name', nest_unit$nest_name_long[[1]], names(dt))
-      setnames(dt, new_names)
-      return(dt)
-      
-    })
+
+    regions <- xml_find_all(xml_object, ".//region")
+    no_regions <- length(regions)
     
-    nesting_units.dt <- rbindlist(nesting_units)
-    cols_attr <- c('wkt', 'specs_nesting_name_long', 'specs_nesting_name_code')
-    setattr(nesting_units.dt, 'specs', cols_attr)
+    names<-c("Subregion_long", "Subregion_code", "Region_long", "Region_code", "geometry")
+    map.dt <- setNames(data.table(matrix(nrow = 0, ncol = 5)), names)
+
+    for (i in 1:no_regions) {
+      spatial_units <- xml_find_all(regions[i], './/spatial_unit')
+      region_name <- xml_text(xml_find_first(regions[i], './/name'))
+      region_code <- xml_text(xml_find_first(regions[i], './/code'))
+      no_sp_units <-  length(spatial_units)
+      for(j in 1:no_sp_units) {
+        wkt <- xml_text(xml_find_first(spatial_units[j], './/sp_spec'))
+        sr_long_name <- xml_text(xml_find_first(spatial_units[j], './/name_value'))
+        sr_code <- xml_text(xml_find_first(spatial_units[j], './/name_code'))
+        row <- list(sr_long_name, sr_code, region_name, region_code, wkt)
+        map.dt<-rbind(map.dt, row)
+      }
+    }
+    map.sf <- st_as_sf(map.dt, wkt = 'geometry', crs = crs)
     
-    cols_attr <- union(attr(wkt.dt, 'specs'), attr(nesting_units.dt, 'specs'))
-    wkt.dt <- data.table(wkt.dt, nesting_units.dt)
-    setnames(wkt.dt, 'wkt', 'geometry')
-    cols_attr <- c(cols_attr[-which(cols_attr == 'wkt')], 'geometry')
     map.sf <- st_as_sf(wkt.dt, wkt = 'geometry', crs = crs)
     attr(map.sf, 'specs') <- cols_attr
   }

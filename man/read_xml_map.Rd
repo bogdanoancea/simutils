@@ -16,7 +16,7 @@ as in function \code{sf::st_as_sfc}}
 Read and parse the input xml file to return an sf object.
 }
 \details{
-Return an sf object with the geolmetry column parsed from the
+Return an sf object with the geometry column parsed from the
 input xml file.
 }
 \examples{
