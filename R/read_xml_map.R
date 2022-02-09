@@ -63,8 +63,6 @@ read_xml_map <- function(xmlname, crs){
     }
     map.sf <- st_as_sf(map.dt, wkt = 'geometry', crs = crs)
     
-    map.sf <- st_as_sf(wkt.dt, wkt = 'geometry', crs = crs)
-    attr(map.sf, 'specs') <- cols_attr
   }
   return(map.sf)
 }
