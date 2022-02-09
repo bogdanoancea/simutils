@@ -25,7 +25,10 @@ Imports:
 SystemRequirements: Java JDK 8 or higher (for JRI/REngine JDK 8 or higher)
 Suggests:
     covr,
-    testthat
+    testthat,
+    knitr,
+    markdown
+VignetteBuilder: knitr
 RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
 Collate: 

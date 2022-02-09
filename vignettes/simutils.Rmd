@@ -1,0 +1,90 @@
+---
+title: "Basic functionalities to deal with simulated mobile network data"
+author: "Bogdan Oancea"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Basic functionalities to deal with simulated mobile network data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib  
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette contains a short introduction to *simutils* package. It describes its main purpose, presents some technical details of its implementation and provide examples on how to use this package. Some basic knowledge about the *simulator* tool is recommended. A detailed description of the data sets used by this package can be found in @epj, @rsr, @WPI.2, @WPI.3, @WPI.4, @arxiv and in @bmc_paper. To fully understand the structure of the data sets used by this package it is recommended to read the above mentioned papers.
+
+
+# Introduction
+This section contains a brief explanation about the intended use of the package. 
+
+In the context of the European project ESSnet on Big Data, a mobile network data simulator has been developed in C++ @WPI.2, whose constant evolution is available as open source software in github: https://github.com/bogdanoancea/simulator. This simulator needs a set of input files in XML format and a geographical map in WKT format. These files contain data about:
+
+* the simulation (time span information, mobility patterns, probabilities for individuals of having one or two mobile devices) 
+* persons - how many individuals comprise the population, how fast they walk or move by car, how long they spend at home, at work, etc. 
+* antennas - their position, emission power, path loss exponent, and other configuration parameters, and (iv) prior specifications for the computation of location probabilities.
+
+Once the simulator is executed with all these parameters, the following outputs can be obtained as csv files: 
+
+* the grid of analysis in which the geographical territory is divided 
+* the ground truth about the persons at each time instant (their positions and their devices) 
+* the parameters of each antenna 
+* the network events arising from the connections of the devices to each antenna at each time instant
+* the coverage area for each antenna 
+* the signal strength (or the signal dominance) of each antenna in the center of each grid tile.
+
+The structure of each csv file is specified in a corresponding dictionary in XML, whose contents, in turn, are specified also in a corresponding XSD file. These file structures allow the user to represent the metadata by using a standard format in XML as well as to conduct their validation with the dictionaries in XSD format. This validation is done using a Java program integrated in the *simutils* R package through the *rJava* package (@rj) allowing for compatibility with some features introduced in XML ver. 1.1 (features not yet in R packages dealing with XML processing).
+
+
+Although the simulator has been implemented in C++, all the information related to it can be managed with the R language by using the *simutils* package. With this tool, it is possible to execute the simulator as well as to manage, specify and change their inputs and outputs. More, the outputs of the *simutils* package can be sent to *simviz*, another R package that we created to build different visualizations of the individual or aggregated data regarding the mobile devices and persons or have a visual representation of different aspects of the mobile network and its characteristics.
+
+
+# Validation functions
+The first step to run a simulation is to specify and validate the input files for the simulator software. We provide a set of XML input files for the simulator in the _extdata/input_files_ folder (simulation.xml, persons.xml, antennas.xml) together with the schema definition for each XML file found in the _extdata/input_files/schema_definition_ folder (simulation_dict.xsd, persons_dict.xsd, antennas_dict.xsd).
+
+*simutils* package provides *validate_xml* function to validate an XML file against its corresponding XSD file.
+
+```{r}
+library(simutils)
+rootPath <- file.path(system.file(package = "simutils"), 'extdata')  
+	 
+# Validate the simulation.xml file with its corresponding xsd file
+xml_fn <- file.path(rootPath, "input_files", "simulation.xml")
+xsd_fn <- file.path(rootPath, 
+	                    "metadata/input_files/schema_definition", 
+	                    "simulation_dict.xsd")
+validate_xml(xsd_fn, xml_fn)
+
+# Validate the persons.xml file with its corresponding xsd file
+xml_fn <- file.path(rootPath, "input_files", "persons.xml")
+xsd_fn <- file.path(rootPath, 
+	                    "metadata/input_files/schema_definition", 
+	                    "persons_dict.xsd")
+
+	
+# Validate the antennas.xml file with its corresponding xsd file
+xml_fn <- file.path(rootPath, "input_files", "antennas.xml")
+xsd_fn <- file.path(rootPath, 
+	                    "metadata/input_files/schema_definition", 
+	                    "antennas_dict.xsd")
+validate_xml(xsd_fn, xml_fn)
+
+```
+# Updating simulation parameters
+
+# Run a simulation
+
+# Reading the simulation results and building a data structure suited for analysis
+
+# Data Analysis
+
+## Computing ground-truth totals
+
+## Computing Origin Destination Matrices
+
+# References
