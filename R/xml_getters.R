@@ -225,7 +225,7 @@ getSpatialUnitName <- function(xmlname, dataset) {
 getNestingSpatialUnitName <- function(xmlname, dataset) {
   if (dataset == 'map') {
     xml <- read_xml(xmlname)
-    NestingSpatialUnitName <- xml_text(xml_find_all(xml, './/nest_name_long'))
+    NestingSpatialUnitName <- xml_text(xml_find_all(xml, './/name_long'))
     
     NestingSpatialUnitName <- paste0(unique(NestingSpatialUnitName), '_long')
     return(NestingSpatialUnitName)
