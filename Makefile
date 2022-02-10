@@ -1,4 +1,5 @@
 VERSION = $(shell grep ^Version DESCRIPTION | sed s/Version:\ //)
+R_ARCH =		--arch x64
 
 doc:
 	R --slave -e 'library(roxygen2); roxygenise()'
@@ -12,7 +13,7 @@ deps:
 	R --slave -e 'install.packages(c("codetools", "testthat", "devtools", "roxygen2", "knitr"), repo="http://cran.at.r-project.org", lib=ifelse(nchar(Sys.getenv("R_LIB")), Sys.getenv("R_LIB"), .libPaths()[1]))'
 
 build: doc
-	R CMD build .
+	R CMD build --with-keep.source .
 
 check: build
 	-R CMD check --as-cran simutils_$(VERSION).tar.gz

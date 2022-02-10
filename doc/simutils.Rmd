@@ -1,0 +1,34 @@
+---
+title: "Basic functionalities to deal with simulated mobile network data"
+author: "Bogdan Oancea"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Basic functionalities to deal with simulated mobile network data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib  
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette contains a short introduction to *simutils* package. It describes its main purpose, presents some technical details of its implementation and provide examples on how to use this package. Some basic knowledge about the *simulator* tool is recommended. A detailed description of the methodological approach implemented by this package can be found in @epj, @rsr, @WPI.2, @WPI.3, @WPI.4, @arxiv and in @bmc_paper. To fully understand the structure of the data sets used by this package it is recommended to read the above mentioned papers.
+
+
+# Introduction
+This section contains a brief explanation about the intended use of the package and provides a short introduction to the underlying methodology.
+
+## Validation functions
+## Updating simulation parameters
+## Run a simulation
+## Reading the simulation results and building a data structure suited for analysis
+## Data Analysis
+### Computing totals
+### Computing Origin destination Matrices
+
+# References

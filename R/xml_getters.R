@@ -6,8 +6,6 @@
 #' 
 #' @import sf xml2 data.table
 #' 
-#' @include readWKT_as_sf.R
-#' 
 #' @examples
 #' xmlname <- system.file(
 #'   "extdata/metadata/output_files/antennas_dict.xml", package = "simutils") 
@@ -26,6 +24,7 @@
 #' 
 #' @export
 getCoordsNames <- function(xmlname, dataset) {
+  
   if (dataset == 'antennas') {
     xml <- read_xml(xmlname)
     ant <- as_list(xml)$antennas
@@ -65,6 +64,28 @@ getCoordsNames <- function(xmlname, dataset) {
       }
     }
     return(persons_coords_colNames)
+  }
+  
+  
+  if (dataset == 'events') {
+    
+    xml <- read_xml(xmlname)
+    ant <- as_list(xml)$events
+    #get column names and column types
+    events_coords_colNames <- c()
+    
+    for(i in 1: length(ant)) {
+      if(names(ant)[i] == 'specs_event_coords') {
+        for(j in 1:length(ant[[i]])) {
+          nodeName <- names(ant[[i]])[j]
+          if(endsWith(nodeName, 'ColName')) {
+            coordsColName <- (ant[[i]])[[j]][[1]]
+            events_coords_colNames <- c(events_coords_colNames, coordsColName)
+          }
+        }
+      }
+    }
+    return(events_coords_colNames)
   }
   stop('[getCoords] dataset not yet implemented.\n')
 }
@@ -135,11 +156,11 @@ getSignalType <- function(xmlname, dataset) {
 #' @rdname xml_getters
 #' 
 #' @export
-getXTileDimColName <- function(xmlname, dataset) {
+getXTileDim <- function(xmlname, dataset) {
   if (dataset == 'grid') {
     xml <- read_xml(xmlname)
-    XTileDimColName <- xml_text(xml_child(xml_child(xml, 'specs_grid_tile_dim'), 'XTileDimColName'))
-    return(XTileDimColName)
+    XTileDim <- xml_text(xml_child(xml_child(xml, 'specs_grid_tile_dim'), 'XTileDimColName'))
+    return(XTileDim)
   } 
   stop('[simutils::getSignalType] dataset not yet implemented.\n')
 }
@@ -147,11 +168,11 @@ getXTileDimColName <- function(xmlname, dataset) {
 #' @rdname xml_getters
 #' 
 #' @export
-getYTileDimColName <- function(xmlname, dataset) {
+getYTileDim <- function(xmlname, dataset) {
   if (dataset == 'grid') {
     xml <- read_xml(xmlname)
-    YTileDimColName <- xml_text(xml_child(xml_child(xml, 'specs_grid_tile_dim'), 'YTileDimColName'))
-    return(YTileDimColName)
+    YTileDim <- xml_text(xml_child(xml_child(xml, 'specs_grid_tile_dim'), 'YTileDimColName'))
+    return(YTileDim)
   } 
   stop('[simutils::getSignalType] dataset not yet implemented.\n')
 }
@@ -178,4 +199,49 @@ getCellIDName <- function(xmlname, dataset) {
     return(cellIDName)
   } 
   stop('[simutils::getCellIDName] dataset not yet implemented.\n')
+}
+
+#' @rdname xml_getters
+#' 
+#' @export
+getSpatialUnitName <- function(xmlname, dataset) {
+  if (dataset == 'map') {
+    xml <- read_xml(xmlname)
+    SpatialUnitName <- xml_text(xml_find_all(xml, './/name_long'))
+    if (length(unique(SpatialUnitName)) > 1) {
+      
+      stop('[simutils::getSpatialUnitName] Multiple spatial units not allowed.\n')
+      
+    }
+    SpatialUnitName <- paste0(unique(SpatialUnitName), '_long')
+    return(SpatialUnitName)
+  } 
+  stop('[simutils::getSpatialUnitName] dataset not yet implemented.\n')
+}
+
+#' @rdname xml_getters
+#' 
+#' @export
+getNestingSpatialUnitName <- function(xmlname, dataset) {
+  if (dataset == 'map') {
+    xml <- read_xml(xmlname)
+    NestingSpatialUnitName <- xml_text(xml_find_all(xml, './/name_long'))
+    
+    NestingSpatialUnitName <- paste0(unique(NestingSpatialUnitName), '_long')
+    return(NestingSpatialUnitName)
+  } 
+  stop('[simutils::getNestingSpatialUnitName] dataset not yet implemented.\n')
+}
+
+#' @rdname xml_getters
+#' 
+#' @export
+getDeviceIDColName <- function(xmlname, dataset) {
+  if (dataset == 'individuals') {
+    xml <- read_xml(xmlname)
+    deviceIDColName <- xml_text(xml_find_all(xml, './/devColName'))
+    
+    return(deviceIDColName)
+  } 
+  stop('[simutils::getNestingSpatialUnitName] dataset not yet implemented.\n')
 }

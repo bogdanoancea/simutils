@@ -3,8 +3,11 @@
 #' @description Read and parse the input xml file to return an sf object.
 #'
 #' @param xmlname Name of the xml file with the map specifications.
+#' 
+#' @param crs integer or character; coordinate reference system for the geometry
+#'  as in function \code{sf::st_as_sfc}
 #'
-#' @details Return an sf object with the geolmetry column parsed from the
+#' @details Return an sf object with the geometry column parsed from the
 #' input xml file.
 #'
 #' @rdname read_xml_map
@@ -14,12 +17,12 @@
 #' @import xml2 data.table
 #'
 #' @examples
-#' read_xml_map(system.file(
-#'    "extdata/input_files", "map.xml", package = "simutils"
-#' ))
+#' read_xml_map(
+#'   system.file("extdata/input_files", "map.xml", package = "simutils"),
+#'   crs = 2062)
 #' 
 #' @export
-read_xml_map <- function(xmlname){
+read_xml_map <- function(xmlname, crs){
   
   xml_object <- read_xml(xmlname)
   sp_syntax <- unique(xml_attr(xml_find_all(xml_object, './/sp_spec'), 'syntax'))
@@ -38,36 +41,28 @@ read_xml_map <- function(xmlname){
       stop('[simutiles::read_xml_map] All spatial units must have the same name_long (region, province, subregion,...).\n')
       
     }
-    name_long <- unique(name_long)
-    name_code <- xml_text(xml_find_all(xml_object, './/name_code'))
-    name_value <- xml_text(xml_find_all(xml_object, './/name_value'))
-    wkt.dt <- data.table(
-      wkt = wkt,
-      name_long = name_value,
-      name_code = name_code
-    )
-    new_names <- gsub('name', name_long, names(wkt.dt))
-    setnames(wkt.dt, new_names)
+
+    regions <- xml_find_all(xml_object, ".//region")
+    no_regions <- length(regions)
     
-    nesting_units <- as_list(xml_find_all(xml_object, './/nesting_unit'))
-    nesting_units <- lapply(nesting_units, function(nest_unit){
-      
-      dt <- data.table(
-        name_long = nest_unit$nest_name_value[[1]],
-        name_code = nest_unit$nest_name_code[[1]]
-      )
-      new_names <- gsub('name', nest_unit$nest_name_long[[1]], names(dt))
-      setnames(dt, new_names)
-      return(dt)
-      
-    })
+    names<-c("Subregion_long", "Subregion_code", "Region_long", "Region_code", "geometry")
+    map.dt <- setNames(data.table(matrix(nrow = 0, ncol = 5)), names)
+
+    for (i in 1:no_regions) {
+      spatial_units <- xml_find_all(regions[i], './/spatial_unit')
+      region_name <- xml_text(xml_find_first(regions[i], './/name'))
+      region_code <- xml_text(xml_find_first(regions[i], './/code'))
+      no_sp_units <-  length(spatial_units)
+      for(j in 1:no_sp_units) {
+        wkt <- xml_text(xml_find_first(spatial_units[j], './/sp_spec'))
+        sr_long_name <- xml_text(xml_find_first(spatial_units[j], './/name_value'))
+        sr_code <- xml_text(xml_find_first(spatial_units[j], './/name_code'))
+        row <- list(sr_long_name, sr_code, region_name, region_code, wkt)
+        map.dt<-rbind(map.dt, row)
+      }
+    }
+    map.sf <- st_as_sf(map.dt, wkt = 'geometry', crs = crs)
     
-    wkt.dt <- data.table(wkt.dt, rbindlist(nesting_units))
-    wkt_dt_fn <- 'temp_wkt_dt.csv'
-    fwrite(wkt.dt, wkt_dt_fn)
-    map.sf <- read_sf(wkt_dt_fn, options = 'GEOM_POSSIBLE_NAMES=wkt')
-    map.sf$wkt <- NULL
-    file.remove(wkt_dt_fn)
   }
   return(map.sf)
 }
