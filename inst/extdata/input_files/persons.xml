@@ -1,5 +1,5 @@
 <persons>
-        <num_persons>500</num_persons>
+        <num_persons>800</num_persons>
         <age_distribution type = "TruncatedNormal">
             <mean>42</mean>
             <sd>25</sd>
@@ -8,12 +8,12 @@
         </age_distribution>
         <male_share>0.48</male_share>
         <speed_walk_distribution type = "Normal">
-        	<mean>3</mean>
+        	<mean>5</mean>
         	<sd>0.3</sd>
         </speed_walk_distribution>
         <speed_car_distribution type = "Normal">
-        	<mean>16</mean>
+        	<mean>25</mean>
         	<sd>1.6</sd>
         </speed_car_distribution>
-        <percent_home>0.10</percent_home>
+        <percent_home>0.9</percent_home>
 </persons>

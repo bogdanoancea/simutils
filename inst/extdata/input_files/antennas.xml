@@ -42,7 +42,7 @@
   <antenna>
     <mno_name>MNO1</mno_name>
     <maxconnections>56</maxconnections>
-    <power>7</power>
+    <power>15</power>
     <attenuationfactor>3.95</attenuationfactor>
     <type>omnidirectional</type>
     <Smin>-85</Smin>
@@ -684,7 +684,7 @@
   <antenna>
     <mno_name>MNO1</mno_name>
     <maxconnections>56</maxconnections>
-    <power>10</power>
+    <power>18</power>
     <attenuationfactor>4</attenuationfactor>
     <type>omnidirectional</type>
     <Smin>-85</Smin>
