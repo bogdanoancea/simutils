@@ -48,7 +48,6 @@ Collate:
     'run_ExeFile.R'
     'simutils.R'
     'validate_xml.R'
-    'updateSimInput.R'
-    'usedynLib.R'
+    'update_SimInput.R'
 LinkingTo: 
     Rcpp

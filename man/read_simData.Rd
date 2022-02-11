@@ -32,19 +32,12 @@ filename_signal <- c(
  xml= system.file("extdata/metadata/output_files/SignalMeasure_dict.xml", package = "simutils"))
                  
 filename_coverage <- c(
-<<<<<<< HEAD:man/create_simElements.Rd
- csv= system.file("extdata/output_files", "AntennaCells_MNO1.csv", 
-                  package = "simutils"),
- xml= system.file("extdata/metadata/output_files/AntennaCells_dict.xml", 
-                  package = "simutils"))
-=======
  csv= system.file("extdata/output_files", "AntennaCells_MNO1.csv", package = "simutils"),
  xml= system.file("extdata/metadata/output_files/AntennaCells_dict.xml", package = "simutils"))
 
 filename_events <- c(
  csv= system.file("extdata/output_files/AntennaInfo_MNO_MNO1.csv", package = "simutils"),
  xml= system.file("extdata/metadata/output_files/events_dict.xml", package = "simutils"))
->>>>>>> 4d2d20a8bb2c7d70b1f2add592253bb17ee488a3:man/read_simData.Rd
                        
 filename_grid <- c(
   csv= system.file("extdata/output_files/grid.csv", package = "simutils"),

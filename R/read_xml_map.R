@@ -41,13 +41,13 @@ read_xml_map <- function(xmlname, crs){
       stop('[simutiles::read_xml_map] All spatial units must have the same name_long (region, province, subregion,...).\n')
       
     }
-
+    
     regions <- xml_find_all(xml_object, ".//region")
     no_regions <- length(regions)
     
     names<-c("Subregion_long", "Subregion_code", "Region_long", "Region_code", "geometry")
     map.dt <- setNames(data.table(matrix(nrow = 0, ncol = 5)), names)
-
+    
     for (i in 1:no_regions) {
       spatial_units <- xml_find_all(regions[i], './/spatial_unit')
       region_name <- xml_text(xml_find_first(regions[i], './/name'))
