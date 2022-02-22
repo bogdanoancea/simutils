@@ -82,6 +82,7 @@ read_simData <- function(filenames, crs = NA_integer_){
   
   # Region names
   label_spUnit <- getSpatialUnitName(filenames$map[['xml']], 'map')
+  
   names_spUnit <- map.sf[[label_spUnit]]
   label_nestSpUnits <- getNestingSpatialUnitName(filenames$map[['xml']], 'map')
   
@@ -92,8 +93,8 @@ read_simData <- function(filenames, crs = NA_integer_){
   coords_name_idx <- which(names(network.dt) %in% coords_name)
   network_attr <- attr(network.dt, 'specs')[-coords_name_idx]
   network.sf <- st_as_sf(network.dt, coords = coords_name, crs = crs)
-  attr(network.sf, 'specs') <- unname(network_attr)
-
+  attr(network.sf, 'specs') <- network_attr
+  
   network_in_geom_unit_idx <- sapply(st_intersects(network.sf, map.sf), function(x) sample(x, 1))
   network.sf[[label_spUnit]] <- names_spUnit[network_in_geom_unit_idx]
   
@@ -104,13 +105,14 @@ read_simData <- function(filenames, crs = NA_integer_){
   var_time    <- names(network.sf)[which(attr(network.sf, 'specs') == 'specs_time')]
   var_antenna <- names(network.sf)[which(attr(network.sf, 'specs') == 'specs_cells')]
   network.sf <- network.sf[order(network.sf[[var_antenna]], network.sf[[var_time]]), ]
-
   network.sf <- dplyr::left_join(
     network.sf, 
     st_drop_geometry(map.sf[, c(label_spUnit, label_nestSpUnits)]))
-  attr(network.sf, 'specs') <- c(unname(network_attr), map_cols_attr, 'geometry')
+  cols_attr <- c(network_attr, map_cols_attr, 'geometry')
+  names(cols_attr)[cols_attr == 'geometry'] <- 'geometry'
+  attr(network.sf, 'specs') <- cols_attr
   cat(' ok.\n')
-
+  
   # Read coverage file 
   cat('[simutils::read_simData] Reading and parsing coverage cells file...')
   cellCoord_name <- getCellCoordName(filenames$coverage_cells['xml'], 'cells')
@@ -139,7 +141,7 @@ read_simData <- function(filenames, crs = NA_integer_){
   coords_name_idx <- which(names(events.dt) %in% coords_name)
   events_attr <- attr(events.dt, 'specs')[-coords_name_idx]
   events.sf <- st_as_sf(events.dt, coords = coords_name, crs = crs)
-  attr(events.sf, 'specs') <- unname(events_attr)
+  attr(events.sf, 'specs') <- events_attr
   
   event_in_geom_unit_idx <- sapply(st_intersects(events.sf, map.sf), function(x) sample(x, 1))
   events.sf[[label_spUnit]] <- names_spUnit[event_in_geom_unit_idx]
@@ -155,9 +157,11 @@ read_simData <- function(filenames, crs = NA_integer_){
   events.sf <- dplyr::left_join(
     events.sf, 
     st_drop_geometry(map.sf[, c(label_spUnit, label_nestSpUnits)]))
-  attr(events.sf, 'specs') <- c(unname(events_attr), map_cols_attr, 'geometry')
+  cols_attr <- c(events_attr, map_cols_attr, 'geometry')
+  names(cols_attr)[cols_attr == 'geometry'] <- 'geometry'
+  attr(events.sf, 'specs') <- cols_attr
   cat(' ok.\n')
-
+  
   # Read signal per tile
   cat('[simutils::read_simData] Reading and parsing signal file...\n')
   signal.dt <- read_csv(filenames$signal['xml'], filenames$signal['csv'])
@@ -182,7 +186,7 @@ read_simData <- function(filenames, crs = NA_integer_){
                         dimnames = list(0:(ny-1), 0:(nx-1), signal.dt[[idVar]])
   )
   
-
+  
   grid.stars <- st_as_stars(signal.array)
   names(grid.stars) <- signal_type
   names(attr(grid.stars, 'dimensions')) <- c('x', 'y', idVar)
@@ -212,7 +216,7 @@ read_simData <- function(filenames, crs = NA_integer_){
   grid.stars <- st_crop(grid.stars, st_union(map.sf))
   
   cat(' ok.\n')
-
+  
   # Read individuals
   cat('[simutils::read_simData] Reading and parsing persons file ...\n')
   individuals.dt <- read_csv(filenames$individuals['xml'], filenames$individuals['csv'])
@@ -224,7 +228,7 @@ read_simData <- function(filenames, crs = NA_integer_){
   }
   individuals.dt[
     , nDev := rowSums(.SD, na.rm = TRUE), .SDcols = paste0('n_', deviceColNames)][
-    , (paste0('n_', deviceColNames)) := NULL]
+      , (paste0('n_', deviceColNames)) := NULL]
   individuals.sf <- st_as_sf(individuals.dt, coords = c('x', 'y'), crs = crs)
   attr_indiv <- attr_indiv[-which(attr_indiv == 'specs_person_coords')]
   
@@ -233,9 +237,10 @@ read_simData <- function(filenames, crs = NA_integer_){
   individuals.sf <- dplyr::left_join(
     individuals.sf, 
     st_drop_geometry(map.sf[, c(label_spUnit, label_nestSpUnits)]))
-  attr(individuals.sf, 'specs') <- c(
-    attr_indiv, 'specs_ndev', paste0('specs_', label_spUnit),
-    paste0('specs_', label_nestSpUnits), 'geometry')
+  cols_attr <- c(attr_indiv, 'specs_ndev', map_cols_attr, 'geometry')
+  names(cols_attr)[cols_attr == 'specs_ndev'] <- 'nDev'
+  names(cols_attr)[cols_attr == 'geometry'] <- 'geometry'
+  attr(individuals.sf, 'specs') <- cols_attr
   cat(' ok.\n')
   
   

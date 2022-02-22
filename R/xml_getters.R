@@ -205,6 +205,7 @@ getCellIDName <- function(xmlname, dataset) {
 #' 
 #' @export
 getSpatialUnitName <- function(xmlname, dataset) {
+  
   if (dataset == 'map') {
     xml <- read_xml(xmlname)
     SpatialUnitName <- xml_text(xml_find_all(xml, './/name_long'))
@@ -225,7 +226,7 @@ getSpatialUnitName <- function(xmlname, dataset) {
 getNestingSpatialUnitName <- function(xmlname, dataset) {
   if (dataset == 'map') {
     xml <- read_xml(xmlname)
-    NestingSpatialUnitName <- xml_text(xml_find_all(xml, './/name_long'))
+    NestingSpatialUnitName <- xml_text(xml_find_all(xml, './/name'))
     
     NestingSpatialUnitName <- paste0(unique(NestingSpatialUnitName), '_long')
     return(NestingSpatialUnitName)

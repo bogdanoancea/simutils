@@ -50,7 +50,7 @@ read_xml_map <- function(xmlname, crs){
     
     for (i in 1:no_regions) {
       spatial_units <- xml_find_all(regions[i], './/spatial_unit')
-      region_name <- xml_text(xml_find_first(regions[i], './/name'))
+      region_name <- xml_text(xml_find_first(regions[i], './/value'))
       region_code <- xml_text(xml_find_first(regions[i], './/code'))
       no_sp_units <-  length(spatial_units)
       for(j in 1:no_sp_units) {
