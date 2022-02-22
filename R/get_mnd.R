@@ -74,14 +74,28 @@
 get_mnd <- function(simData, devices, t_range, groundTruth = FALSE){
 
   observed_mnd.dt <- sf::st_drop_geometry(simData$events)
-  individuals.dt  <- sf::st_drop_geometry(simData$individuals)
-  observed_mnd.specs <- attributes(observed_mnd.dt)$specs
+  observed_mnd_specs <- attributes(observed_mnd.dt)$specs
+return(observed_mnd_specs)
+  name_tile       <- names(observed_mnd_specs)[observed_mnd_specs == 'specs_tile']
+  name_spUnit     <- names(observed_mnd_specs)[observed_mnd_specs == 'specs_sp_name_long']
+  name_spNestUnit <- names(observed_mnd_specs)[observed_mnd_specs == 'specs_nesting_name_long']
+  mnd_vars <- setdiff(names(observed_mnd.dt), c(name_tile, name_spUnit, name_spNestUnit))
+return(mnd_vars)  
+  observed_mnd.dt <- observed_mnd.dt[, ..mnd_vars]
+  return(observed_mnd.dt)
+      
+  events_coord.dt <- sf::st_coordinates(simData$events)
+  
+  individuals.dt <- sf::st_drop_geometry(simData$individuals)
+  indiv_coord.dt <- sf::st_coordinates(simData$individuals)
+
+return(list(observed_mnd.dt, individuals.dt ))  
+  
+  
   individuals.specs  <- attributes(simData$individuals)$specs
   nameDev            <- names(observed_mnd.specs)[observed_mnd.specs == 'specs_devices']
   nameTA             <- names(observed_mnd.specs)[observed_mnd.specs == 'specs_TA']
-  nameTile           <- names(observed_mnd.specs)[observed_mnd.specs == 'specs_tile']
-  nameSpLong         <- names(observed_mnd.specs)[observed_mnd.specs == 'specs_sp_name_long']
-  nameNestingLong    <- names(observed_mnd.specs)[observed_mnd.specs == 'specs_nesting_name_long']
+  
   namePerson         <- names(individuals.specs)[individuals.specs == 'specs_personID']
   
   if (!missing(devices)) {
@@ -113,22 +127,16 @@ get_mnd <- function(simData, devices, t_range, groundTruth = FALSE){
     namet       <- names(individuals.specs)[individuals.specs == 'specs_time']
     nameDevice1 <- names(individuals.specs)[individuals.specs == 'specs_device_1']
     nameDevice2 <- names(individuals.specs)[individuals.specs == 'specs_device_2']
-    individuals.dt <- sf::st_drop_geometry(simData$individuals)[
-      , c(namet, namePerson, nameDevice1, nameDevice2), with = FALSE]
-return(individuals.dt)
-        
-    names(individuals.dt) <- c(namet, namePerson, nameDevice1, nameDevice2)
-    individuals.dt        <- melt(individuals.dt, id.vars = c(namet, namePerson), 
-                                  measure.vars = c(nameDevice1, nameDevice2),
-                                  value.name = nameDev)[
-                                     !is.na(eval(parse(text = nameDev)))][
-                                     , variable := NULL] 
-    
+    individuals.dt <- melt(individuals.dt[
+      , c(namet, namePerson, nameDevice1, nameDevice2), with = FALSE], 
+      id.vars = c(namet, namePerson), measure.vars = c(nameDevice1, nameDevice2),
+      value.name = nameDev)[
+      !is.na(get(nameDev))][
+      , variable := NULL] 
     groundTruth.sf <- dplyr::left_join(observed_mnd.sf, individuals.dt, 
                                        by = c(namet, nameDev))
-    
     groundTruth.sf <- groundTruth.sf[, !(names(groundTruth.sf) %in% nameTA)]
-    
+return(groundT)    
    } 
   
   if (groundTruth == FALSE) {

@@ -61,7 +61,14 @@ read_xml_map <- function(xmlname, crs){
         map.dt<-rbind(map.dt, row)
       }
     }
+    
     map.sf <- st_as_sf(map.dt, wkt = 'geometry', crs = crs)
+    
+    cols_attr <- c('specs_spUnit_name', 'specs_spUnit_code', 
+                   'specs_spNestUnit_name', 'specs_spNestUnit_code',
+                   'geometry')
+    names(cols_attr) <- names(map.dt)
+    attr(map.sf, 'specs') <- cols_attr
     
   }
   return(map.sf)

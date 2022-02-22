@@ -85,7 +85,7 @@ read_simData <- function(filenames, crs = NA_integer_){
   
   names_spUnit <- map.sf[[label_spUnit]]
   label_nestSpUnits <- getNestingSpatialUnitName(filenames$map[['xml']], 'map')
-  
+
   # Read network parameters
   cat('[simutils::read_simData] Reading and parsing network parameters file...\n')
   network.dt <- read_csv(filenames$network_parameters['xml'], filenames$network_parameters['csv'])
@@ -149,7 +149,7 @@ read_simData <- function(filenames, crs = NA_integer_){
   map_nogeom <- st_drop_geometry(map.sf[, c(label_spUnit, label_nestSpUnits)])
   map_cols_idx <- which(names(map.sf) %in% c(label_spUnit, label_nestSpUnits))
   map_cols_attr <- attr(map.sf, 'specs')[map_cols_idx]
-  
+
   var_time    <- names(events.sf)[which(attr(events.sf, 'specs') == 'specs_time')]
   var_antenna <- names(events.sf)[which(attr(events.sf, 'specs') == 'specs_cells')]
   events.sf <- events.sf[order(events.sf[[var_antenna]], events.sf[[var_time]]), ]
