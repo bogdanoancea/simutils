@@ -221,6 +221,8 @@ read_simData <- function(filenames, crs = NA_integer_){
   cat('[simutils::read_simData] Reading and parsing persons file ...\n')
   individuals.dt <- read_csv(filenames$individuals['xml'], filenames$individuals['csv'])
   attr_indiv <- attr(individuals.dt, 'specs')
+  names(attr_indiv) <- names(individuals.dt)
+  attr_indiv <- attr_indiv[-which(attr_indiv == 'specs_person_coords')]
   deviceColNames <- names(individuals.dt)[grep('Device', names(individuals.dt))]
   for (devCol in deviceColNames){
     
@@ -229,11 +231,11 @@ read_simData <- function(filenames, crs = NA_integer_){
   individuals.dt[
     , nDev := rowSums(.SD, na.rm = TRUE), .SDcols = paste0('n_', deviceColNames)][
       , (paste0('n_', deviceColNames)) := NULL]
+
   individuals.sf <- st_as_sf(individuals.dt, coords = c('x', 'y'), crs = crs)
-  attr_indiv <- attr_indiv[-which(attr_indiv == 'specs_person_coords')]
-  
   individual_in_geom_unit_idx <- sapply(st_intersects(individuals.sf, map.sf), function(x) sample(x, 1))
   individuals.sf[[label_spUnit]] <- names_spUnit[individual_in_geom_unit_idx]
+  
   individuals.sf <- dplyr::left_join(
     individuals.sf, 
     st_drop_geometry(map.sf[, c(label_spUnit, label_nestSpUnits)]))
