@@ -46,7 +46,8 @@ read_xml_map <- function(xmlname, crs){
     no_regions <- length(regions)
     
     names<-c("Subregion_long", "Subregion_code", "Region_long", "Region_code", "geometry")
-    map.dt <- setNames(data.table(matrix(nrow = 0, ncol = 5)), names)
+    map.dt <- data.table(matrix(nrow = 0, ncol = 5))
+    setnames(map.dt, names)
     
     for (i in 1:no_regions) {
       spatial_units <- xml_find_all(regions[i], './/spatial_unit')

@@ -50,5 +50,3 @@ Collate:
     'simutils.R'
     'validate_xml.R'
     'update_SimInput.R'
-LinkingTo: 
-    Rcpp

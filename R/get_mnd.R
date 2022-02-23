@@ -6,7 +6,7 @@
 #' is fill by events characteristics matched with PersonId
 #'
 #' @param simData list of different information elements from the simulation (see 
-#' \ref{\code{read_simData}}).
+#' \code{\link{read_simData}}).
 #' 
 #' @param devices character vector with the codes of the devices for which the data are to be 
 #' obtained; if nothing is specified, all are taken. 
@@ -21,7 +21,7 @@
 #'
 #' @name get_mnd
 #' 
-#' @import sf data.table stars dplyr
+#' @import sf data.table
 #' 
 #' @include read_simData.R
 #' 
@@ -72,6 +72,8 @@
 #' @export
 #' 
 get_mnd <- function(simData, devices, t_range, groundTruth = FALSE){
+  
+  ..mnd_vars <- variable <- observed_mnd.specs <- NULL
   
   events.dt <- sf::st_drop_geometry(simData$events)
 
@@ -166,69 +168,4 @@ get_mnd <- function(simData, devices, t_range, groundTruth = FALSE){
   
   output <- list(mnd = observed_mnd.dt, grTruth = grTruth.sf)
   return(output)
-  
-  
-  return(observed_mnd.dt)
-      
-  
-  
-  
-return(list(observed_mnd.dt, individuals.dt ))  
-  
-  
-  individuals.specs  <- attributes(simData$individuals)$specs
-  nameDev            <- names(observed_mnd.specs)[observed_mnd.specs == 'specs_devices']
-  nameTA             <- names(observed_mnd.specs)[observed_mnd.specs == 'specs_TA']
-  
-  namePerson         <- names(individuals.specs)[individuals.specs == 'specs_personID']
-  
-
-  if (groundTruth == TRUE) {
-    
-    namet       <- names(individuals.specs)[individuals.specs == 'specs_time']
-    nameDevice1 <- names(individuals.specs)[individuals.specs == 'specs_device_1']
-    nameDevice2 <- names(individuals.specs)[individuals.specs == 'specs_device_2']
-    individuals.dt <- melt(individuals.dt[
-      , c(namet, namePerson, nameDevice1, nameDevice2), with = FALSE], 
-      id.vars = c(namet, namePerson), measure.vars = c(nameDevice1, nameDevice2),
-      value.name = nameDev)[
-      !is.na(get(nameDev))][
-      , variable := NULL] 
-    groundTruth.sf <- dplyr::left_join(observed_mnd.sf, individuals.dt, 
-                                       by = c(namet, nameDev))
-    groundTruth.sf <- groundTruth.sf[, !(names(groundTruth.sf) %in% nameTA)]
-return(groundT)    
-   } 
-  
-  if (groundTruth == FALSE) {
-    
-     groundTruth.dt <- data.table(
-       value = c(unname(observed_mnd.specs[observed_mnd.specs != 'geometry']),
-                 'specs_personID', 'specs_x', 'specs_y'), 
-       names = c(names(c(observed_mnd.specs[observed_mnd.specs != 'geometry'],
-                         individuals.specs[individuals.specs == 'specs_personID'])),
-                  'x', 'y'))
-     groundTruth.dt <- groundTruth.dt[!duplicated(groundTruth.dt, by = 'value')]
-     
-     typeObsmnd     <- unname(unlist(lapply(sf::st_drop_geometry(observed_mnd.sf), class)))
-     typeInd        <- typeof(eval(parse(text = paste0('simData$individuals$`', namePerson, '`'))))
-     groundTruth.dt <- groundTruth.dt[, type := c(typeObsmnd, typeInd, 'double', 'double')]
-     
-     groundTruth           <- as.data.table(matrix(ncol = nrow(groundTruth.dt), nrow = 0))
-     colnames(groundTruth) <- groundTruth.dt$names
-     lapply(1:nrow(groundTruth.dt), function(i){
-       groundTruth <- groundTruth[, eval(parse(text = paste0('`', groundTruth.dt$names[i], '` := as.', groundTruth.dt$type[i], '()')))]
-     })
-     
-     groundTruth.sf <- sf::st_as_sf(groundTruth, coords = c('x', 'y'))
-  }
-  
-  observed_mnd.sf <- observed_mnd.sf[, !(names(observed_mnd.sf) %in% c(nameTile, nameSpLong, nameNestingLong))]
-  observed_mnd.dt <- sf::st_drop_geometry(observed_mnd.sf)
-  output <- list()
-  output$observed_mnd <- observed_mnd.dt
-  output$groundTruth  <- groundTruth.sf
-  
-  return(output)
-  
 }

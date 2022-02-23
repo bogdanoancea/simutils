@@ -8,7 +8,7 @@ get_mnd(simData, devices, t_range, groundTruth = FALSE)
 }
 \arguments{
 \item{simData}{list of different information elements from the simulation (see
-\ref{\code{read_simData}}).}
+\code{\link{read_simData}}).}
 
 \item{devices}{character vector with the codes of the devices for which the data are to be
 obtained; if nothing is specified, all are taken.}
