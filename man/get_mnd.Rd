@@ -67,6 +67,6 @@ simData <- simutils::read_simData(filenames, crs = 2062)
 
 get_mnd(simData)
 
-get_mnd(simData, devices = c('241', '254'), t_range = c(56,65), groundTruth = TRUE)
+get_mnd(simData, devices = c('209', '894'), t_range = c(56,65), groundTruth = TRUE)
 
 }

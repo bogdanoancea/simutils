@@ -72,36 +72,22 @@
 #' @export
 #' 
 get_mnd <- function(simData, devices, t_range, groundTruth = FALSE){
+  
+  events.dt <- sf::st_drop_geometry(simData$events)
 
-  observed_mnd.dt <- sf::st_drop_geometry(simData$events)
-  observed_mnd_specs <- attributes(observed_mnd.dt)$specs
-return(observed_mnd_specs)
+  observed_mnd_specs <- attributes(events.dt)$specs
+
+  name_devices   <- names(observed_mnd_specs)[observed_mnd_specs == 'specs_devices']
+  name_time      <- names(observed_mnd_specs)[observed_mnd_specs == 'specs_time']
+  
   name_tile       <- names(observed_mnd_specs)[observed_mnd_specs == 'specs_tile']
-  name_spUnit     <- names(observed_mnd_specs)[observed_mnd_specs == 'specs_sp_name_long']
-  name_spNestUnit <- names(observed_mnd_specs)[observed_mnd_specs == 'specs_nesting_name_long']
-  mnd_vars <- setdiff(names(observed_mnd.dt), c(name_tile, name_spUnit, name_spNestUnit))
-return(mnd_vars)  
-  observed_mnd.dt <- observed_mnd.dt[, ..mnd_vars]
-  return(observed_mnd.dt)
-      
-  events_coord.dt <- sf::st_coordinates(simData$events)
-  
-  individuals.dt <- sf::st_drop_geometry(simData$individuals)
-  indiv_coord.dt <- sf::st_coordinates(simData$individuals)
-
-return(list(observed_mnd.dt, individuals.dt ))  
-  
-  
-  individuals.specs  <- attributes(simData$individuals)$specs
-  nameDev            <- names(observed_mnd.specs)[observed_mnd.specs == 'specs_devices']
-  nameTA             <- names(observed_mnd.specs)[observed_mnd.specs == 'specs_TA']
-  
-  namePerson         <- names(individuals.specs)[individuals.specs == 'specs_personID']
+  name_spUnit     <- names(observed_mnd_specs)[observed_mnd_specs == 'specs_spUnit_name']
+  name_spNestUnit <- names(observed_mnd_specs)[observed_mnd_specs == 'specs_spNestUnit_name']
   
   if (!missing(devices)) {
     
-    observed_mnd.dt <- observed_mnd.dt[get(nameDev) %in% devices]
-    devIDs <- unique(observed_mnd.dt[[nameDev]])
+    events.dt <- events.dt[get(name_devices) %in% devices]
+    devIDs <- unique(events.dt[[name_devices]])
     devNotFound <- setdiff(devices, devIDs)
     if (length(devNotFound) > 0) {
       
@@ -113,14 +99,89 @@ return(list(observed_mnd.dt, individuals.dt ))
   
   if (!missing(t_range)) {
     
-    namet <- names(observed_mnd.specs)[observed_mnd.specs == 'specs_time']
-    observed_mnd.dt <- observed_mnd.dt[get(namet) %between% t_range]
-    if (nrow(observed_mnd.dt) == 0) {
+    events.dt <- events.dt[get(name_time) %between% t_range]
+    if (nrow(events.dt) == 0) {
       
       stop('[simutils::get_mnd] No event data in the specified time range.\n')
       
     }
   }
+  
+  mnd_vars <- setdiff(names(events.dt), c(name_tile, name_spUnit, name_spNestUnit))
+  observed_mnd.dt <- events.dt[, ..mnd_vars][
+    , (name_devices) := as.character(get(name_devices))]
+                                   
+  if (groundTruth) {
+    
+    individuals_specs <- attributes(simData$individuals)$specs
+    
+    name_time2      <- names(individuals_specs)[individuals_specs == 'specs_time']
+    name_person     <- names(individuals_specs)[individuals_specs == 'specs_personID']
+    name_tile       <- names(individuals_specs)[individuals_specs == 'specs_tile']
+    name_dev1       <- names(individuals_specs)[individuals_specs == 'specs_device_1']
+    name_dev2       <- names(individuals_specs)[individuals_specs == 'specs_device_2']
+    
+    individuals.sf <- simData$individuals
+    if (!missing(devices)) {
+      
+    individuals.sf <- individuals.sf[
+      simData$individuals[[name_dev1]] %in% devices | simData$individuals[[name_dev2]] %in% devices,]
+    
+    }
+    
+    if (!missing(t_range)) {
+      
+    individuals.sf <- individuals.sf[individuals.sf[[name_time2]] %between% t_range, ]  
+      
+    }
+        
+    individuals.dt <- sf::st_drop_geometry(individuals.sf)
+    indiv_coord.dt <- sf::st_coordinates(individuals.sf)
+    
+    individuals.dt <- cbind(individuals.dt, indiv_coord.dt)
+    
+    indiv_long.dt <- melt(individuals.dt, 
+                          id.vars = setdiff(names(individuals.dt), c(name_dev1, name_dev2)),
+                          value.name = name_devices, measure.vars = c(name_dev1, name_dev2))[
+        , variable := NULL][
+        is.na(get(name_devices)), (name_devices) := '-'][
+        , (name_devices) := as.character(get(name_devices))]
+    setnames(indiv_long.dt, name_time2, name_time)
+
+    if (!missing(devices)){
+      
+      indiv_long.dt <- indiv_long.dt[get(name_devices) %in% devices]
+      
+    }
+    
+    grTruth.dt <- merge(observed_mnd.dt, indiv_long.dt, 
+                        by = c(name_time, name_devices), all = TRUE)
+    grTruth.sf <- sf::st_as_sf(grTruth.dt, coords = c('X', 'Y'))
+    
+  } else {
+    
+    grTruth.sf <- st_sf(st_sfc())
+    
+  }
+  
+  output <- list(mnd = observed_mnd.dt, grTruth = grTruth.sf)
+  return(output)
+  
+  
+  return(observed_mnd.dt)
+      
+  
+  
+  
+return(list(observed_mnd.dt, individuals.dt ))  
+  
+  
+  individuals.specs  <- attributes(simData$individuals)$specs
+  nameDev            <- names(observed_mnd.specs)[observed_mnd.specs == 'specs_devices']
+  nameTA             <- names(observed_mnd.specs)[observed_mnd.specs == 'specs_TA']
+  
+  namePerson         <- names(individuals.specs)[individuals.specs == 'specs_personID']
+  
 
   if (groundTruth == TRUE) {
     
