@@ -68,7 +68,7 @@
 #' compute_odmatrix(simData$individuals, 'individuals_dev1', by = c('t', 'Subregion_long'))
 #'
 #' # Counting individuals by subregion and time with 2 devices
-#' compute_total(simData$individuals, 'individuals_dev2', by = c('t', 'Subregion_long'))
+#' compute_odmatrix(simData$individuals, 'individuals_dev2', by = c('t', 'Subregion_long'))
 #' 
 #' # Counting devices by subregion and time
 #' compute_odmatrix(simData$individuals, 'devices', by = c('t', 'Subregion_long'))
