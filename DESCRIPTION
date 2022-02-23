@@ -48,6 +48,7 @@ Collate:
     'onLoad.R'
     'run_DockerImage.R'
     'run_ExeFile.R'
+    'set_signal_thresh.R'
     'simutils.R'
     'validate_xml.R'
     'update_SimInput.R'
