@@ -16,6 +16,7 @@ Imports:
     purrr (>= 0.3.4),
     fs (>= 1.5.0),
     sf (>= 1.0-2),
+    sfheaders (>= 0.4.0),
     stars (>= 0.5-3),
     data.table (>= 1.14.0),
     dplyr (>= 1.0.7),
@@ -42,6 +43,7 @@ Collate:
     'compute_sdm.R'
     'compute_total.R'
     'compute_voronoi_neighbours.R'
+    'compute_voronoi_sf.R'
     'flatten_deepest.R'
     'get_mnd.R'
     'list_deepest.R'
