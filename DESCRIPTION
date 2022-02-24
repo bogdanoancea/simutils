@@ -43,6 +43,7 @@ Collate:
     'compute_sdm.R'
     'compute_total.R'
     'compute_voronoi_neighbours.R'
+    'compute_voronoi_positions.R'
     'compute_voronoi_sf.R'
     'flatten_deepest.R'
     'get_mnd.R'

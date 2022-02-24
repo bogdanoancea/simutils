@@ -70,10 +70,9 @@
 #' get_mnd(simData, devices = c('209', '894'), t_range = c(56,65), groundTruth = TRUE)
 #'
 #' @export
-#' 
 get_mnd <- function(simData, devices, t_range, groundTruth = FALSE){
   
-  ..mnd_vars <- variable <- observed_mnd.specs <- NULL
+  mnd_vars <- variable <- observed_mnd_specs <- NULL
   
   events.dt <- sf::st_drop_geometry(simData$events)
 
@@ -158,7 +157,11 @@ get_mnd <- function(simData, devices, t_range, groundTruth = FALSE){
     
     grTruth.dt <- merge(observed_mnd.dt, indiv_long.dt, 
                         by = c(name_time, name_devices), all = TRUE)
+    grTruth_specs <- c(observed_mnd_specs, individuals_specs)
     grTruth.sf <- sf::st_as_sf(grTruth.dt, coords = c('X', 'Y'))
+    grTruth_specs <- grTruth_specs[names(grTruth.sf)]
+    st_crs(grTruth.sf) <- st_crs(simData$individuals)
+    attr(grTruth.sf, 'specs') <- grTruth_specs
     
   } else {
     

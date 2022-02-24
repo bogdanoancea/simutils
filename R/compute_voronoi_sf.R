@@ -117,8 +117,12 @@ compute_voronoi_sf <- function(simData){
   polygons.sf <- sf_multipolygon(polygons.df, multipolygon_id = 'id', x = 'x', y = 'y')
   polygons.sf$xAntenna <- xAntenna
   polygons.sf$yAntenna <- yAntenna
-  polygons.sf             <- polygons.sf[, !(names(polygons.sf) %in% c('id'))]
+  polygons.sf          <- polygons.sf[, !(names(polygons.sf) %in% c('id'))]
   polygons.sf <- st_set_crs(polygons.sf, crs)
+  
+  attrib_network <- attributes(simData$network)$specs
+  name_Antennas <- names(attrib_network)[which(attrib_network == 'specs_cells')]
+  polygons.sf[[name_Antennas]] <- st_difference(simData$network)[[name_Antennas]]
   
   output <- list(
     triangles = triangles.sf,

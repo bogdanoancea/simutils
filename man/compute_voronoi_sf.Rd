@@ -11,7 +11,7 @@ compute_voronoi_sf(simData)
 individuals as output by function \link{read_simData}.}
 }
 \value{
-a list of sf objects:triangles.sf and polygons.sf with:
+a list of sf objects: triangles.sf and polygons.sf with:
 geometry - coordinates of triangles and polygons
 info of antennas which compose the objects
 }
