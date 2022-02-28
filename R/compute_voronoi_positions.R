@@ -66,44 +66,18 @@ compute_voronoi_positions <- function(mnd_info, voronoi){
   specs_mnd <- attributes(mnd_info$mnd)$specs
   name_Antennas_grTr <- names(specs_mnd)[which(specs_mnd == 'specs_cells')]
   groundTruth.sf <- mnd_info$grTruth
-  groundTruth_network.sf <- groundTruth.sf[!is.na(groundTruth.sf[[name_Antennas_grTr]]),]
+  #groundTruth_network.sf <- groundTruth.sf[!is.na(groundTruth.sf[[name_Antennas_grTr]]),]
 
   polygons.sf <- voronoi$polygons
-  name_Antennas_pol <- setdiff(names(polygons.sf), c('geometry', 'xAntenna', 'yAntenna'))
-  Voronoi_true_insct <- st_intersects(groundTruth_network.sf$geometry, polygons.sf$geometry)
+  Voronoi_true_insct <- st_intersects(groundTruth.sf, polygons.sf)
   Voronoi_true_insct <- lapply(Voronoi_true_insct, function(x){if( length(x) > 0 ){ sample(x, 1) } else{ x }})
-  Voronoi_true_idx <- unlist(Voronoi_true_insct)
-  Voronoi_true <- groundTruth_network.sf[[name_Antennas_grTr]][Voronoi_true_idx]
-  groundTruth_network.sf$trueVoronoi <- Voronoi_true
-  return(groundTruth_network.sf)
-  
-  #es susceptible de ser paralelizable, tarda unos 3 minutos
-
-  groundTruth.sf$Voronoi_true <- lapply(seq(1:nrow(groundTruth.sf)), function(i){
-   
-    return(polygons.sf[groundTruth.sf$Voronoi_true_aux[[i]],]$id)
-  
-  })
-  # Voronoi_conn
-  
-  #asociar la antenna id, el polígono se ve con el id de antenna con la fila del polygons
-  
-  groundTruth.sf$Voronoi_conn <- groundTruth.sf$AntennaId
-  groundTruth.sf$Voronoi_conn[which(groundTruth.sf$Voronoi_conn %in% c('8','9'))] <- '10'
-  
-  voronoi <- list(
-    groundTruth = groundTruth.sf,
-    polygons    = polygons.sf
-  )
-  
-  return(voronoi)
+  Voronoi_true_idx    <- unlist(Voronoi_true_insct)
+  name_Antennas_polyg <- setdiff(names(polygons.sf), c('geometry', 'xAntenna', 'yAntenna'))
+  Voronoi_true        <- polygons.sf[[name_Antennas_polyg]][Voronoi_true_idx]
+  groundTruth.sf$trueVoronoi <- Voronoi_true
+  return(groundTruth.sf)
   
 }
 
-
-
-#ggplot() + geom_sf(data = polygons$geometry[which(polygons$id == '19')], color = 'blue') 
-#+ geom_sf(data = polygons$geometry[which(polygons$id == '1')])
-#+ geom_sf(data = groundTruth$geometry[1], size = 2) 
 
 

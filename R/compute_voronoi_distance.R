@@ -1,0 +1,115 @@
+#' Compute for each device and each time instant the distance d(Voronoi_conn, Voronoi_true).
+#'
+#' @param groundTruth \code{sf} object with information from the simulation input.It is filled 
+#' by events characteristics matched with PersonId
+#' 
+#' @param polygons \code{sf} object with:
+#' geometry - coordinates of triangles and polygons
+#' info of antennas which compose the objects
+#' 
+#' @param polygons.dist \code{list} with the distance in rings between polygons.
+#'
+#' @return a \code{vector} with the distance in rings between Voronoi_true and Voronoi_conn
+#'
+#' @rdname compute_voronoi_distance
+#'
+#' @name compute_voronoi_distance
+#' 
+#' @import sf 
+#' 
+#' @examples 
+#' filename_map      <- c(
+#'  xml= system.file("extdata/input_files", "map.xml", package = "simutils"),
+#'  xsd= '')
+#'   
+#' filename_network  <- c(
+#'  csv= system.file("extdata/output_files/antennas.csv", package = "simutils"),
+#'  xml= system.file("extdata/metadata/output_files/antennas_dict.xml", package = "simutils"))
+#'                    
+#' filename_signal <- c(
+#'  csv= system.file("extdata/output_files/SignalMeasure_MNO1.csv", package = "simutils"),
+#'  xml= system.file("extdata/metadata/output_files/SignalMeasure_dict.xml", package = "simutils"))
+#'                  
+#' filename_coverage <- c(
+#'  csv= system.file("extdata/output_files", "AntennaCells_MNO1.csv", package = "simutils"),
+#'  xml= system.file("extdata/metadata/output_files/AntennaCells_dict.xml", package = "simutils"))
+#'
+#' filename_events <- c(
+#'  csv= system.file("extdata/output_files/AntennaInfo_MNO_MNO1.csv", package = "simutils"),
+#'  xml= system.file("extdata/metadata/output_files/events_dict.xml", package = "simutils"))
+#'                        
+#' filename_grid <- c(
+#'   csv= system.file("extdata/output_files/grid.csv", package = "simutils"),
+#'   xml= system.file("extdata/metadata/output_files/grid_dict.xml", package = "simutils")) 
+#' 
+#' filename_individ <- c(
+#'   csv= system.file("extdata/output_files/persons.csv", package = "simutils"),
+#'   xml= system.file("extdata/metadata/output_files/persons_dict.xml", package = "simutils"))   
+#'                        
+#' filenames <- list(
+#'   map                = filename_map,
+#'   network_parameters = filename_network,
+#'   signal             = filename_signal,
+#'   events             = filename_events,
+#'   coverage_cells     = filename_coverage,
+#'   grid               = filename_grid,
+#'   individuals        = filename_individ)
+#'   
+#' simData           <- simutils::read_simData(filenames, crs = 2062)
+#' mnd_info          <- simutils::get_mnd(simData, groundTruth = TRUE)
+#' voronoi.sf        <- simutils::compute_voronoi_sf(simData)
+#' voronoi_positions <- simutils::compute_voronoi_positions(mnd_info, voronoi)
+#' polygons_dist.mat <- simutils::compute_voronoi_rings(voronoi)
+#' compute_voronoi_distance(voronoi_positions, polygons.dist)
+#' 
+#' @export
+compute_voronoi_distance <- function(voronoi_positions, polygons_dist){
+  
+  attrib_vorPos <- attributes(voronoi_positions)$specs
+  name_antenna <- names(attrib_vorPos)[attrib_vorPos == 'specs_cells']
+return(list(voronoi_positions$trueVoronoi, voronoi_positions[[name_antenna]]))  
+  voronoi_positions$voronoi_ring_dist <- unname(mapply(function(x, y){polygons_dist[x, y]}, 
+                                                voronoi_positions$trueVoronoi, 
+                                                voronoi_positions[[name_antenna]]))
+return(voronoi_positions)
+    
+  voronoi_dist <- lapply(1:nrow(groundTruth), function(i){  
+      
+    if (length(groundTruth$Voronoi_true[[i]]) == 1){
+        
+        true_rings <- polygons.dist[[which(polygons$id %in% groundTruth$Voronoi_true[i])]]
+        logical_distance <- lapply(true_rings, function(p){
+          return(sum(p %in% which(polygons$id %in% groundTruth$Voronoi_conn[i])))
+        })
+        
+        if(groundTruth$Voronoi_true[i] == groundTruth$Voronoi_conn[i]){
+          result <- 0
+        } else {
+          result <- which(logical_distance > 0)
+        }
+        return(result)
+        
+      }else{ # cuando tenemos una lista en voronoi_true
+        
+        result.list <- lapply(which(polygons$id %in% unlist(groundTruth$Voronoi_true[i])), function(nrows){
+          
+          true_rings <- polygons.dist[[nrows]]
+          logical_distance <- lapply(true_rings, function(p){
+            return(sum(p %in% which(polygons$id %in% groundTruth$Voronoi_conn[i])))
+          })
+          
+          if(polygons$id[nrows] == groundTruth$Voronoi_conn[i]){
+            result <- 0
+          } else {
+            result <- which(logical_distance > 0)
+          }
+          return(result)
+        })
+        
+        return(min(unlist(result.list))) 
+        
+      }
+    }) 
+  return(unlist(voronoi_dist))
+}
+
