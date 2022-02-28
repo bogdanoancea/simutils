@@ -67,6 +67,7 @@ compute_voronoi_rings <- function(voronoi){
   rownames(distanceMatrix) <- antIDs
   colnames(distanceMatrix) <- antIDs
 
+
   #Build the first ring for each polygon 
   polygons.dist <- lapply(rownames(distanceMatrix), function(row_name){
     
@@ -93,22 +94,23 @@ compute_voronoi_rings <- function(voronoi){
       }
       auxVector <- unique(auxVector)
       auxVector <- auxVector[-which(auxVector %in% ring_dist)]
-      auxVector <- auxVector[auxVector != antID]
+      #auxVector <- auxVector[auxVector != antID]
       polygons.dist[[antID]] <- c(polygons.dist[[antID]], list(auxVector))
     }
     if (all(sapply(polygons.dist, function(x){length(unlist(x))})) >= ncol(distanceMatrix)) break
   }
 
-  polygons_ringDist <- Reduce(rbind, lapply(seq(along = polygons.dist), function(r){
+  polygons_ringDist <- Reduce(rbind, lapply(antIDs, function(antID){
     
-    lst <- polygons.dist[[r]]
-    output.lst <- sapply(seq(along = lst), function(i){
+    rings.lst <- polygons.dist[[antID]]
+    output.lst <- sapply(seq(along = rings.lst), function(i){
       
-      dist <- rep(i, length(lst[[i]]))
-      names(dist) <- lst[[i]]
+      dist <- rep(i, length(rings.lst[[i]]))
+      names(dist) <- rings.lst[[i]]
       return(dist)
     })
     output.vec <- Reduce(c, output.lst)
+    output.vec <- output.vec[antIDs]
     return(output.vec)
     
   }))

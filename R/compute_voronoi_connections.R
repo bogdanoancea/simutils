@@ -1,13 +1,9 @@
 #' Determine the Voronoi polygon where each device is at each time instant (Voronoi_true).
 #' and the Voronoi polygon of the antenna to which each device is connected at each time instant (Voronoi_conn).
 #'
-#' @param mnd_info \code{list} with two elements related with the simulation input. The first element is related
-#' with the observed mnd (\code{data.table}) whereas the second component contains the groundTruth (\code{sf} object)
-#' 
-#' @param voronoi \code{list} of \code{sf} objects:triangles.sf and polygons.sf with:
-#' geometry - coordinates of triangles and polygons
-#' info of antennas which compose the objects
-#' 
+#' @param simData \code{list} with components map, network, coverage, grid, 
+#' individuals as output by function \link{read_simData}.
+#'  
 #' @return a \code{list} with two \code{sf} objects: groundTruth, which adds the Voronoi_true and Voronoi_conn positions;
 #' and polygons, which adds the antenna id to each polygon.
 #'
@@ -58,29 +54,23 @@
 #' simData  <- simutils::read_simData(filenames, crs = 2062)
 #' mnd_info <- simutils::get_mnd(simData, groundTruth = TRUE)
 #' voronoi  <- simutils::compute_voronoi_sf(simData)
-#' compute_voronoi_positions(mnd_info, voronoi)
+#' voronoi_positions <- simutils::compute_voronoi_positions(mnd_info, voronoi)
+#' compute_voronoi_connections(simData, polygons.sf, voronoi_positions)
 #' 
 #' @export
-compute_voronoi_positions <- function(mnd_info, voronoi){
+compute_voronoi_connections <- function(simData, polygons.sf, voronoi_positions){
   
-  specs_mnd <- attributes(mnd_info$mnd)$specs
-  name_Antennas_grTr <- names(specs_mnd)[which(specs_mnd == 'specs_cells')]
-  groundTruth.sf <- mnd_info$grTruth
-  #groundTruth_network.sf <- groundTruth.sf[!is.na(groundTruth.sf[[name_Antennas_grTr]]),]
+  network.sf <- simData$network
+  specs_network <- attributes(network.sf)$specs
+  name_Antennas <- names(specs_network)[which(specs_network == 'specs_cells')]
+  tempCorresp.sf <- st_join(polygons.sf, simData$network[, c(name_Antennas, 'geometry')], left = TRUE)
+  names(tempCorresp.sf) <- c('xAntenna', 'yAntenna', 'voronoi_id', name_Antennas, 'geometry')
+  corresp_ant_voronoi <- tempCorresp.sf$voronoi_id
+  names(corresp_ant_voronoi) <- tempCorresp.sf[[name_Antennas]]
+  voronoi_positions$connVoronoi <- corresp_ant_voronoi[voronoi_positions$AntennaId]
+  return(voronoi_positions)
+  
 
-  polygons.sf <- voronoi$polygons
-  name_Antennas_polyg <- setdiff(names(polygons.sf), c('geometry', 'xAntenna', 'yAntenna'))
-  
-  inPol.mat <- st_intersects(groundTruth.sf, polygons.sf, sparse = FALSE)
-  inPol.mat <- unlist(apply(inPol.mat, 1, function(x){
-    
-    antID <- polygons.sf[[name_Antennas_polyg]][x]
-    if (length(antID) > 1) antID <- sample(antID, 1)
-    return(antID)}))
-  
-  groundTruth.sf$trueVoronoi <- inPol.mat
-  return(groundTruth.sf)
-  
 }
 
 

@@ -42,6 +42,7 @@ Collate:
     'read_simData.R'
     'compute_sdm.R'
     'compute_total.R'
+    'compute_voronoi_connections.R'
     'compute_voronoi_distance.R'
     'compute_voronoi_neighbours.R'
     'compute_voronoi_positions.R'

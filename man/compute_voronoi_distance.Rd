@@ -60,11 +60,13 @@ filenames <- list(
   grid               = filename_grid,
   individuals        = filename_individ)
   
-simData <- simutils::read_simData(filenames, crs = 2062)
-mnd_info <- simutils::get_mnd(simData, groundTruth = TRUE)
-voronoi <- simutils::compute_voronoi_sf(simData)
-voronoi_positions <- simutils::compute_voronoi_positions(mnd_info, voronoi)
-polygons_dist <- simutils::compute_voronoi_rings(voronoi)
-compute_voronoi_distance(voronoi_positions, polygons.dist)
+simData             <- simutils::read_simData(filenames, crs = 2062)
+mnd_info            <- simutils::get_mnd(simData, groundTruth = TRUE)
+voronoi.sf          <- simutils::compute_voronoi_sf(simData)
+voronoi_positions   <- simutils::compute_voronoi_positions(mnd_info, voronoi)
+voronoi_connections <- simutils::compute_voronoi_connections(simData, voronoi.sf$polygons, 
+    voronoi_positions)
+polygons_dist.mat <- simutils::compute_voronoi_rings(voronoi)
+compute_voronoi_distance(voronoi_connections, polygons_dist.mat)
 
 }

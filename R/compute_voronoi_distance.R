@@ -55,61 +55,26 @@
 #'   grid               = filename_grid,
 #'   individuals        = filename_individ)
 #'   
-#' simData           <- simutils::read_simData(filenames, crs = 2062)
-#' mnd_info          <- simutils::get_mnd(simData, groundTruth = TRUE)
-#' voronoi.sf        <- simutils::compute_voronoi_sf(simData)
-#' voronoi_positions <- simutils::compute_voronoi_positions(mnd_info, voronoi)
+#' simData             <- simutils::read_simData(filenames, crs = 2062)
+#' mnd_info            <- simutils::get_mnd(simData, groundTruth = TRUE)
+#' voronoi.sf          <- simutils::compute_voronoi_sf(simData)
+#' voronoi_positions   <- simutils::compute_voronoi_positions(mnd_info, voronoi)
+#' voronoi_connections <- simutils::compute_voronoi_connections(simData, voronoi.sf$polygons, 
+#'     voronoi_positions)
 #' polygons_dist.mat <- simutils::compute_voronoi_rings(voronoi)
-#' compute_voronoi_distance(voronoi_positions, polygons.dist)
+#' compute_voronoi_distance(voronoi_connections, polygons_dist.mat)
 #' 
 #' @export
 compute_voronoi_distance <- function(voronoi_positions, polygons_dist){
   
-  attrib_vorPos <- attributes(voronoi_positions)$specs
-  name_antenna <- names(attrib_vorPos)[attrib_vorPos == 'specs_cells']
-return(list(voronoi_positions$trueVoronoi, voronoi_positions[[name_antenna]]))  
-  voronoi_positions$voronoi_ring_dist <- unname(mapply(function(x, y){polygons_dist[x, y]}, 
-                                                voronoi_positions$trueVoronoi, 
-                                                voronoi_positions[[name_antenna]]))
-return(voronoi_positions)
+  voronoi_positions$voronoi_ring_dist <- unname(mapply(
+    function(x, y){
+      if(is.na(x) | is.na(y)) return(NA_real_)
+      polygons_dist[x, y]
+    }, 
+    voronoi_positions$trueVoronoi, 
+    voronoi_positions$connVoronoi))
+  return(voronoi_positions)
     
-  voronoi_dist <- lapply(1:nrow(groundTruth), function(i){  
-      
-    if (length(groundTruth$Voronoi_true[[i]]) == 1){
-        
-        true_rings <- polygons.dist[[which(polygons$id %in% groundTruth$Voronoi_true[i])]]
-        logical_distance <- lapply(true_rings, function(p){
-          return(sum(p %in% which(polygons$id %in% groundTruth$Voronoi_conn[i])))
-        })
-        
-        if(groundTruth$Voronoi_true[i] == groundTruth$Voronoi_conn[i]){
-          result <- 0
-        } else {
-          result <- which(logical_distance > 0)
-        }
-        return(result)
-        
-      }else{ # cuando tenemos una lista en voronoi_true
-        
-        result.list <- lapply(which(polygons$id %in% unlist(groundTruth$Voronoi_true[i])), function(nrows){
-          
-          true_rings <- polygons.dist[[nrows]]
-          logical_distance <- lapply(true_rings, function(p){
-            return(sum(p %in% which(polygons$id %in% groundTruth$Voronoi_conn[i])))
-          })
-          
-          if(polygons$id[nrows] == groundTruth$Voronoi_conn[i]){
-            result <- 0
-          } else {
-            result <- which(logical_distance > 0)
-          }
-          return(result)
-        })
-        
-        return(min(unlist(result.list))) 
-        
-      }
-    }) 
-  return(unlist(voronoi_dist))
 }
 
