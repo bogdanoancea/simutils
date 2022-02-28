@@ -4,12 +4,17 @@
 #' @param simData \code{list} with components map, network, coverage, grid, 
 #' individuals as output by function \link{read_simData}.
 #'  
+#' @param polygons.sf object \code{sf} with the Voronoi polygons of the network antenna sites.
+#' 
+#' @param voronoi_positions objects \code{sf} with true Voronoi locations and multiple variables per 
+#' time instant and individual.
+#'  
 #' @return a \code{list} with two \code{sf} objects: groundTruth, which adds the Voronoi_true and Voronoi_conn positions;
 #' and polygons, which adds the antenna id to each polygon.
 #'
-#' @rdname compute_voronoi_positions
+#' @rdname compute_voronoi_connections
 #'
-#' @name compute_voronoi_positions
+#' @name compute_voronoi_connections
 #' 
 #' @import sf 
 #' 
@@ -55,7 +60,7 @@
 #' mnd_info <- simutils::get_mnd(simData, groundTruth = TRUE)
 #' voronoi  <- simutils::compute_voronoi_sf(simData)
 #' voronoi_positions <- simutils::compute_voronoi_positions(mnd_info, voronoi)
-#' compute_voronoi_connections(simData, polygons.sf, voronoi_positions)
+#' compute_voronoi_connections(simData, voronoi$polygons, voronoi_positions)
 #' 
 #' @export
 compute_voronoi_connections <- function(simData, polygons.sf, voronoi_positions){

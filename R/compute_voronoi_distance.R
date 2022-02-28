@@ -1,15 +1,12 @@
 #' Compute for each device and each time instant the distance d(Voronoi_conn, Voronoi_true).
 #'
-#' @param groundTruth \code{sf} object with information from the simulation input.It is filled 
+#' @param voronoi_positions \code{sf} object with information from the simulation input.It is filled 
 #' by events characteristics matched with PersonId
 #' 
-#' @param polygons \code{sf} object with:
-#' geometry - coordinates of triangles and polygons
-#' info of antennas which compose the objects
-#' 
-#' @param polygons.dist \code{list} with the distance in rings between polygons.
+#' @param voronoi_ring_dist \code{matrix} with the ring-distance between polygons.
 #'
-#' @return a \code{vector} with the distance in rings between Voronoi_true and Voronoi_conn
+#' @return An \code{sf} object with the ring-distance between true and estimated (connection) 
+#' voronoi locations.
 #'
 #' @rdname compute_voronoi_distance
 #'
@@ -58,19 +55,19 @@
 #' simData             <- simutils::read_simData(filenames, crs = 2062)
 #' mnd_info            <- simutils::get_mnd(simData, groundTruth = TRUE)
 #' voronoi.sf          <- simutils::compute_voronoi_sf(simData)
-#' voronoi_positions   <- simutils::compute_voronoi_positions(mnd_info, voronoi)
+#' voronoi_positions   <- simutils::compute_voronoi_positions(mnd_info, voronoi.sf)
 #' voronoi_connections <- simutils::compute_voronoi_connections(simData, voronoi.sf$polygons, 
 #'     voronoi_positions)
-#' polygons_dist.mat <- simutils::compute_voronoi_rings(voronoi)
-#' compute_voronoi_distance(voronoi_connections, polygons_dist.mat)
+#' voronoi_ring_dist.mat <- simutils::compute_voronoi_rings(voronoi.sf)
+#' compute_voronoi_distance(voronoi_connections, voronoi_ring_dist.mat)
 #' 
 #' @export
-compute_voronoi_distance <- function(voronoi_positions, polygons_dist){
+compute_voronoi_distance <- function(voronoi_positions, voronoi_ring_dist){
   
   voronoi_positions$voronoi_ring_dist <- unname(mapply(
     function(x, y){
       if(is.na(x) | is.na(y)) return(NA_real_)
-      polygons_dist[x, y]
+      voronoi_ring_dist[x, y]
     }, 
     voronoi_positions$trueVoronoi, 
     voronoi_positions$connVoronoi))

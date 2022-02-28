@@ -4,9 +4,8 @@
 #' @param mnd_info \code{list} with two elements related with the simulation input. The first element is related
 #' with the observed mnd (\code{data.table}) whereas the second component contains the groundTruth (\code{sf} object)
 #' 
-#' @param voronoi \code{list} of \code{sf} objects:triangles.sf and polygons.sf with:
-#' geometry - coordinates of triangles and polygons
-#' info of antennas which compose the objects
+#' @param voronoi \code{list} of \code{sf} objects: triangles.sf and polygons.sf with:
+#' geometry - coordinates of triangles and polygons info of antennas which compose the objects
 #' 
 #' @return a \code{list} with two \code{sf} objects: groundTruth, which adds the Voronoi_true and Voronoi_conn positions;
 #' and polygons, which adds the antenna id to each polygon.

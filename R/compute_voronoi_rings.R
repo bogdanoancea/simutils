@@ -53,7 +53,7 @@
 #'   
 #' simData <- simutils::read_simData(filenames, crs = 2062)
 #' voronoi <- simutils::compute_voronoi_sf(simData)
-#' compute_voronoi_rings(voronoi) -> x
+#' compute_voronoi_rings(voronoi)
 #' 
 #' @export
 compute_voronoi_rings <- function(voronoi){

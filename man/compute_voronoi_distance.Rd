@@ -4,20 +4,17 @@
 \alias{compute_voronoi_distance}
 \title{Compute for each device and each time instant the distance d(Voronoi_conn, Voronoi_true).}
 \usage{
-compute_voronoi_distance(voronoi_positions, polygons_dist)
+compute_voronoi_distance(voronoi_positions, voronoi_ring_dist)
 }
 \arguments{
-\item{groundTruth}{\code{sf} object with information from the simulation input.It is filled
+\item{voronoi_positions}{\code{sf} object with information from the simulation input.It is filled
 by events characteristics matched with PersonId}
 
-\item{polygons}{\code{sf} object with:
-geometry - coordinates of triangles and polygons
-info of antennas which compose the objects}
-
-\item{polygons.dist}{\code{list} with the distance in rings between polygons.}
+\item{voronoi_ring_dist}{\code{matrix} with the ring-distance between polygons.}
 }
 \value{
-a \code{vector} with the distance in rings between Voronoi_true and Voronoi_conn
+An \code{sf} object with the ring-distance between true and estimated (connection)
+voronoi locations.
 }
 \description{
 Compute for each device and each time instant the distance d(Voronoi_conn, Voronoi_true).
@@ -63,10 +60,10 @@ filenames <- list(
 simData             <- simutils::read_simData(filenames, crs = 2062)
 mnd_info            <- simutils::get_mnd(simData, groundTruth = TRUE)
 voronoi.sf          <- simutils::compute_voronoi_sf(simData)
-voronoi_positions   <- simutils::compute_voronoi_positions(mnd_info, voronoi)
+voronoi_positions   <- simutils::compute_voronoi_positions(mnd_info, voronoi.sf)
 voronoi_connections <- simutils::compute_voronoi_connections(simData, voronoi.sf$polygons, 
     voronoi_positions)
-polygons_dist.mat <- simutils::compute_voronoi_rings(voronoi)
-compute_voronoi_distance(voronoi_connections, polygons_dist.mat)
+voronoi_ring_dist.mat <- simutils::compute_voronoi_rings(voronoi.sf)
+compute_voronoi_distance(voronoi_connections, voronoi_ring_dist.mat)
 
 }
