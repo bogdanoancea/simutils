@@ -20,8 +20,8 @@ Return a \code{list} of \code{list}s using the attributes' structure
 from the original object.
 }
 \examples{
-rootPath  <- system.file(package = "simutils")  
-xmlFile   <- file.path(rootPath, "extdata/input_files", "simulation.xml")
+rootPath <- system.file(package = "simutils")
+xmlFile <- file.path(rootPath, "extdata/input_files", "simulation.xml")
 xmlObject <- xml2::as_list(xml2::read_xml(xmlFile))
 list_deepest(xmlObject)
 

@@ -27,7 +27,7 @@ paths.
 Return 0 if xml file is validated and a non-zero value otherwise.
 }
 \examples{
-rootPath <- file.path(system.file(package = "simutils"), 'extdata')  
+rootPath <- file.path(system.file(package = "simutils"), "extdata")
 
 # simulation file (by filename)
 xml_fn <- file.path(rootPath, "input_files", "simulation.xml")
@@ -50,7 +50,7 @@ xsd_fn <- file.path(rootPath, "metadata/input_files/schema_definition", "probabi
 validate_xml(xsd_fn, xml_fn)
 
 # antennaCells_dict file (by filename)
-xml_fn<-file.path(rootPath, "metadata/output_files", "antennaCells_dict.xml")
+xml_fn <- file.path(rootPath, "metadata/output_files", "antennaCells_dict.xml")
 xsd_fn <- file.path(rootPath, "metadata/output_files/schema_definition", "antennaCells_dict.xsd")
 validate_xml(xsd_fn, xml_fn)
 
@@ -68,16 +68,15 @@ validate_xml(xsd_fn, xml_fn)
 xml_fn <- file.path(rootPath, "metadata/output_files", "grid_dict.xml")
 xsd_fn <- file.path(rootPath, "metadata/output_files/schema_definition", "grid_dict.xsd")
 validate_xml(xsd_fn, xml_fn)
- 
+
 # persons_dict file (by filename)
 xml_fn <- file.path(rootPath, "metadata/output_files", "persons_dict.xml")
 xsd_fn <- file.path(rootPath, "metadata/output_files/schema_definition", "persons_dict.xsd")
-validate_xml(xsd_fn, xml_fn)   
+validate_xml(xsd_fn, xml_fn)
 
 # SignalMeasure_dict file (by filename)
-xml_fn<-file.path(rootPath, "metadata/output_files","SignalMeasure_dict.xml")
+xml_fn <- file.path(rootPath, "metadata/output_files", "SignalMeasure_dict.xml")
 xsd_fn <- file.path(rootPath, "metadata/output_files/schema_definition", "SignalMeasure_dict.xsd")
 validate_xml(xsd_fn, xml_fn)
-    
 
 }

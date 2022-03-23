@@ -46,16 +46,22 @@ Get different elements from an xml file.
 }
 \examples{
 xmlname <- system.file(
-  "extdata/metadata/output_files/antennas_dict.xml", package = "simutils") 
-getCoordsNames(xmlname, 'antennas')
+  "extdata/metadata/output_files/antennas_dict.xml",
+  package = "simutils"
+)
+getCoordsNames(xmlname, "antennas")
 
 xmlname <- system.file(
-  "extdata/metadata/output_files/persons_dict.xml", package = "simutils") 
-getCoordsNames(xmlname, 'individuals')
+  "extdata/metadata/output_files/persons_dict.xml",
+  package = "simutils"
+)
+getCoordsNames(xmlname, "individuals")
 
 xmlname <- system.file(
-  "extdata/metadata/output_files/grid_dict.xml", package = "simutils") 
-getGridNoTilesX(xmlname, 'grid')
-getGridNoTilesY(xmlname, 'grid')
+  "extdata/metadata/output_files/grid_dict.xml",
+  package = "simutils"
+)
+getGridNoTilesX(xmlname, "grid")
+getGridNoTilesY(xmlname, "grid")
 
 }

@@ -23,34 +23,41 @@ Determine the Voronoi polygon where each device is at each time instant (Voronoi
 and the Voronoi polygon of the antenna to which each device is connected at each time instant (Voronoi_conn).
 }
 \examples{
-filename_map      <- c(
- xml= system.file("extdata/input_files", "map.xml", package = "simutils"),
- xsd= '')
-  
-filename_network  <- c(
- csv= system.file("extdata/output_files/antennas.csv", package = "simutils"),
- xml= system.file("extdata/metadata/output_files/antennas_dict.xml", package = "simutils"))
-                   
+filename_map <- c(
+  xml = system.file("extdata/input_files", "map.xml", package = "simutils"),
+  xsd = ""
+)
+
+filename_network <- c(
+  csv = system.file("extdata/output_files/antennas.csv", package = "simutils"),
+  xml = system.file("extdata/metadata/output_files/antennas_dict.xml", package = "simutils")
+)
+
 filename_signal <- c(
- csv= system.file("extdata/output_files/SignalMeasure_MNO1.csv", package = "simutils"),
- xml= system.file("extdata/metadata/output_files/SignalMeasure_dict.xml", package = "simutils"))
-                 
+  csv = system.file("extdata/output_files/SignalMeasure_MNO1.csv", package = "simutils"),
+  xml = system.file("extdata/metadata/output_files/SignalMeasure_dict.xml", package = "simutils")
+)
+
 filename_coverage <- c(
- csv= system.file("extdata/output_files", "AntennaCells_MNO1.csv", package = "simutils"),
- xml= system.file("extdata/metadata/output_files/AntennaCells_dict.xml", package = "simutils"))
+  csv = system.file("extdata/output_files", "AntennaCells_MNO1.csv", package = "simutils"),
+  xml = system.file("extdata/metadata/output_files/AntennaCells_dict.xml", package = "simutils")
+)
 
 filename_events <- c(
- csv= system.file("extdata/output_files/AntennaInfo_MNO_MNO1.csv", package = "simutils"),
- xml= system.file("extdata/metadata/output_files/events_dict.xml", package = "simutils"))
-                       
+  csv = system.file("extdata/output_files/AntennaInfo_MNO_MNO1.csv", package = "simutils"),
+  xml = system.file("extdata/metadata/output_files/events_dict.xml", package = "simutils")
+)
+
 filename_grid <- c(
-  csv= system.file("extdata/output_files/grid.csv", package = "simutils"),
-  xml= system.file("extdata/metadata/output_files/grid_dict.xml", package = "simutils")) 
+  csv = system.file("extdata/output_files/grid.csv", package = "simutils"),
+  xml = system.file("extdata/metadata/output_files/grid_dict.xml", package = "simutils")
+)
 
 filename_individ <- c(
-  csv= system.file("extdata/output_files/persons.csv", package = "simutils"),
-  xml= system.file("extdata/metadata/output_files/persons_dict.xml", package = "simutils"))   
-                       
+  csv = system.file("extdata/output_files/persons.csv", package = "simutils"),
+  xml = system.file("extdata/metadata/output_files/persons_dict.xml", package = "simutils")
+)
+
 filenames <- list(
   map                = filename_map,
   network_parameters = filename_network,
@@ -58,11 +65,12 @@ filenames <- list(
   events             = filename_events,
   coverage_cells     = filename_coverage,
   grid               = filename_grid,
-  individuals        = filename_individ)
-  
-simData  <- simutils::read_simData(filenames, crs = 2062)
+  individuals        = filename_individ
+)
+
+simData <- simutils::read_simData(filenames, crs = 2062)
 mnd_info <- simutils::get_mnd(simData, groundTruth = TRUE)
-voronoi  <- simutils::compute_voronoi_sf(simData)
+voronoi <- simutils::compute_voronoi_sf(simData)
 compute_voronoi_positions(mnd_info, voronoi)
 
 }

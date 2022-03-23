@@ -26,34 +26,41 @@ ground truth. It basically contains the events detected in the network and the g
 is fill by events characteristics matched with PersonId
 }
 \examples{
-filename_map      <- c(
- xml= system.file("extdata/input_files", "map.xml", package = "simutils"),
- xsd= '')
-  
-filename_network  <- c(
- csv= system.file("extdata/output_files/antennas.csv", package = "simutils"),
- xml= system.file("extdata/metadata/output_files/antennas_dict.xml", package = "simutils"))
-                   
+filename_map <- c(
+  xml = system.file("extdata/input_files", "map.xml", package = "simutils"),
+  xsd = ""
+)
+
+filename_network <- c(
+  csv = system.file("extdata/output_files/antennas.csv", package = "simutils"),
+  xml = system.file("extdata/metadata/output_files/antennas_dict.xml", package = "simutils")
+)
+
 filename_signal <- c(
- csv= system.file("extdata/output_files/SignalMeasure_MNO1.csv", package = "simutils"),
- xml= system.file("extdata/metadata/output_files/SignalMeasure_dict.xml", package = "simutils"))
-                 
+  csv = system.file("extdata/output_files/SignalMeasure_MNO1.csv", package = "simutils"),
+  xml = system.file("extdata/metadata/output_files/SignalMeasure_dict.xml", package = "simutils")
+)
+
 filename_coverage <- c(
- csv= system.file("extdata/output_files", "AntennaCells_MNO1.csv", package = "simutils"),
- xml= system.file("extdata/metadata/output_files/AntennaCells_dict.xml", package = "simutils"))
+  csv = system.file("extdata/output_files", "AntennaCells_MNO1.csv", package = "simutils"),
+  xml = system.file("extdata/metadata/output_files/AntennaCells_dict.xml", package = "simutils")
+)
 
 filename_events <- c(
- csv= system.file("extdata/output_files/AntennaInfo_MNO_MNO1.csv", package = "simutils"),
- xml= system.file("extdata/metadata/output_files/events_dict.xml", package = "simutils"))
-                       
+  csv = system.file("extdata/output_files/AntennaInfo_MNO_MNO1.csv", package = "simutils"),
+  xml = system.file("extdata/metadata/output_files/events_dict.xml", package = "simutils")
+)
+
 filename_grid <- c(
-  csv= system.file("extdata/output_files/grid.csv", package = "simutils"),
-  xml= system.file("extdata/metadata/output_files/grid_dict.xml", package = "simutils")) 
+  csv = system.file("extdata/output_files/grid.csv", package = "simutils"),
+  xml = system.file("extdata/metadata/output_files/grid_dict.xml", package = "simutils")
+)
 
 filename_individ <- c(
-  csv= system.file("extdata/output_files/persons.csv", package = "simutils"),
-  xml= system.file("extdata/metadata/output_files/persons_dict.xml", package = "simutils"))   
-                       
+  csv = system.file("extdata/output_files/persons.csv", package = "simutils"),
+  xml = system.file("extdata/metadata/output_files/persons_dict.xml", package = "simutils")
+)
+
 filenames <- list(
   map                = filename_map,
   network_parameters = filename_network,
@@ -61,12 +68,13 @@ filenames <- list(
   events             = filename_events,
   coverage_cells     = filename_coverage,
   grid               = filename_grid,
-  individuals        = filename_individ)
-  
+  individuals        = filename_individ
+)
+
 simData <- simutils::read_simData(filenames, crs = 2062)
 
 get_mnd(simData)
 
-get_mnd(simData, devices = c('209', '894'), t_range = c(56,65), groundTruth = TRUE)
+get_mnd(simData, devices = c("209", "894"), t_range = c(56, 65), groundTruth = TRUE)
 
 }

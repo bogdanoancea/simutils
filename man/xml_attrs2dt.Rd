@@ -21,11 +21,15 @@ Create a data.table from a file metadata xml.
 }
 \examples{
 xmlname <- system.file(
-  "extdata/metadata/output_files", "antennas_dict.xml", package = "simutils") 
-xml_attrs2dt(xmlname, 'antennas')
+  "extdata/metadata/output_files", "antennas_dict.xml",
+  package = "simutils"
+)
+xml_attrs2dt(xmlname, "antennas")
 
 xmlname <- system.file(
-  "extdata/metadata/output_files", "persons_dict.xml", package = "simutils") 
-xml_attrs2dt(xmlname, 'individuals')
+  "extdata/metadata/output_files", "persons_dict.xml",
+  package = "simutils"
+)
+xml_attrs2dt(xmlname, "individuals")
 
 }

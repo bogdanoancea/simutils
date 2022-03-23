@@ -22,7 +22,7 @@ Return \code{TRUE} if the csv file is validated, otherwise, it
 returns \code{FALSE}.
 }
 \examples{
-rootPath <- file.path(system.file(package = "simutils"), 'extdata')  
+rootPath <- file.path(system.file(package = "simutils"), "extdata")
 
 # antennas file
 csv_fn <- file.path(rootPath, "output_files", "antennas.csv")
@@ -38,21 +38,21 @@ validate_csv(xml_fn, csv_fn)
 csv_fn <- file.path(rootPath, "output_files", "AntennaInfo_MNO_MNO1.csv")
 xml_fn <- file.path(rootPath, "metadata/output_files", "events_dict.xml")
 validate_csv(xml_fn, csv_fn)
- 
+
 # grid file
 csv_fn <- file.path(rootPath, "output_files", "grid.csv")
 xml_fn <- file.path(rootPath, "metadata/output_files", "grid_dict.xml")
 validate_csv(xml_fn, csv_fn)
 
 # Column names Tile ID, Mobile Phone(s) ID are not valid column name
-# persons file 
+# persons file
 csv_fn <- file.path(rootPath, "output_files", "persons.csv")
 xml_fn <- file.path(rootPath, "metadata/output_files", "persons_dict.xml")
 validate_csv(xml_fn, csv_fn)
- 
-# signalmeasure_mno1 file 
+
+# signalmeasure_mno1 file
 csv_fn <- file.path(rootPath, "output_files", "SignalMeasure_MNO1.csv")
 xml_fn <- file.path(rootPath, "metadata/output_files", "SignalMeasure_dict.xml")
-validate_csv(xml_fn, csv_fn) 
- 
+validate_csv(xml_fn, csv_fn)
+
 }

@@ -35,13 +35,13 @@ the docker image.
 Return invisible NULL after executing the docker image.
 }
 \examples{
-rootPath <- system.file(package = 'simutils')
-input_folder      <- file.path(rootPath, "extdata/input_files")
-simulationCFGFile <- 'simulation.xml'
-mapFile           <- 'map.wkt'
-personsCFGFile    <- 'persons.xml'
-antennasCFGFile   <- 'antennas.xml'
-output_folder     <- file.path(Sys.getenv('HOME'), 'example_docker')
+rootPath <- system.file(package = "simutils")
+input_folder <- file.path(rootPath, "extdata/input_files")
+simulationCFGFile <- "simulation.xml"
+mapFile <- "map.wkt"
+personsCFGFile <- "persons.xml"
+antennasCFGFile <- "antennas.xml"
+output_folder <- file.path(Sys.getenv("HOME"), "example_docker")
 \dontrun{
 # run only after checking your installation of docker
 run_DockerImage(
@@ -50,6 +50,7 @@ run_DockerImage(
   mapFile = mapFile,
   personsCFGFile = personsCFGFile,
   antennasCFGFile = antennasCFGFile,
-  output_folder = output_folder)
+  output_folder = output_folder
+)
 }
 }

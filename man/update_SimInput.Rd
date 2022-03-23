@@ -33,23 +33,28 @@ the parameters updated according to the specified input parameters. If
 xml file.
 }
 \examples{
- 
 library(fs)
-rootPath <- system.file(package = 'simutils')
-xmlSimInput  <- file.path(rootPath, 'extdata/input_files', 'simulation.xml')
+rootPath <- system.file(package = "simutils")
+xmlSimInput <- file.path(rootPath, "extdata/input_files", "simulation.xml")
 newParam.lst <- list(
- end_time = 11,
- movement_pattern = structure(list(
+  end_time = 11,
+  movement_pattern = structure(list(
     manhattan_grid = structure(
-        list(x_step = 40, y_step = 40, x_origin = 0, y_origin = 0),
-    type = 'home_work_manhattan'))))
-xsdName  <- file.path(rootPath, 
-  'extdata/metadata/input_files/schema_definition', 'simulation_dict.xsd')
-newSimInputFile <- file.path(path_home(), 'newSimulation.xml')
+      list(x_step = 40, y_step = 40, x_origin = 0, y_origin = 0),
+      type = "home_work_manhattan"
+    )
+  ))
+)
+xsdName <- file.path(
+  rootPath,
+  "extdata/metadata/input_files/schema_definition", "simulation_dict.xsd"
+)
+newSimInputFile <- file.path(path_home(), "newSimulation.xml")
 update_SimInput(
-   xmlSimInput = xmlSimInput, 
-   newParam = newParam.lst, 
-   xsdName  = xsdName,
-   newFileName = newSimInputFile)
+  xmlSimInput = xmlSimInput,
+  newParam = newParam.lst,
+  xsdName = xsdName,
+  newFileName = newSimInputFile
+)
 
 }

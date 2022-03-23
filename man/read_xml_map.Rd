@@ -22,6 +22,7 @@ input xml file.
 \examples{
 read_xml_map(
   system.file("extdata/input_files", "map.xml", package = "simutils"),
-  crs = 2062)
+  crs = 2062
+)
 
 }

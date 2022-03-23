@@ -20,7 +20,7 @@ column types according to the specifications in an xml file.
 Return a \code{data.table} with the contents of the csv file.
 }
 \examples{
-rootPath <- file.path(system.file(package = "simutils"), 'extdata')  
+rootPath <- file.path(system.file(package = "simutils"), "extdata")
 
 # simulation file
 csv_fn <- file.path(rootPath, "output_files", "antennas.csv")

@@ -54,13 +54,14 @@ simulation in the output folder.
 \dontrun{
 # simulator.exe will be downloaded from our github repo
 run_ExeFile(
- path_to_exe       = "",  
- simulator_version = "1.2.0",
- input_folder      = file.path(rootPath, "extdata/input_files"),
- simulationCFGFile = "simulation.xml",
- mapFile           = "map.wkt",
- personsCFGFile    = "persons.xml",
- antennasCFGFile   = "antennas.xml")
- }
-  
+  path_to_exe       = "",
+  simulator_version = "1.2.0",
+  input_folder      = file.path(rootPath, "extdata/input_files"),
+  simulationCFGFile = "simulation.xml",
+  mapFile           = "map.wkt",
+  personsCFGFile    = "persons.xml",
+  antennasCFGFile   = "antennas.xml"
+)
+}
+
 }
